@@ -3,37 +3,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/models/UserModel.dart';
 import 'package:kick74/screens/home/home_screen.dart';
-import 'package:kick74/screens/sign_up/cubit/sign_up_states.dart';
+import 'package:kick74/screens/sign_in/cubit/sign_in_states.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
-class SignUpCubit extends Cubit<SignUpStates>{
-  SignUpCubit() : super(SignUpInitialState());
-  static SignUpCubit get(context)=>BlocProvider.of(context);
+class SignInCubit extends Cubit<SignInStates>{
+  SignInCubit() : super(SignInInitialState());
+  static SignInCubit get(context)=>BlocProvider.of(context);
 
 
-  bool? nameTextFieldValidate;
   bool? emailTextFieldValidate;
   bool? passwordTextFieldValidate;
-  void nameValidation({
-  @required String? name,
-}){
-    if(name!.isNotEmpty){
-      nameTextFieldValidate=true;
-    }else{
-      nameTextFieldValidate=false;
-    }
-    print(nameTextFieldValidate);
-    emit(SignUpNameValidationState());
-  }
 
   void emailValidation({
     @required String? email,
@@ -43,7 +31,7 @@ class SignUpCubit extends Cubit<SignUpStates>{
     }else{
       emailTextFieldValidate=false;
     }
-    emit(SignUpEmailValidationState());
+    emit(SignInEmailValidationState());
   }
 
   void passwordValidation({
@@ -54,45 +42,39 @@ class SignUpCubit extends Cubit<SignUpStates>{
     }else{
       passwordTextFieldValidate=false;
     }
-    emit(SignUpPasswordValidationState());
+    emit(SignInPasswordValidationState());
   }
 
-
-
-  void userRegister(context, {
-    @required String? email,
-    @required String? password,
-    @required String? name,
-  }){
-    emit(SignUpUserRegisterLoadingState());
-    FirebaseAuth.instance.createUserWithEmailAndPassword(
+  ///login with email and password
+  void userLogin(context,{
+  @required String? email,
+  @required String? password,
+}){
+    emit(SignInUserLoginLoadingState());
+    FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email!,
         password: password!
-    ).then((value)async{
-      String? userToken = await FirebaseMessaging.instance.getToken();
-      createUser(context,
-          userToken: userToken,
-          name: name,
-          email: email,
-          uId: value.user!.uid
-      );
+    ).then((value){
       uID=value.user!.uid;
-      GetStorage().write('uId', value.user!.uid);
-      //emit(SignUpUserRegisterSuccessState());
+      GetStorage().write('uId',value.user!.uid)
+      .then((value){
+        KickCubit.get(context).getUserData();
+        Get.offAll(()=>const HomeScreen());
+      });
+      emit(SignInUserLoginSuccessState());
     }).catchError((error){
       String message = error.toString().substring(
           error.toString().indexOf(']')+2,
           error.toString().length
       );
-      bool passwordMessage = message.startsWith('Password');
+      bool passwordMessage = message.startsWith('the password');
       toastBuilder(
-          msg:passwordMessage?"shortPassword".tr:"emailUsed".tr,
+          msg:passwordMessage?"invalidPassword".tr:"invalidEmail".tr,
           color: Colors.grey);
-      printError("userRegister",error.toString());
-      emit(SignUpUserRegisterErrorState());
+      printError("userLogin", error.toString());
+      emit(SignInUserLoginErrorState());
     });
   }
-
 
   Future<UserCredential> signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -118,7 +100,7 @@ class SignUpCubit extends Cubit<SignUpStates>{
 
   ///complete sign in with google
   void googleSignIn(BuildContext context)async{
-    emit(GoogleSignUpLoadingState());
+    emit(GoogleSignInLoadingState());
     await signInWithGoogle().then((value)async{
       User user = value.user!;
       uID=value.user!.uid;
@@ -131,11 +113,11 @@ class SignUpCubit extends Cubit<SignUpStates>{
           KickCubit.get(context).getUserData();
           Get.offAll(()=>const HomeScreen());
         });
-        emit(GoogleSignUpSuccessState());
+        emit(GoogleSignInSuccessState());
       }else{
         GetStorage().write('google', true);
         createUser(context,
-          uId: user.uid,
+          uid: user.uid,
           name: name,
           profileImage: user.photoURL,
           email: user.email,
@@ -143,14 +125,14 @@ class SignUpCubit extends Cubit<SignUpStates>{
         );
       }
     }).catchError((error){
-      emit(GoogleSignUpErrorState());
+      emit(GoogleSignInErrorState());
       printError("googleSignIn", error.toString());
     });
   }
 
   ///complete sign in with facebook
   void facebookSignIn(BuildContext context)async{
-    emit(FacebookSignUpLoadingState());
+    emit(FacebookSignInLoadingState());
     await signInWithFacebook().then((value)async{
       User user = value.user!;
       uID=value.user!.uid;
@@ -163,11 +145,11 @@ class SignUpCubit extends Cubit<SignUpStates>{
           KickCubit.get(context).getUserData();
           Get.offAll(()=>const HomeScreen());
         });
-        emit(FacebookSignUpSuccessState());
+        emit(FacebookSignInSuccessState());
       }else{
         GetStorage().write('facebook', true);
         createUser(context,
-          uId: user.uid,
+          uid: user.uid,
           name: name,
           profileImage: user.photoURL,
           email: user.email,
@@ -175,37 +157,39 @@ class SignUpCubit extends Cubit<SignUpStates>{
         );
       }
     }).catchError((error){
-      emit(FacebookSignUpErrorState());
+      emit(FacebookSignInErrorState());
       printError("facebookSignIn", error.toString());
     });
   }
 
-
-  void createUser(context,{
+  ///create user from google and facebook
+  void createUser(BuildContext context,{
     @required String? userToken,
     @required String? name,
     @required String? email,
-    @required String? uId,
+    @required String? uid,
     String? profileImage,
   }) {
     UserModel userModel = UserModel(
         userToken: userToken,
-        uId: uId,
         name: name,
         email: email,
+        uId: uid,
         profileImage:profileImage??"https://i.pinimg.com/564x/d9/c3/cf/d9c3cf6c263d181be4b5cbd15038b3a6.jpg",
     );
-    emit(SignUpCreateUserLoadingState());
+    emit(SignInCreateUserErrorState());
     FirebaseFirestore.instance.collection('users')
-        .doc(uId)
+        .doc(uid)
         .set(userModel.toJson()).then((value){
-      GetStorage().write('uId', uId);
+      //uID=uid;
+      GetStorage().write('uId', uid);
       KickCubit.get(context).getUserData();
       Get.offAll(()=>const HomeScreen());
-      emit(SignUpCreateUserSuccessState());
+      emit(SignInCreateUserSuccessState());
     }).catchError((error){
       printError("create user", error.toString());
-      emit(SignUpCreateUserErrorState());
+      emit(SignInCreateUserErrorState());
     });
   }
 }
+

@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:kick74/screens/home/home_screen.dart';
+import 'package:kick74/screens/sign_in/cubit/sign_in_cubit.dart';
+import 'package:kick74/screens/sign_in/cubit/sign_in_states.dart';
 import 'package:kick74/screens/sign_in/sign_in_items.dart';
 import 'package:kick74/shared/constants.dart';
+import 'package:kick74/shared/default_widgets.dart';
+import 'package:kick74/styles/icons_broken.dart';
 
 
 class SignInScreen extends StatefulWidget {
@@ -22,46 +29,63 @@ class _SignInScreenState extends State<SignInScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: offWhite,
-      body: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 100,),
-              Column(
+    return BlocProvider(
+      create: (BuildContext context)=>SignInCubit(),
+      child: BlocConsumer<SignInCubit,SignInStates>(
+      listener: (context,state){},
+      builder: (context,state){
+        SignInCubit cubit = SignInCubit.get(context);
+        return Scaffold(
+          backgroundColor: offWhite,
+          body:
+          // state is! GoogleSignInLoadingState&&
+          //     state is! SignInCreateUserLoadingState?
+          Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: SingleChildScrollView(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 10,),
-                  const SignInHead(),
-                  const SizedBox(height: 20,),
-                  Image.asset('assets/images/outlined_logo.png',
-                    width: 200,height: 200,),
-                  const SizedBox(height: 20,),
-                  SignInEmailAndPassword(
-                      emailController: _emailController,
-                      passwordController: _passwordController
-                  ),
-                  const SizedBox(height: 30,),
-                  Row(
+                  const SizedBox(height: 100,),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(width: 20,),
-                      const SignInGoogleFacebook(),
-                      const SizedBox(width: 45,),
-                      SignInButton(emailController: _emailController,),
-                      const SizedBox(width: 20,),
+                      const SizedBox(height: 10,),
+                      const SignInHead(),
+                      const SizedBox(height: 20,),
+                      Image.asset('assets/images/outlined_logo.png',
+                        width: 200,height: 200,),
+                      const SizedBox(height: 20,),
+                      SignInEmailAndPassword(
+                          emailController: _emailController,
+                          passwordController: _passwordController
+                      ),
+                      const SizedBox(height: 30,),
+                      Row(
+                        children: [
+                          const SizedBox(width: 20,),
+                          SignInGoogleFacebook(cubit: cubit,),
+                          const SizedBox(width: 45,),
+                          SignInButton(
+                            state: state,
+                            emailController: _emailController,
+                            passwordController: _passwordController,
+                          ),
+                          const SizedBox(width: 20,),
+                        ],
+                      ),
+                      const SizedBox(height: 10,),
+                      const SignInNoAccount(),
                     ],
                   ),
-                  const SizedBox(height: 10,),
-                  const SignInNoAccount(),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+              //:const DefaultProgressIndicator(icon: IconBroken.Home),
+        );
+      },
+    ),
     );
   }
 }

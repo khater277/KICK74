@@ -1,8 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kick74/screens/home/home_screen.dart';
 import 'package:kick74/screens/sign_in/sign_in_screen.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_cubit.dart';
+import 'package:kick74/screens/sign_up/cubit/sign_up_states.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
 
@@ -104,16 +106,26 @@ class SignUpGoogleFacebook extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(
-          radius: 20,
-          backgroundImage: const AssetImage('assets/images/google.png'),
-          backgroundColor: offWhite,
+        InkWell(
+          onTap: (){
+            SignUpCubit.get(context).googleSignIn(context);
+          },
+          child: CircleAvatar(
+            radius: 20,
+            backgroundImage: const AssetImage('assets/images/google.png'),
+            backgroundColor: offWhite,
+          ),
         ),
         const SizedBox(width: 35,),
-        CircleAvatar(
-          radius: 20,
-          backgroundImage: const AssetImage('assets/images/facebook.png'),
-          backgroundColor: offWhite,
+        InkWell(
+          onTap: (){
+            SignUpCubit.get(context).facebookSignIn(context);
+          },
+          child: CircleAvatar(
+            radius: 20,
+            backgroundImage: const AssetImage('assets/images/facebook.png'),
+            backgroundColor: offWhite,
+          ),
         ),
       ],
     );
@@ -121,22 +133,26 @@ class SignUpGoogleFacebook extends StatelessWidget {
 }
 
 class SignUpButton extends StatelessWidget {
+  final SignUpStates state;
   final TextEditingController nameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
   const SignUpButton({Key? key, required this.emailController,
-    required this.nameController, required this.passwordController}) : super(key: key);
+    required this.nameController, required this.passwordController, required this.state}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: DefaultElevatedButton(
-          child: Text("signUp".tr,
+          child: state is! SignUpCreateUserLoadingState
+              &&state is! SignUpUserRegisterLoadingState?
+          Text("signUp".tr,
             style: TextStyle(
               color: white,
               fontSize: 16,
               fontWeight: FontWeight.bold,
-            ),),
+            ),)
+        :const DefaultButtonLoader(size: 25, width: 4, color: Colors.white),
           color: havan,
           rounded: 25,
           height: 50,

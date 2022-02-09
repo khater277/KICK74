@@ -70,17 +70,25 @@ class DefaultLinerIndicator extends StatelessWidget {
   }
 }
 
-class DefaultLinearIndicator extends StatelessWidget {
-  const DefaultLinearIndicator({Key? key}) : super(key: key);
+class DefaultButtonLoader extends StatelessWidget {
+  final double size;
+  final double width;
+  final Color color;
+  const DefaultButtonLoader({Key? key, required this.size,
+    required this.width, required this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return LinearProgressIndicator(
-      color: Colors.blue.withOpacity(0.3),
-      backgroundColor: Colors.white,
+    return SizedBox(
+      width: size, height: size,
+      child: CircularProgressIndicator(
+        color: color,
+        strokeWidth: width,
+      ),
     );
   }
 }
+
 
 class BackIcon extends StatelessWidget {
   final double size;
@@ -312,7 +320,6 @@ void toastBuilder({
       textColor: Colors.white,
       fontSize: 13.0);
 }
-
 
 //ignore: must_be_immutable
 class DefaultTextFormFiled extends StatelessWidget{

@@ -6,7 +6,11 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/cubit/kick_states.dart';
+import 'package:kick74/screens/home/home_screen.dart';
+import 'package:kick74/screens/opening/opening_screen.dart';
 import 'package:kick74/screens/select_language/select_language_screen.dart';
+import 'package:kick74/screens/sign_in/cubit/sign_in_cubit.dart';
+import 'package:kick74/screens/sign_in/sign_in_screen.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/styles/themes.dart';
@@ -25,26 +29,40 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  Widget? homeWidget;
   /// get device language
   final String defaultLocale = Platform.localeName.substring(0,2);
   defaultLang = defaultLocale;
-
-  uId = GetStorage().read('uId');
+  uID = GetStorage().read('uId');
   lang = GetStorage().read('lang');
+  facebook = GetStorage().read('facebook');
+  google = GetStorage().read('google');
+  print(google);
+  print(uID);
+
+  if(lang==null){
+    homeWidget=const SelectLanguageScreen();
+  }else{
+    if(uID==null||uID!.isEmpty){
+      homeWidget=const OpeningScreen();
+    }else{
+      homeWidget=const HomeScreen();
+    }
+  }
   print(lang);
-  runApp(const MyApp());
+  runApp(MyApp(homeWidget: homeWidget,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Widget homeWidget;
+  const MyApp({Key? key, required this.homeWidget}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context)=>KickCubit(),
+          create: (BuildContext context)=>KickCubit()..getUserData(),
         ),
         BlocProvider(
           create: (BuildContext context)=>SignUpCubit(),
@@ -60,7 +78,7 @@ class MyApp extends StatelessWidget {
                     ar: TextDirection.rtl,
                     en: TextDirection.ltr
                 ),
-                child: const SelectLanguageScreen()
+                child: homeWidget
             ),
             theme: lightTheme,
             darkTheme: darkTheme,

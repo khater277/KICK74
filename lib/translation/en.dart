@@ -1,8 +1,9 @@
 Map<String,String> en = {
   "moreOne":"name must be more than one letter",
   "invalidEmail":"invalid email address",
+  "invalidPassword":"invalid password",
   "emailUsed":"The email address is already in use by another account.",
-  "invalidPassword":"Password should be at least 6 characters",
+  "shortPassword":"Password should be at least 6 characters",
   "notEmpty":"can't be empty",
   'choose':'Choose',
   'toContinue':'Your language to continue browsing',
@@ -22,5 +23,9 @@ Map<String,String> en = {
   'haveAccount':"Already have an account ?",
   'signUpHead':'Create your account',
   'signUpCaption':"sign in now and let's take a round in Kick74",
+  "yes":"Yes",
+  "cancel":"Cancel",
+  "logOut":"Log out",
+  "logOutContent":"are you sure you want to log out?",
 
 };

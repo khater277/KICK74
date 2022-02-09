@@ -13,3 +13,11 @@ class SignUpCreateUserErrorState extends SignUpStates{}
 class SignUpUserRegisterLoadingState extends SignUpStates{}
 class SignUpUserRegisterSuccessState extends SignUpStates{}
 class SignUpUserRegisterErrorState extends SignUpStates{}
+
+class GoogleSignUpLoadingState extends SignUpStates{}
+class GoogleSignUpSuccessState extends SignUpStates{}
+class GoogleSignUpErrorState extends SignUpStates{}
+
+class FacebookSignUpLoadingState extends SignUpStates{}
+class FacebookSignUpSuccessState extends SignUpStates{}
+class FacebookSignUpErrorState extends SignUpStates{}

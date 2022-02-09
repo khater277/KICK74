@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:kick74/screens/home/home_screen.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_states.dart';
 import 'package:kick74/screens/sign_up/sign_up_items.dart';
@@ -28,7 +30,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SignUpCubit,SignUpStates>(
-      listener: (context,state){},
+      listener: (context,state){
+        if(state is SignUpCreateUserSuccessState){
+          Get.offAll(()=>const HomeScreen());
+        }
+      },
       builder: (context,state){
         SignUpCubit cubit = SignUpCubit.get(context);
         return Scaffold(
@@ -61,6 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           const SignUpGoogleFacebook(),
                           const SizedBox(width: 45,),
                           SignUpButton(
+                            state: state,
                             nameController: _nameController,
                             emailController: _emailController,
                             passwordController: _passwordController,

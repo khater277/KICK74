@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">KICK74</string>
+    <string name="facebook_app_id">1301036497069550</string>
+    <string name="fb_login_protocol_scheme">fb1301036497069550</string>
+    <string name="facebook_client_token">fb3cfc75506a01dc5e127b1ad05757a5</string>
+
+
+</resources>

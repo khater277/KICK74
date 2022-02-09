@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kick74/cubit/kick_cubit.dart';
+import 'package:kick74/screens/sign_in/cubit/sign_in_cubit.dart';
+import 'package:kick74/screens/sign_in/cubit/sign_in_states.dart';
 import 'package:kick74/screens/sign_up/sign_up_screen.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
@@ -45,6 +48,7 @@ class SignInEmailAndPassword extends StatelessWidget {
       children: [
         DefaultTextFiled(
           controller: emailController,
+          validate: SignInCubit.get(context).emailTextFieldValidate??true,
           hint: "email".tr,
           hintSize: 14,
           height: 14,
@@ -52,10 +56,14 @@ class SignInEmailAndPassword extends StatelessWidget {
           focusBorder: darkGrey,
           border: darkGrey,
           rounded: 30,
+          onChanged: (value){
+            SignInCubit.get(context).emailValidation(email: emailController.text);
+          },
         ),
         const SizedBox(height: 15),
         DefaultTextFiled(
           controller: passwordController,
+          validate: SignInCubit.get(context).passwordTextFieldValidate??true,
           hint: "password".tr,
           hintSize: 14,
           height: 14,
@@ -69,6 +77,9 @@ class SignInEmailAndPassword extends StatelessWidget {
           focusBorder: darkGrey,
           border: darkGrey,
           rounded: 30,
+          onChanged: (value){
+            SignInCubit.get(context).passwordValidation(password: passwordController.text);
+          },
         ),
       ],
     );
@@ -76,22 +87,33 @@ class SignInEmailAndPassword extends StatelessWidget {
 }
 
 class SignInGoogleFacebook extends StatelessWidget {
-  const SignInGoogleFacebook({Key? key}) : super(key: key);
+  final SignInCubit cubit;
+  const SignInGoogleFacebook({Key? key, required this.cubit}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(
-          radius: 20,
-          backgroundImage: const AssetImage('assets/images/google.png'),
-          backgroundColor: offWhite,
+        InkWell(
+          onTap: (){
+            cubit.googleSignIn(context);
+          },
+          child: CircleAvatar(
+            radius: 20,
+            backgroundImage: const AssetImage('assets/images/google.png'),
+            backgroundColor: offWhite,
+          ),
         ),
         const SizedBox(width: 35,),
-        CircleAvatar(
-          radius: 20,
-          backgroundImage: const AssetImage('assets/images/facebook.png'),
-          backgroundColor: offWhite,
+        InkWell(
+          onTap: (){
+            cubit.facebookSignIn(context);
+          },
+          child: CircleAvatar(
+            radius: 20,
+            backgroundImage: const AssetImage('assets/images/facebook.png'),
+            backgroundColor: offWhite,
+          ),
         ),
       ],
     );
@@ -99,24 +121,35 @@ class SignInGoogleFacebook extends StatelessWidget {
 }
 
 class SignInButton extends StatelessWidget {
+  final SignInStates state;
   final TextEditingController emailController;
-  const SignInButton({Key? key, required this.emailController}) : super(key: key);
+  final TextEditingController passwordController;
+  const SignInButton({Key? key, required this.emailController,
+    required this.state, required this.passwordController}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: DefaultElevatedButton(
-          child: Text("signIn".tr,
+          child:state is! SignInUserLoginLoadingState?
+          Text("signIn".tr,
             style: TextStyle(
               color: white,
               fontSize: 16,
               fontWeight: FontWeight.bold,
-            ),),
+            ),)
+        :const DefaultButtonLoader(size: 25, width: 4, color: Colors.white),
           color: havan,
           rounded: 25,
           height: 50,
           width: double.infinity,
-          onPressed: (){}
+          onPressed: (){
+            SignInCubit.get(context).userLogin(
+                context,
+                email: emailController.text,
+                password: passwordController.text
+            );
+          }
       ),
     );
   }

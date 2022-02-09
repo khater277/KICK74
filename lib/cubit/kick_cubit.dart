@@ -1,10 +1,14 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:kick74/cubit/kick_states.dart';
+import 'package:kick74/models/UserModel.dart';
+import 'package:kick74/screens/sign_in/sign_in_screen.dart';
 import 'package:kick74/shared/constants.dart';
 
 class KickCubit extends Cubit<KickStates>{
@@ -55,5 +59,28 @@ class KickCubit extends Cubit<KickStates>{
     nextButtonColor=havan;
     nextIconColor=white;
     emit(KickSelectLanguageState());
+  }
+
+  void signOut() {
+    GetStorage().remove('uId')
+        .then((value){
+          Get.off(()=>const SignInScreen());
+        });
+    emit(KickSignOutSuccessState());
+  }
+
+  UserModel? userModel;
+  void getUserData(){
+    emit(KickGetUserDataLoadingState());
+    FirebaseFirestore.instance.collection('users')
+        .doc(uID)
+        .get()
+        .then((value){
+          userModel = UserModel.fromJson(value.data()!);
+      emit(KickGetUserDataSuccessState());
+    }).catchError((error){
+      printError("getUserData",error.toString());
+      emit(KickGetUserDataErrorState());
+    });
   }
 }

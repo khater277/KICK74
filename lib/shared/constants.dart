@@ -13,6 +13,8 @@ Color grey=HexColor('#678482');
 
 String? lang;
 String? defaultLang;
+bool? facebook;
+bool? google;
 
 final ScrollController scrollController = ScrollController();
 
@@ -41,7 +43,7 @@ String? validateEmail(String value) {
 GlobalKey<NavigatorState> globalKey = GlobalKey<NavigatorState>();
 
 
-String? uId="";
+String? uID="";
 String? token="";
 Color indicatorColor=Colors.red.withOpacity(0.7);
 

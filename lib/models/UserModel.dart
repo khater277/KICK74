@@ -18,7 +18,7 @@ class UserModel {
       this.email, 
       this.profileImage,});
 
-  UserModel.fromJson(dynamic json) {
+  UserModel.fromJson(Map<String,dynamic> json) {
     userToken = json['userToken'];
     uId = json['uId'];
     name = json['name'];
