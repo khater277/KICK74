@@ -1,9 +1,6 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:kick74/shared/default_widgets.dart';
 
 Color white=HexColor('#FFFFFF');
 Color offWhite=HexColor('#FAF9F5');

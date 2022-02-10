@@ -8,6 +8,9 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:kick74/cubit/kick_states.dart';
 import 'package:kick74/models/UserModel.dart';
+import 'package:kick74/screens/matches/matches_screen.dart';
+import 'package:kick74/screens/profile/profile_screen.dart';
+import 'package:kick74/screens/settings/settings_screen.dart';
 import 'package:kick74/screens/sign_in/sign_in_screen.dart';
 import 'package:kick74/shared/constants.dart';
 
@@ -69,6 +72,32 @@ class KickCubit extends Cubit<KickStates>{
     emit(KickSignOutSuccessState());
   }
 
+  List<Widget> screens = [
+    const ProfileScreen(),
+    const MatchesScreen(),
+    const SettingsScreen(),
+  ];
+
+  List<Widget> screenIcon = [
+    Image.asset(
+      'assets/images/black_user.png',
+      width: 50,height: 50,
+    ),
+
+    Image.asset(
+      'assets/images/black_settings.png',
+      width: 50,height: 50,
+    ),
+  ];
+
+
+
+  int currentIndex = 1;
+  void changeNavBar(int index,) {
+    currentIndex = index;
+    emit(KickNavBarState());
+  }
+
   UserModel? userModel;
   void getUserData(){
     emit(KickGetUserDataLoadingState());
@@ -83,4 +112,6 @@ class KickCubit extends Cubit<KickStates>{
       emit(KickGetUserDataErrorState());
     });
   }
+
+
 }

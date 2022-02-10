@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:kick74/styles/icons_broken.dart';
@@ -88,7 +89,6 @@ class DefaultButtonLoader extends StatelessWidget {
     );
   }
 }
-
 
 class BackIcon extends StatelessWidget {
   final double size;
@@ -186,6 +186,27 @@ class ErrorImage extends StatelessWidget {
     );
   }
 }
+
+class DefaultSvgNetworkImage extends StatelessWidget {
+  final String url;
+  final double width;
+  final double height;
+  const DefaultSvgNetworkImage({Key? key, required this.url, required this.width, required this.height}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: SvgPicture.network(
+        url,
+        placeholderBuilder: (BuildContext context) =>
+            const DefaultProgressIndicator(icon: IconBroken.Image),
+      ),
+    );
+  }
+}
+
 
 class DefaultElevatedButton extends StatelessWidget {
   final Widget child;

@@ -6,6 +6,8 @@ class KickChangeLanguageState extends KickStates{}
 
 class KickSelectLanguageState extends KickStates{}
 
+class KickNavBarState extends KickStates{}
+
 class KickGetUserDataLoadingState extends KickStates{}
 class KickGetUserDataSuccessState extends KickStates{}
 class KickGetUserDataErrorState extends KickStates{}

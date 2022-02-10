@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:kick74/shared/constants.dart';
 
 ThemeData darkTheme=ThemeData(
     fontFamily: 'SF-Pro-Display',
@@ -59,7 +60,7 @@ ThemeData darkTheme=ThemeData(
 
 ThemeData lightTheme=ThemeData(
     fontFamily: 'SF-Pro-Display',
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: offWhite,
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: Colors.black87,
     ),
@@ -78,24 +79,24 @@ ThemeData lightTheme=ThemeData(
         fontSize: 15,
       ),
     ),
-    appBarTheme: const AppBarTheme(
-        iconTheme: IconThemeData(
+    appBarTheme: AppBarTheme(
+        iconTheme: const IconThemeData(
           color: Colors.black,
         ),
         elevation: 0,
         shadowColor: Colors.white,
-        backgroundColor: Colors.white,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        backgroundColor: offWhite,
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.dark,
           statusBarColor: Colors.white,
         ),
-        titleTextStyle: TextStyle(
+        titleTextStyle: const TextStyle(
             fontFamily: 'SF-Pro-Display',
             color: Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold
         ),
-        actionsIconTheme: IconThemeData(
+        actionsIconTheme: const IconThemeData(
           color: Colors.black,
         )
     ),

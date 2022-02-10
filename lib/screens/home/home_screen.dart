@@ -1,6 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/cubit/kick_states.dart';
 import 'package:kick74/screens/home/home_items.dart';
@@ -19,16 +19,15 @@ class HomeScreen extends StatelessWidget {
         KickCubit cubit = KickCubit.get(context);
         return state is! KickGetUserDataLoadingState?
           Scaffold(
-          appBar: AppBar(
-            actions: [
-              LogOutButton(cubit:cubit),
-            ],
-          ),
-          body: Center(
-            child: Text(
-              "${cubit.userModel!.name}",
-              style: const TextStyle(fontSize: 30),),
-          ),
+            appBar: cubit.currentIndex==1?
+            AppBar(
+              //backgroundColor: Colors.white,
+              title: const MatchesAppBar(),
+              toolbarHeight: 80,
+            ):null,
+            body: cubit.screens[cubit.currentIndex],
+              extendBody: true,
+            bottomNavigationBar: BottomNavBar(cubit: cubit),
         ):
         const Scaffold(
           body: DefaultProgressIndicator(icon: IconBroken.Home),
