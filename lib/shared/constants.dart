@@ -76,28 +76,14 @@ Map<String,String> period={
   '20':'8','21':'9', '22':'10','23':'11',
 };
 
-Map<String,String>? dateFormat(String? dateTime){
-  String? day=dateTime!.substring(8,10);
-  if(day[0]=='0'){
-    day=day[1];
-  }
-  String? month=dateTime.substring(5,7);
-  String? year=dateTime.substring(0,4);
-  String? hour=dateTime.substring(11,13);
-  String? min=dateTime.substring(14,16);
-  String x="";
-  if(hour.startsWith('0')||hour=="10"||hour=="11"){
-    x=languageFun(ar: 'ص',en: "AM");
-  }else{
-    x=languageFun(ar: 'م',en: "PM");
-  }
-  return {
-    'date':languageFun(
-        ar: "$day ${calAr[month]} $year في ${period[hour]}:$min $x",
-        en: "$day ${cal[month]} $year at ${period[hour]}:$min $x"
-    ),
-    'year':year
-  };
+//2022-02-12T12:30:00Z
+String timeFormat(String time){
+  String h = time.substring(11,13);
+  String m = time.substring(13,16);
+  int hour = int.parse(h)+2;
+  String partOfDay = hour>=12?"PM":"AM";
+  hour -= 12;
+  return "$hour"+m+" $partOfDay";
 }
 
 dynamic languageFun({
@@ -109,26 +95,6 @@ dynamic languageFun({
       :(defaultLang=='ar'?ar:en);
 }
 
-String lastMessageDate(cubit,index){
-  int lastIndex = dateFormat(cubit.lastMessages[index].date)!['date']!.
-  indexOf('في')+2;
-  int firstIndex = dateFormat(cubit.lastMessages[index].date)!['date']!.
-  indexOf('في')-5;
-  return languageFun(
-      ar:dateFormat(cubit.lastMessages[index].date)!['date']!.contains('في')?
-      dateFormat(cubit.lastMessages[index].date)!['date']!.
-      replaceRange(firstIndex,lastIndex, ',')+checkYear(cubit, index)
-          :dateFormat(cubit.lastMessages[index].date)!['date'],
-      en: dateFormat(cubit.lastMessages[index].date)!['date']!.
-      replaceRange(7, 15, ",")+checkYear(cubit, index)
-  );
-}
-
-String checkYear(String date, int index){
-  return (dateFormat(DateTime.now().toString())!['year']!)==
-          dateFormat(date)!['year']?"":
-      " ${dateFormat(date)!['year']}";
-}
 
 String formatName(String name){
   List<int> capitalLettersIndex=[];

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/cubit/kick_states.dart';
+import 'package:kick74/network/reomte/dio_helper.dart';
 import 'package:kick74/screens/home/home_screen.dart';
 import 'package:kick74/screens/opening/opening_screen.dart';
 import 'package:kick74/screens/select_language/select_language_screen.dart';
@@ -24,8 +25,8 @@ import 'firebase_options.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
+  DioHelper.init();
   await GetStorage.init();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context)=>KickCubit()..getUserData(),
+          create: (BuildContext context)=>KickCubit()..getUserData()..getAllMatches()..getLeagueTeams(),
         ),
         BlocProvider(
           create: (BuildContext context)=>SignUpCubit(),

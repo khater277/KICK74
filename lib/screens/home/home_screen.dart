@@ -17,16 +17,15 @@ class HomeScreen extends StatelessWidget {
       listener: (context,state){},
       builder: (context,state){
         KickCubit cubit = KickCubit.get(context);
-        return state is! KickGetUserDataLoadingState?
+        return state is! KickGetUserDataLoadingState
+            &&state is! KickGetAllMatchesLoadingState
+            &&cubit.leagues[0]['teams'].length==cubit.leaguesIDs.length
+            ?
           Scaffold(
-            appBar: cubit.currentIndex==1?
-            AppBar(
-              //backgroundColor: Colors.white,
-              title: const MatchesAppBar(),
-              toolbarHeight: 80,
-            ):null,
-            body: cubit.screens[cubit.currentIndex],
-              extendBody: true,
+            body: SafeArea(
+                child: cubit.screens[cubit.currentIndex]
+            ),
+            extendBody: true,
             bottomNavigationBar: BottomNavBar(cubit: cubit),
         ):
         const Scaffold(

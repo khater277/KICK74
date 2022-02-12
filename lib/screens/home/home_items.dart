@@ -13,7 +13,7 @@ class MatchesAppBar extends StatelessWidget {
     return Row(
       children: [
         Image.asset(
-          'assets/images/black_matches.png',
+          'assets/images/matches.png',
           width: 50,height: 50,
         ),
         const SizedBox(width: 15,),
@@ -41,35 +41,33 @@ class BottomNavBar extends StatelessWidget {
       backgroundColor: havan,
       itemPadding: const EdgeInsets.symmetric(vertical: 5,horizontal: 40),
       dotIndicatorColor: havan,
+      enableFloatingNavBar: true,
       //margin: const EdgeInsets.symmetric(horizontal: 40),
       borderRadius: 50,
       items: [
-        /// Home
         DotNavigationBarItem(
-          icon: Image.asset(
-            cubit.currentIndex==0?
-            'assets/images/user.png':'assets/images/not_user.png',
-            width: 25,height: 25,
+          icon: const ImageIcon(
+            AssetImage('assets/images/user.png'),
+            size: 25,
           ),
-          //const Icon(Icons.home),
+          selectedColor: Colors.white,
+          unselectedColor: Colors.grey.shade800,
         ),
-
-        /// Likes
         DotNavigationBarItem(
-          icon: Image.asset(
-            cubit.currentIndex==1?
-            'assets/images/matches.png':'assets/images/not_matches.png',
-            width: 40,height: 40,
+          icon: const ImageIcon(
+            AssetImage('assets/images/matches.png'),
+            size: 40,
           ),
+          selectedColor: Colors.white,
+          unselectedColor: Colors.grey.shade800,
         ),
-
-        /// Search
         DotNavigationBarItem(
-          icon: Image.asset(
-            cubit.currentIndex==2?
-            'assets/images/settings.png':'assets/images/not_settings.png',
-            width: 25,height: 25,
+          icon: const ImageIcon(
+            AssetImage('assets/images/settings.png'),
+            size: 25,
           ),
+          selectedColor: Colors.white,
+          unselectedColor: Colors.grey.shade800,
         ),
       ],
     );

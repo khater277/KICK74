@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:flutter_svg/parser.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
@@ -202,6 +203,7 @@ class DefaultSvgNetworkImage extends StatelessWidget {
         url,
         placeholderBuilder: (BuildContext context) =>
             const DefaultProgressIndicator(icon: IconBroken.Image),
+
       ),
     );
   }
