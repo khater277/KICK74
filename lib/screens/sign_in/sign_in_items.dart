@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/screens/sign_in/cubit/sign_in_cubit.dart';
 import 'package:kick74/screens/sign_in/cubit/sign_in_states.dart';
 import 'package:kick74/screens/sign_up/sign_up_screen.dart';

@@ -8,6 +8,7 @@ import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/cubit/kick_states.dart';
 import 'package:kick74/network/reomte/dio_helper.dart';
 import 'package:kick74/screens/home/home_screen.dart';
+import 'package:kick74/screens/onBoarding/onBoarding_screen.dart';
 import 'package:kick74/screens/opening/opening_screen.dart';
 import 'package:kick74/screens/select_language/select_language_screen.dart';
 import 'package:kick74/screens/sign_in/cubit/sign_in_cubit.dart';
@@ -34,6 +35,7 @@ void main() async{
   /// get device language
   final String defaultLocale = Platform.localeName.substring(0,2);
   defaultLang = defaultLocale;
+  bool? onBoarding = GetStorage().read('onBoarding');
   uID = GetStorage().read('uId');
   lang = GetStorage().read('lang');
   facebook = GetStorage().read('facebook');
@@ -47,7 +49,11 @@ void main() async{
     if(uID==null||uID!.isEmpty){
       homeWidget=const OpeningScreen();
     }else{
-      homeWidget=const HomeScreen();
+      if(onBoarding==null){
+        homeWidget = const OnBoardingScreen();
+      }else{
+        homeWidget=const HomeScreen();
+      }
     }
   }
   print(lang);
@@ -63,7 +69,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context)=>KickCubit()..getUserData()..getAllMatches()..getLeagueTeams(),
+          create: (BuildContext context)=>KickCubit()
+            ..getUserData()..getFavourites()..getAllMatches()..getLeagueTeams(),
         ),
         BlocProvider(
           create: (BuildContext context)=>SignUpCubit(),

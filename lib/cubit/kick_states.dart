@@ -10,6 +10,13 @@ class KickNavBarState extends KickStates{}
 
 class KickLeagueIndexState extends KickStates{}
 
+class KickSelectFavTeamState extends KickStates{}
+
+class KickChangeMatchesState extends KickStates{}
+
+class KickOnBoardingIndexLoadingState extends KickStates{}
+class KickOnBoardingIndexSuccessState extends KickStates{}
+
 class KickGetUserDataLoadingState extends KickStates{}
 class KickGetUserDataSuccessState extends KickStates{}
 class KickGetUserDataErrorState extends KickStates{}
@@ -26,5 +33,19 @@ class KickGetLeagueTeamsLoadingState extends KickStates{}
 class KickGetLeagueTeamsSuccessState extends KickStates{}
 class KickGetLeagueTeamsErrorState extends KickStates{}
 
-class KickChangeMatchesState extends KickStates{}
+class KickSetMyFavouritesState extends KickStates{}
+
+class KickAddToFavouritesLoadingState extends KickStates{}
+class KickAddToFavouritesSuccessState extends KickStates{}
+class KickAddToFavouritesErrorState extends KickStates{}
+
+class KickRemoveFromFavouritesLoadingState extends KickStates{}
+class KickRemoveFromFavouritesSuccessState extends KickStates{}
+class KickRemoveFromFavouritesErrorState extends KickStates{}
+
+class KickGetFavouritesLoadingState extends KickStates{}
+class KickGetFavouritesSuccessState extends KickStates{}
+class KickGetFavouritesErrorState extends KickStates{}
+
+
 

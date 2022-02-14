@@ -4,6 +4,7 @@ import 'package:kick74/models/AllMatchesModel.dart';
 import 'package:kick74/models/LeagueTeamsModel.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
+import 'package:kick74/styles/icons_broken.dart';
 
 class LeagueButton extends StatelessWidget {
   final KickCubit cubit;
@@ -68,8 +69,10 @@ class LeagueMatches extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isAll = cubit.leagueIndex==0;
     return Expanded(
-      child: ListView.separated(
+      child: matches.isNotEmpty?
+      ListView.separated(
         itemBuilder: (context,index)=> MatchItem(cubit: cubit,index: index,
         matches: matches,),
         separatorBuilder: (context,index)=>const Padding(
@@ -77,6 +80,18 @@ class LeagueMatches extends StatelessWidget {
           child: DefaultSeparator(),
         ),
         itemCount: matches.length,
+      )
+          :NoItemsFounded(
+          text: "No ${isAll?"":"${cubit.leagues[cubit.leagueIndex]['name']}"}"
+              " matches today",
+          widget: SizedBox(
+            width: 100,height: 100,
+            child: ImageIcon(
+              AssetImage("${cubit.leagues[cubit.leagueIndex]['image']}"),
+              size: 150,
+              color: Colors.grey[400],
+            ),
+          ),
       ),
     );
   }

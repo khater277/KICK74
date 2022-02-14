@@ -2,7 +2,6 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:flutter_svg/parser.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
@@ -280,8 +279,8 @@ class BuildBackButton extends StatelessWidget {
 
 class NoItemsFounded extends StatelessWidget {
   final String text;
-  final IconData icon;
-  const NoItemsFounded({Key? key, required this.text, required this.icon}) : super(key: key);
+  final Widget widget;
+  const NoItemsFounded({Key? key, required this.text, required this.widget,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -290,11 +289,12 @@ class NoItemsFounded extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon,color: Colors.grey[300],size: 250,),
-            const SizedBox(height: 10,),
+            widget,
+            const SizedBox(height: 15,),
             Text(text,style: TextStyle(
                 color: Colors.grey[400],
-                fontSize: 20
+                fontSize: 20,
+              fontWeight: FontWeight.normal
             ),)
           ],
         ),

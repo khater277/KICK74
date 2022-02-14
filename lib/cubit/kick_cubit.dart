@@ -8,6 +8,7 @@ import 'package:kick74/cubit/kick_states.dart';
 import 'package:kick74/models/AllMatchesModel.dart';
 import 'package:kick74/models/LeagueTeamsModel.dart';
 import 'package:kick74/models/UserModel.dart';
+import 'package:kick74/models/FavTeamModel.dart';
 import 'package:kick74/network/reomte/dio_helper.dart';
 import 'package:kick74/network/reomte/end_points.dart';
 import 'package:kick74/screens/matches/matches_screen.dart';
@@ -121,6 +122,12 @@ class KickCubit extends Cubit<KickStates>{
   }
 
   List<Map<String,dynamic>> leagues = [
+    // {
+    //   "id":1,
+    //   "name":"My Teams",
+    //   "image":"assets/images/matches.png",
+    //   "teams":<List<Teams>>[],
+    // },
     {
       "id":0,
       "name":"All",
@@ -160,12 +167,8 @@ class KickCubit extends Cubit<KickStates>{
   ];
 
   List<int> leaguesIDs = [2021,2014,2019,2002,2015];
-  // List<Matches> primerLeagueMatches=[];
-  // List<Matches> laLigaMatches=[];
-  // List<Matches> calcioMatches=[];
-  // List<Matches> bundesligaMatches=[];
-  // List<Matches> ligue1Matches=[];
   Map<int,List<Matches>> shownMatches = {
+    //1:<Matches>[],
     0:<Matches>[],
     2021:<Matches>[],
     2014:<Matches>[],
@@ -173,7 +176,7 @@ class KickCubit extends Cubit<KickStates>{
     2002:<Matches>[],
     2015:<Matches>[],
   };
-  //List<int> leaguesIDs = [2021,2014,2019,2002,2015];
+
   void getAllMatches(){
     emit(KickGetAllMatchesLoadingState());
     DioHelper.getData(url: ALL_MATCHES)
@@ -185,11 +188,12 @@ class KickCubit extends Cubit<KickStates>{
           int competitionID = element.competition!.id!;
           shownMatches[0]!.add(element);
           shownMatches[competitionID]!.add(element);
-          // if(competitionID==2021){primerLeagueMatches.add(element);}
-          // else if(competitionID==2014){laLigaMatches.add(element);}
-          // else if(competitionID==2019){calcioMatches.add(element);}
-          // else if(competitionID==2002){bundesligaMatches.add(element);}
-          // else {ligue1Matches.add(element);}
+          // Teams? homeTeam = leagues[1]['teams'][element.homeTeam!.id!];
+          // Teams? awayTeam = leagues[1]['teams'][element.awayTeam!.id!];
+          // if((favouriteTeams.contains(homeTeam)
+          //     ||favouriteTeams.contains(awayTeam))&&(homeTeam!=null||awayTeam!=null)){
+          //   shownMatches[1]!.add(element);
+          // }
         }
       }
       print(shownMatches[0]!.length);
@@ -235,5 +239,91 @@ class KickCubit extends Cubit<KickStates>{
         emit(KickGetLeagueTeamsErrorState());
       });
     }
+  }
+
+  int onBoardingIndex = 1;
+  List<Color> indicatorColors = [
+    Colors.grey.withOpacity(0.4),
+    Colors.grey.withOpacity(0.4),
+    Colors.grey.withOpacity(0.4),
+    Colors.grey.withOpacity(0.4),
+  ];
+  void changeOnBoardingIndex(){
+    onBoardingIndex++;
+    indicatorColors[onBoardingIndex-2] = havan.withOpacity(0.8);
+    print(onBoardingIndex);
+    emit(KickOnBoardingIndexLoadingState());
+    Future.delayed(const Duration(milliseconds: 500)).then((value){
+      emit(KickOnBoardingIndexSuccessState());
+    });
+  }
+
+  int? selectedTeamIndex;
+  List<int> selectedTeamsIDs = [];
+  List<Teams> favouriteTeams = [];
+  Color selectFavColor = offWhite;
+  void selectFavourite({
+  @required int? index,
+  @required int? teamID,
+}){
+    bool isFav = selectedTeamsIDs.contains(teamID);
+    List<Teams> teams = leagues[onBoardingIndex]['teams'];
+    Teams team = teams.firstWhere((element) => element.id==teamID);
+
+    if(!isFav){
+      selectedTeamsIDs.add(teamID!);
+      addToFavourites(team: team);
+    }else{
+      selectedTeamsIDs.remove(teamID);
+      removeFromFavourites(team: team);
+    }
+    print(favouriteTeams);
+    emit(KickSelectFavTeamState());
+  }
+
+
+  void addToFavourites({@required Teams? team}){
+    emit(KickAddToFavouritesLoadingState());
+    FirebaseFirestore.instance.collection('users')
+        .doc(uID)
+        .collection('favourites')
+        .doc("${team!.id}")
+        .set(team.toJson())
+        .then((value){
+      emit(KickAddToFavouritesSuccessState());
+    }).catchError((error){
+      emit(KickAddToFavouritesErrorState());
+    });
+  }
+
+  void removeFromFavourites({@required Teams? team}){
+    emit(KickRemoveFromFavouritesLoadingState());
+    FirebaseFirestore.instance.collection('users')
+        .doc(uID)
+        .collection('favourites')
+        .doc("${team!.id}")
+        .delete()
+        .then((value){
+      emit(KickRemoveFromFavouritesSuccessState());
+    }).catchError((error){
+      emit(KickRemoveFromFavouritesErrorState());
+    });
+  }
+
+  void getFavourites(){
+    emit(KickGetFavouritesLoadingState());
+    FirebaseFirestore.instance.collection("users")
+    .doc(uID!)
+    .collection('favourites')
+    .get()
+    .then((value) {
+      for (var element in value.docs) {
+        favouriteTeams.add(Teams.fromJson(element));
+      }
+      emit(KickGetFavouritesLoadingState());
+    }).catchError((error){
+      printError("getFavourites", error.toString());
+      emit(KickGetFavouritesLoadingState());
+    });
   }
 }

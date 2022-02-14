@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:kick74/screens/home/home_screen.dart';
+import 'package:kick74/screens/onBoarding/onBoarding_screen.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_states.dart';
 import 'package:kick74/screens/sign_up/sign_up_items.dart';
@@ -32,7 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return BlocConsumer<SignUpCubit,SignUpStates>(
       listener: (context,state){
         if(state is SignUpCreateUserSuccessState){
-          Get.offAll(()=>const HomeScreen());
+          Get.offAll(()=>const OnBoardingScreen());
         }
       },
       builder: (context,state){
