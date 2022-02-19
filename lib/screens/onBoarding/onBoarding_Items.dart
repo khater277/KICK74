@@ -133,7 +133,7 @@ class BuildTeamInGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        cubit.selectFavourite(
+        cubit.selectOnBoardingFavourite(
             index: index,
             teamID: team.id
         );
@@ -173,18 +173,9 @@ class OnBoardingTeamPicAndName extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        teamImage!=null?
-        teamImage!.endsWith("svg")?DefaultSvgNetworkImage(
-            url: teamImage!,
+        DefaultNetworkImage(
+            url: teamImage,
             width: 60, height: 60
-        )
-            :DefaultFadedImage(
-            imgUrl: teamImage!,
-            width: 60, height: 60
-        )
-        :SizedBox(
-          width: 60,height: 60,
-            child: Image.asset(cubit.leagues[cubit.onBoardingIndex]['image'])
         ),
         const SizedBox(height: 15,),
         Text(

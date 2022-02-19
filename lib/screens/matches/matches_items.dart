@@ -1,10 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/models/AllMatchesModel.dart';
 import 'package:kick74/models/LeagueTeamsModel.dart';
+import 'package:kick74/screens/match_details/match_details_screen.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
 import 'package:kick74/styles/icons_broken.dart';
+
+class MyTeamsButton extends StatelessWidget {
+  final KickCubit cubit;
+  const MyTeamsButton({Key? key, required this.cubit}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        InkWell(
+          onTap: (){
+            cubit.changeLeagueIndex(10);
+            cubit.getFavouritesMatches();
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                color: cubit.leagueIndex==10?grey.withOpacity(0.2):offWhite,
+                shape: BoxShape.rectangle,
+                border: Border.all(
+                    color: cubit.leagueIndex==10?havan:grey,
+                    width: 2
+                ),
+                borderRadius: BorderRadius.circular(30)
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+              child: Row(
+                children: [
+                  Icon(IconBroken.Heart,size: 30,color: havan,),
+                  const SizedBox(width: 5),
+                  Text("My Teams",
+                    style: TextStyle(
+                        color: darkGrey,fontSize: 16,fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class FavouriteMatches extends StatelessWidget {
+  final KickCubit cubit;
+  final List<Matches> matches;
+  const FavouriteMatches({Key? key, required this.cubit, required this.matches}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: matches.isNotEmpty?
+      ListView.separated(
+        itemBuilder: (context,index)=>MatchItem(
+            cubit: cubit, index: index, matches: matches),
+        separatorBuilder: (context,index)=>const Padding(
+          padding: EdgeInsets.symmetric(vertical: 5),
+          child: DefaultSeparator(),
+        ),
+        itemCount: matches.length,
+      ) :NoItemsFounded(
+        text: "There is no matches for your favourite teams today",
+        widget: SizedBox(
+          width: 200,height: 200,
+          child: Icon(IconBroken.Close_Square,size: 200,
+            color: Colors.grey[400],),
+        ),
+      ),
+    );
+  }
+}
+
+///////////////////////////////////////////////////////////
 
 class LeagueButton extends StatelessWidget {
   final KickCubit cubit;
@@ -17,15 +94,15 @@ class LeagueButton extends StatelessWidget {
       children: [
         InkWell(
           onTap: (){
-            KickCubit.get(context).changeLeagueIndex(index);
+            cubit.changeLeagueIndex(index);
           },
           child: Container(
             decoration: BoxDecoration(
-                color: KickCubit.get(context).leagueIndex==index?
+                color: cubit.leagueIndex==index?
                 Colors.grey.withOpacity(0.2):offWhite,
                 shape: BoxShape.rectangle,
                 border: Border.all(
-                    color: KickCubit.get(context).leagueIndex==index?havan:grey,
+                    color: cubit.leagueIndex==index?havan:grey,
                     width: 2
                 ),
                 borderRadius: BorderRadius.circular(30)
@@ -141,7 +218,7 @@ class MatchItem extends StatelessWidget {
                   ),
                 ],
               ),
-            if(cubit.leagueIndex==0)
+            if(cubit.leagueIndex==0||cubit.leagueIndex==10)
             Expanded(
               child: Center(
                 child: SizedBox(
@@ -173,7 +250,8 @@ class MatchItem extends StatelessWidget {
                 child: MatchInfoItem(
                   cubit: cubit,index: index,
                   matches: matches,
-                  stadium: homeTeam.venue!,
+                  homeTeam: homeTeam,
+                  awayTeam: awayTeam,
                 ),
               ),
             ),
@@ -225,67 +303,79 @@ class MatchInfoItem extends StatelessWidget {
   final KickCubit cubit;
   final List<Matches> matches;
   final int index;
-  final String stadium;
+  final Teams homeTeam;
+  final Teams awayTeam;
   const MatchInfoItem({Key? key, required this.cubit, required this.index,
-    required this.stadium, required this.matches}) : super(key: key);
+    required this.matches, required this.homeTeam, required this.awayTeam}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    bool notAll = cubit.leagueIndex!=0;
-    return Column(
-      children: [
-        Text(
-          timeFormat(matches[index].utcDate!),
-          style: TextStyle(
-              color: havan,fontSize: 25,fontWeight: FontWeight.bold
-          ),
-        ),
-        SizedBox(height: notAll?15:10,),
-        Container(
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              border: Border.all(color: havan),
-              borderRadius: BorderRadius.circular(20)
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ImageIcon(
-                  const AssetImage('assets/images/stade.png'),
-                  size: 20,
-                  color: darkGrey,
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    stadium,
-                    style: TextStyle(
-                        color: grey,fontSize: 11,fontWeight: FontWeight.bold,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-
-              ],
+    bool notAll = cubit.leagueIndex!=0||cubit.leagueIndex!=10;
+    int leagueID = matches[index].competition!.id!;
+    return InkWell(
+      onTap: (){
+        cubit.getMatchDetails(matchID: matches[index].id!,leagueID: leagueID);
+        Get.to(()=>MatchDetailsScreen(
+          leagueID: leagueID,
+          homeTeam: homeTeam,
+          awayTeam: awayTeam,
+        ));
+      },
+      child: Column(
+        children: [
+          Text(
+            timeFormat(matches[index].utcDate!),
+            style: TextStyle(
+                color: havan,fontSize: 25,fontWeight: FontWeight.bold
             ),
           ),
-        ),
-        SizedBox(height: notAll?15:10,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.calendar_today_outlined,color: darkGrey,size: 17,),
-            const SizedBox(width: 5,),
-            Text("Fixture ${matches[index].matchday}",
-              style: TextStyle(
-                  color: grey,fontSize: 16,fontWeight: FontWeight.normal
+          SizedBox(height: notAll?15:10,),
+          Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                border: Border.all(color: havan),
+                borderRadius: BorderRadius.circular(20)
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ImageIcon(
+                    const AssetImage('assets/images/stade.png'),
+                    size: 20,
+                    color: darkGrey,
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      "${homeTeam.venue}",
+                      style: TextStyle(
+                          color: grey,fontSize: 11,fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+
+                ],
               ),
             ),
-          ],
-        ),
-      ],
+          ),
+          SizedBox(height: notAll?15:10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.calendar_today_outlined,color: darkGrey,size: 17,),
+              const SizedBox(width: 5,),
+              Text("Fixture ${matches[index].matchday}",
+                style: TextStyle(
+                    color: grey,fontSize: 16,fontWeight: FontWeight.normal
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

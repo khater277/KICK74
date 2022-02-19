@@ -29,6 +29,10 @@ class KickGetAllMatchesLoadingState extends KickStates{}
 class KickGetAllMatchesSuccessState extends KickStates{}
 class KickGetAllMatchesErrorState extends KickStates{}
 
+class KickGetFavouritesMatchesLoadingState extends KickStates{}
+class KickGetFavouritesMatchesSuccessState extends KickStates{}
+class KickGetFavouritesMatchesErrorState extends KickStates{}
+
 class KickGetLeagueTeamsLoadingState extends KickStates{}
 class KickGetLeagueTeamsSuccessState extends KickStates{}
 class KickGetLeagueTeamsErrorState extends KickStates{}
@@ -47,5 +51,22 @@ class KickGetFavouritesLoadingState extends KickStates{}
 class KickGetFavouritesSuccessState extends KickStates{}
 class KickGetFavouritesErrorState extends KickStates{}
 
+class KickSelectProfileImageSuccessState extends KickStates{}
+class KickSelectProfileImageErrorState extends KickStates{}
 
+class KickSetProfileImageLoadingState extends KickStates{}
+class KickSetProfileImageSuccessState extends KickStates{}
+class KickSetProfileImageErrorState extends KickStates{}
+
+class KickUpdateUserDataLoadingState extends KickStates{}
+class KickUpdateUserDataSuccessState extends KickStates{}
+class KickUpdateUserDataErrorState extends KickStates{}
+
+class KickGetMatchDetailsLoadingState extends KickStates{}
+class KickGetMatchDetailsSuccessState extends KickStates{}
+class KickGetMatchDetailsErrorState extends KickStates{}
+
+class KickGetLeagueTopScorersLoadingState extends KickStates{}
+class KickGetLeagueTopScorersSuccessState extends KickStates{}
+class KickGetLeagueTopScorersErrorState extends KickStates{}
 

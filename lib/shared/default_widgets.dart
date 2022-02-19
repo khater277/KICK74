@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:kick74/styles/icons_broken.dart';
 import 'package:progress_indicators/progress_indicators.dart';
@@ -62,7 +63,7 @@ class DefaultLinerIndicator extends StatelessWidget {
       children: [
         const SizedBox(height: 5,),
         LinearProgressIndicator(
-          color: Colors.blue.withOpacity(0.3),
+          color: havan.withOpacity(0.3),
           backgroundColor: Colors.white,
         ),
         const SizedBox(height: 5,),
@@ -102,6 +103,7 @@ class BackIcon extends StatelessWidget {
           en: IconBroken.Arrow___Left_2
       ),
       size: size,
+      color: darkGrey,
     );
   }
 }
@@ -208,6 +210,29 @@ class DefaultSvgNetworkImage extends StatelessWidget {
   }
 }
 
+class DefaultNetworkImage extends StatelessWidget {
+  final String? url;
+  final double width;
+  final double height;
+  const DefaultNetworkImage({Key? key, required this.url, required this.width, required this.height}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return
+      url!=null?
+      url!.endsWith("svg")?DefaultSvgNetworkImage(
+          url: url!,
+          width: width, height:height
+      ):DefaultFadedImage(
+          imgUrl: url!,
+          width: width, height:height
+      ):SizedBox(
+          width: width,height: height,
+          child: Image.asset('assets/images/no_image.png')
+    );
+  }
+}
+
 
 class DefaultElevatedButton extends StatelessWidget {
   final Widget child;
@@ -271,7 +296,7 @@ class BuildBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: (){Navigator.pop(context);},
+      onPressed: (){Get.back();},
       icon: const BackIcon(size: 22),
     );
   }

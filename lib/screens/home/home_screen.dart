@@ -19,6 +19,8 @@ class HomeScreen extends StatelessWidget {
         KickCubit cubit = KickCubit.get(context);
         return state is! KickGetUserDataLoadingState
             &&state is! KickGetAllMatchesLoadingState
+            &&state is! KickGetFavouritesLoadingState
+            &&state is! KickGetLeagueTeamsSuccessState
             &&cubit.leagues[0]['teams'].length==cubit.leaguesIDs.length
             ?
           Scaffold(

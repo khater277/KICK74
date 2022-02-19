@@ -70,7 +70,8 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (BuildContext context)=>KickCubit()
-            ..getUserData()..getFavourites()..getAllMatches()..getLeagueTeams(),
+            ..getUserData()..getFavourites()..getLeagueTeams()
+            ..getAllMatches()
         ),
         BlocProvider(
           create: (BuildContext context)=>SignUpCubit(),

@@ -1,14 +1,18 @@
-import 'dart:ui';
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:kick74/cubit/kick_states.dart';
 import 'package:kick74/models/AllMatchesModel.dart';
+import 'package:kick74/models/LeagueScorersModel.dart';
 import 'package:kick74/models/LeagueTeamsModel.dart';
+import 'package:kick74/models/MatchDetailsModel.dart';
 import 'package:kick74/models/UserModel.dart';
-import 'package:kick74/models/FavTeamModel.dart';
 import 'package:kick74/network/reomte/dio_helper.dart';
 import 'package:kick74/network/reomte/end_points.dart';
 import 'package:kick74/screens/matches/matches_screen.dart';
@@ -100,7 +104,7 @@ class KickCubit extends Cubit<KickStates>{
     emit(KickNavBarState());
   }
 
-  int leagueIndex = 0;
+  int leagueIndex = 10;
   void changeLeagueIndex(int index){
     leagueIndex=index;
     emit(KickLeagueIndexState());
@@ -122,12 +126,6 @@ class KickCubit extends Cubit<KickStates>{
   }
 
   List<Map<String,dynamic>> leagues = [
-    // {
-    //   "id":1,
-    //   "name":"My Teams",
-    //   "image":"assets/images/matches.png",
-    //   "teams":<List<Teams>>[],
-    // },
     {
       "id":0,
       "name":"All",
@@ -179,7 +177,7 @@ class KickCubit extends Cubit<KickStates>{
 
   void getAllMatches(){
     emit(KickGetAllMatchesLoadingState());
-    DioHelper.getData(url: ALL_MATCHES)
+    DioHelper.getAllMatches()
     .then((value){
       AllMatchesModel? allMatchesModel;
       allMatchesModel = AllMatchesModel.fromJson(value.data);
@@ -188,14 +186,9 @@ class KickCubit extends Cubit<KickStates>{
           int competitionID = element.competition!.id!;
           shownMatches[0]!.add(element);
           shownMatches[competitionID]!.add(element);
-          // Teams? homeTeam = leagues[1]['teams'][element.homeTeam!.id!];
-          // Teams? awayTeam = leagues[1]['teams'][element.awayTeam!.id!];
-          // if((favouriteTeams.contains(homeTeam)
-          //     ||favouriteTeams.contains(awayTeam))&&(homeTeam!=null||awayTeam!=null)){
-          //   shownMatches[1]!.add(element);
-          // }
         }
       }
+      getFavouritesMatches();
       print(shownMatches[0]!.length);
       emit(KickGetAllMatchesSuccessState());
     }).catchError((error){
@@ -204,35 +197,34 @@ class KickCubit extends Cubit<KickStates>{
     });
   }
 
+  List<Matches> favMatches = [];
+  void getFavouritesMatches(){
+    favMatches = [];
+    for (var element in shownMatches[0]!) {
+      for(int i=0;i<favouriteTeams.length;i++){
+        if((favouriteTeams[i].id==element.homeTeam!.id)
+            ||(favouriteTeams[i].id==element.awayTeam!.id)){
+          favMatches.add(element);
+        }
+      }
+      print(favMatches);
+      emit(KickGetFavouritesMatchesSuccessState());
+    }
+  }
+
   void getLeagueTeams(){
     emit(KickGetLeagueTeamsLoadingState());
     for(int i=0;i<leaguesIDs.length;i++){
-      DioHelper.getData(url: LEAGUE_TEAMS(leagueID: leaguesIDs[i]))
+      DioHelper.getLeagueTeams(leagueID: leaguesIDs[i])
           .then((value){
             LeagueTeamsModel leagueTeamsModel =
             LeagueTeamsModel.fromJson(value.data);
-           // allLeaguesTeams.add(leagueTeamsModel.teams!);
             leagues[0]['teams'].add(leagueTeamsModel.teams!);
-            if (i==0){
-              leagues[1]['teams']=leagueTeamsModel.teams!;
-              print(leagues[1]['teams'][0].name);
-            }
-            else if (i==1){
-              leagues[2]['teams']=leagueTeamsModel.teams!;
-              print(leagues[2]['teams'][0].name);
-            }
-            else if (i==2){
-              leagues[3]['teams']=leagueTeamsModel.teams!;
-              print(leagues[3]['teams'][0].name);
-            }
-            else if (i==3) {
-              leagues[4]['teams']=leagueTeamsModel.teams!;
-              print(leagues[4]['teams'][0].name);
-            }
-            else{
-              leagues[5]['teams']=leagueTeamsModel.teams!;
-              print(leagues[5]['teams'][0].name);
-            }
+            leagues[i+1]['teams']=leagueTeamsModel.teams!;
+            // getLeagueTopScorers(
+            //     leagueID: leaguesIDs[i],
+            //     leagueIndex: i+1
+            // );
             emit(KickGetLeagueTeamsSuccessState());
       }).catchError((error){
         printError("getLeagueTeams",error.toString());
@@ -262,7 +254,7 @@ class KickCubit extends Cubit<KickStates>{
   List<int> selectedTeamsIDs = [];
   List<Teams> favouriteTeams = [];
   Color selectFavColor = offWhite;
-  void selectFavourite({
+  void selectOnBoardingFavourite({
   @required int? index,
   @required int? teamID,
 }){
@@ -281,7 +273,6 @@ class KickCubit extends Cubit<KickStates>{
     emit(KickSelectFavTeamState());
   }
 
-
   void addToFavourites({@required Teams? team}){
     emit(KickAddToFavouritesLoadingState());
     FirebaseFirestore.instance.collection('users')
@@ -290,6 +281,7 @@ class KickCubit extends Cubit<KickStates>{
         .doc("${team!.id}")
         .set(team.toJson())
         .then((value){
+          getFavouritesMatches();
       emit(KickAddToFavouritesSuccessState());
     }).catchError((error){
       emit(KickAddToFavouritesErrorState());
@@ -304,6 +296,7 @@ class KickCubit extends Cubit<KickStates>{
         .doc("${team!.id}")
         .delete()
         .then((value){
+      getFavouritesMatches();
       emit(KickRemoveFromFavouritesSuccessState());
     }).catchError((error){
       emit(KickRemoveFromFavouritesErrorState());
@@ -317,6 +310,7 @@ class KickCubit extends Cubit<KickStates>{
     .collection('favourites')
     .get()
     .then((value) {
+      favouriteTeams=[];
       for (var element in value.docs) {
         favouriteTeams.add(Teams.fromJson(element));
       }
@@ -326,4 +320,93 @@ class KickCubit extends Cubit<KickStates>{
       emit(KickGetFavouritesLoadingState());
     });
   }
+
+  ImagePicker picker = ImagePicker();
+  File? profileImage;
+  void selectProfileImage()async{
+     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if(pickedFile!=null){
+      profileImage=File(pickedFile.path);
+      emit(KickSelectProfileImageSuccessState());
+    }else{
+      emit(KickSelectProfileImageErrorState());
+    }
+  }
+
+  void setProfileImage(){
+    emit(KickSetProfileImageLoadingState());
+    firebase_storage.FirebaseStorage.instance.ref(
+        "users/${Uri.file(profileImage!.path).pathSegments.last}"
+    ).putFile(profileImage!).then((p0){
+      p0.ref.getDownloadURL().then((value){
+        profileImage=null;
+        updateUserData(profileImage: value);
+      }).catchError((error){
+        printError("setProfileImage", error.toString());
+        emit(KickSetProfileImageErrorState());
+      });
+    }).catchError((error){
+      printError("setProfileImage", error.toString());
+      emit(KickSetProfileImageErrorState());
+    });
+  }
+
+  void updateUserData({@required String? profileImage}){
+    emit(KickUpdateUserDataLoadingState());
+    UserModel updatedUserModel = UserModel(
+      userToken: userModel!.userToken,
+      uId: userModel!.uId,
+      name: userModel!.name,
+      email: userModel!.email,
+      profileImage: profileImage,
+    );
+    FirebaseFirestore.instance.collection('users')
+    .doc(uID)
+    .update(updatedUserModel.toJson())
+    .then((value){
+      getUserData();
+      print("USER UPDATED");
+      emit(KickUpdateUserDataSuccessState());
+    }).catchError((error){
+      printError("updateUserData", error.toString());
+      emit(KickUpdateUserDataErrorState());
+    });
+  }
+
+  MatchDetailsModel? matchDetailsModel;
+  void getMatchDetails({@required int? matchID,@required int? leagueID}){
+    emit(KickGetMatchDetailsLoadingState());
+    DioHelper.getMatchDetails(matchID: matchID)
+    .then((value){
+      matchDetailsModel = MatchDetailsModel.fromJson(value.data);
+      print(matchDetailsModel!.match!.venue);
+      getTopScorers(leagueID: leagueID);
+    }).catchError((error){
+      printError("getMatchDetails",error.toString());
+      emit(KickGetMatchDetailsErrorState());
+    });
+  }
+
+  Map<int,List<Scorers>> scorers = {
+   2021: [], 2014: [], 2019: [], 2002: [], 2015: [],
+  };
+  void getTopScorers({@required int? leagueID}){
+    if(scorers[leagueID]!.isEmpty){
+      emit(KickGetLeagueTopScorersLoadingState());
+      DioHelper.getLeagueTopScorers(leagueID: leagueID!)
+          .then((value) {
+        LeagueScorersModel leagueScorersModel =
+        LeagueScorersModel.fromJson(value.data);
+        scorers[leagueID] = leagueScorersModel.scorers!;
+        print(scorers[leagueID]![0].player!.name);
+        emit(KickGetLeagueTopScorersSuccessState());
+      }).catchError((error){
+        printError("getTopScorers",error.toString());
+        emit(KickGetLeagueTopScorersErrorState());
+      });
+    }else{
+      emit(KickGetLeagueTopScorersSuccessState());
+    }
+  }
+
 }

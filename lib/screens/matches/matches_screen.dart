@@ -19,17 +19,23 @@ class MatchesScreen extends StatelessWidget {
           body: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: SizedBox(
-                  height: 80,
+                  height: 100,
                   child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      itemBuilder: (context,index)=> LeagueButton(index: index,cubit: cubit,),
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context,index)=>index==0?
+                      MyTeamsButton(cubit: cubit):
+                          LeagueButton(index: index-1,cubit: cubit,),
                       separatorBuilder: (context,index)=>const SizedBox(width: 15,),
-                      itemCount: 6
+                      itemCount: 7
                   ),
                 ),
               ),
+              if(cubit.leagueIndex==10)
+                FavouriteMatches(cubit: cubit, matches: cubit.favMatches)
+              else
               LeagueMatches(
                 cubit: cubit,
                 matches: cubit.leagueIndex==0?cubit.shownMatches[0]!:
