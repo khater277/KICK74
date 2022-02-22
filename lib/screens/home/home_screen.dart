@@ -1,3 +1,4 @@
+import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,26 +14,64 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<KickCubit,KickStates>(
-      listener: (context,state){},
-      builder: (context,state){
+    return BlocConsumer<KickCubit, KickStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
         KickCubit cubit = KickCubit.get(context);
-        return state is! KickGetUserDataLoadingState
-            &&state is! KickGetAllMatchesLoadingState
-            &&state is! KickGetFavouritesLoadingState
-            &&state is! KickGetLeagueTeamsSuccessState
-            &&cubit.leagues[0]['teams'].length==cubit.leaguesIDs.length
-            ?
-          Scaffold(
-            body: SafeArea(
-                child: cubit.screens[cubit.currentIndex]
-            ),
-            extendBody: true,
-            bottomNavigationBar: BottomNavBar(cubit: cubit),
-        ):
-        const Scaffold(
-          body: DefaultProgressIndicator(icon: IconBroken.Home),
-        );
+        return state is! KickGetUserDataLoadingState &&
+                state is! KickGetAllMatchesLoadingState &&
+                state is! KickGetFavouritesLoadingState &&
+                state is! KickGetLeagueTeamsSuccessState &&
+                cubit.leagues[0]['teams'].length == cubit.leaguesIDs.length
+            ? Scaffold(
+                body: SafeArea(
+                    top: true,
+                    bottom: false,
+                    child: cubit.screens[cubit.currentIndex]),
+                extendBody: true,
+                bottomNavigationBar: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: DotNavigationBar(
+                    currentIndex: cubit.currentIndex,
+                    onTap: (index) {
+                      cubit.changeNavBar(index);
+                    },
+                    marginR: const EdgeInsets.symmetric(horizontal: 40),
+                    //margin: const EdgeInsets.symmetric(horizontal: 40),
+                    dotIndicatorColor: Colors.transparent,
+                    selectedItemColor: Colors.white,
+                    unselectedItemColor: Colors.grey.shade800,
+                    backgroundColor: havan,
+                    itemPadding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+                    //margin: const EdgeInsets.symmetric(horizontal: 40),
+                    borderRadius: 50,
+                    items: [
+                      DotNavigationBarItem(
+                        icon: const ImageIcon(
+                          AssetImage('assets/images/user.png'),
+                          size: 25,
+                        ),
+                      ),
+                      DotNavigationBarItem(
+                        icon: const ImageIcon(
+                          AssetImage('assets/images/matches.png'),
+                          size: 40,
+                        ),
+                      ),
+                      DotNavigationBarItem(
+                        icon: const ImageIcon(
+                          AssetImage('assets/images/settings.png'),
+                          size: 25,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : const Scaffold(
+                body: DefaultProgressIndicator(icon: IconBroken.Home,size: 35,),
+              );
       },
     );
   }

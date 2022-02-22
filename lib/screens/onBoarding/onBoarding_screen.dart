@@ -15,53 +15,58 @@ class OnBoardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<KickCubit,KickStates>(
-      listener: (context,state){},
-      builder: (context,state){
+    return BlocConsumer<KickCubit, KickStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
         KickCubit cubit = KickCubit.get(context);
-        return state is! KickGetUserDataLoadingState
-            &&state is! KickGetAllMatchesLoadingState
-            &&cubit.leagues[0]['teams'].length==cubit.leaguesIDs.length
-            ?
-          Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: Text(
-              "Select your favourite teams",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: darkGrey,
-              ),
-            ),
-            actions: [
-              IconButton(
-                onPressed: (){
-                  GetStorage().write('onBoarding', true);
-                  if(cubit.onBoardingIndex<5) {
-                    cubit.changeOnBoardingIndex();
-                    print("FAVOURITES DONE");
-                  }
-                  else{
-                    cubit.getFavourites();
-                    Get.offAll(()=>const HomeScreen());
-                    }
-                },
-                icon: Icon(IconBroken.Arrow___Right_2,
-                color: havan,size: 25),
-              ),
-              const SizedBox(width: 5,),
-            ],
-          ),
-            body: Column(
-              children: [
-                TeamsBuilder(cubit: cubit,state: state,),
-                IndicatorBuilder(cubit: cubit,),
-              ],
-          ),
-        )
-        :const Scaffold(
-          body: DefaultProgressIndicator(icon: IconBroken.Heart),
-        );
+        return state is! KickGetUserDataLoadingState &&
+                state is! KickGetAllMatchesLoadingState &&
+                cubit.leagues[0]['teams'].length == cubit.leaguesIDs.length
+            ? Scaffold(
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: Text(
+                    "Select your favourite teams",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: darkGrey,
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        GetStorage().write('onBoarding', true);
+                        if (cubit.onBoardingIndex < 5) {
+                          cubit.changeOnBoardingIndex();
+                          print("FAVOURITES DONE");
+                        } else {
+                          cubit.getFavourites();
+                          Get.offAll(() => const HomeScreen());
+                        }
+                      },
+                      icon: Icon(IconBroken.Arrow___Right_2,
+                          color: havan, size: 25),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                  ],
+                ),
+                body: Column(
+                  children: [
+                    TeamsBuilder(
+                      cubit: cubit,
+                      state: state,
+                    ),
+                    IndicatorBuilder(
+                      cubit: cubit,
+                    ),
+                  ],
+                ),
+              )
+            : const Scaffold(
+                body: DefaultProgressIndicator(icon: IconBroken.Heart,size: 35,),
+              );
       },
     );
   }

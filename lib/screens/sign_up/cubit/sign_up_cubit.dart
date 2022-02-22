@@ -78,7 +78,8 @@ class SignUpCubit extends Cubit<SignUpStates>{
       );
       uID=value.user!.uid;
       GetStorage().write('uId', value.user!.uid);
-      //emit(SignUpUserRegisterSuccessState());
+      KickCubit.get(context).getFavourites();
+      emit(SignUpUserRegisterSuccessState());
     }).catchError((error){
       String message = error.toString().substring(
           error.toString().indexOf(']')+2,
@@ -124,6 +125,7 @@ class SignUpCubit extends Cubit<SignUpStates>{
       uID=value.user!.uid;
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
+      KickCubit.get(context).getFavourites();
       //print(uID);
       if(google==true){
         GetStorage().write('uId',value.user!.uid)
@@ -156,6 +158,7 @@ class SignUpCubit extends Cubit<SignUpStates>{
       uID=value.user!.uid;
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
+      KickCubit.get(context).getFavourites();
       //print(uID);
       if(facebook==true){
         GetStorage().write('uId',value.user!.uid)

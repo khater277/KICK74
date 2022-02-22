@@ -60,7 +60,7 @@ ThemeData darkTheme=ThemeData(
 
 ThemeData lightTheme=ThemeData(
     fontFamily: 'SF-Pro-Display',
-    scaffoldBackgroundColor: offWhite,
+    scaffoldBackgroundColor: Colors.white,
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: Colors.black87,
     ),
@@ -79,24 +79,24 @@ ThemeData lightTheme=ThemeData(
         fontSize: 15,
       ),
     ),
-    appBarTheme: AppBarTheme(
-        iconTheme: const IconThemeData(
+    appBarTheme: const AppBarTheme(
+        iconTheme: IconThemeData(
           color: Colors.black,
         ),
         elevation: 0,
         shadowColor: Colors.white,
-        backgroundColor: offWhite,
-        systemOverlayStyle: const SystemUiOverlayStyle(
+        backgroundColor: Colors.white,
+        systemOverlayStyle: SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.dark,
           statusBarColor: Colors.white,
         ),
-        titleTextStyle: const TextStyle(
+        titleTextStyle: TextStyle(
             fontFamily: 'SF-Pro-Display',
             color: Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold
         ),
-        actionsIconTheme: const IconThemeData(
+        actionsIconTheme: IconThemeData(
           color: Colors.black,
         )
     ),

@@ -18,46 +18,46 @@ class ProfileScreen extends StatelessWidget {
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.only(top: 20,right: 20,left: 20),
-            child: Column(
-              children: [
-                MyPicAndName(cubit: cubit,),
-                const SizedBox(height: 10,),
-                if(cubit.profileImage!=null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        DefaultElevatedButton(
-                            child: const Text(
-                                "Update Image",
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  MyPicAndName(cubit: cubit,),
+                  const SizedBox(height: 10,),
+                  if(cubit.profileImage!=null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          DefaultElevatedButton(
+                              child: const Text(
+                                  "Update Image",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 18
+                                ),
                               ),
-                            ),
-                            color: havan,
-                            rounded: 5,
-                            height: 40,
-                            width: double.infinity,
-                            onPressed: (){
-                              cubit.setProfileImage();
-                            }
-                        ),
-                        if(state is KickSetProfileImageLoadingState
-                            ||state is KickUpdateUserDataLoadingState
-                            ||state is KickGetUserDataLoadingState)
-                          const DefaultLinerIndicator()
-                      ],
+                              color: havan,
+                              rounded: 5,
+                              height: 40,
+                              width: double.infinity,
+                              onPressed: (){
+                                cubit.setProfileImage();
+                              }
+                          ),
+                          if(state is KickSetProfileImageLoadingState
+                              ||state is KickUpdateUserDataLoadingState
+                              ||state is KickGetUserDataLoadingState)
+                            const DefaultLinerIndicator()
+                        ],
+                      ),
                     ),
-                  ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-                  child: Divider(color: Colors.grey,thickness: 2,),
-                ),
-                FavouritesTeamsHead(cubit: cubit,),
-                //const SizedBox(height: 10,),
-                FavouriteTeams(cubit: cubit),
-              ],
+                  const SizedBox(height: 20,),
+                  FavouritesTeamsHead(cubit: cubit,),
+                  //const SizedBox(height: 10,),
+                  FavouriteTeams(cubit: cubit),
+                ],
+              ),
             ),
           ),
         );

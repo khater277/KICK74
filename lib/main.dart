@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -11,8 +13,6 @@ import 'package:kick74/screens/home/home_screen.dart';
 import 'package:kick74/screens/onBoarding/onBoarding_screen.dart';
 import 'package:kick74/screens/opening/opening_screen.dart';
 import 'package:kick74/screens/select_language/select_language_screen.dart';
-import 'package:kick74/screens/sign_in/cubit/sign_in_cubit.dart';
-import 'package:kick74/screens/sign_in/sign_in_screen.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/styles/themes.dart';
@@ -21,9 +21,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'cubit/bloc_observer.dart';
 import 'firebase_options.dart';
 
-
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
@@ -32,8 +30,9 @@ void main() async{
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Widget? homeWidget;
+
   /// get device language
-  final String defaultLocale = Platform.localeName.substring(0,2);
+  final String defaultLocale = Platform.localeName.substring(0, 2);
   defaultLang = defaultLocale;
   bool? onBoarding = GetStorage().read('onBoarding');
   uID = GetStorage().read('uId');
@@ -43,21 +42,24 @@ void main() async{
   print(google);
   print(uID);
 
-  if(lang==null){
-    homeWidget=const SelectLanguageScreen();
-  }else{
-    if(uID==null||uID!.isEmpty){
-      homeWidget=const OpeningScreen();
-    }else{
-      if(onBoarding==null){
-        homeWidget = const OnBoardingScreen();
-      }else{
-        homeWidget=const HomeScreen();
-      }
+  if (uID == null || uID!.isEmpty) {
+    homeWidget = const OpeningScreen();
+  } else {
+    if (onBoarding == null) {
+      homeWidget = const OnBoardingScreen();
+    } else {
+      homeWidget = const HomeScreen();
     }
   }
   print(lang);
-  runApp(MyApp(homeWidget: homeWidget,));
+  runApp(MyApp(homeWidget: homeWidget));
+
+  // runApp(DevicePreview(
+  //     enabled: !kReleaseMode,
+  //     builder: (context) => MyApp(
+  //           homeWidget: homeWidget!,
+  //     )
+  // ));
 }
 
 class MyApp extends StatelessWidget {
@@ -69,34 +71,31 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context)=>KickCubit()
-            ..getUserData()..getFavourites()..getLeagueTeams()
-            ..getAllMatches()
-        ),
+            create: (BuildContext context) => KickCubit()
+              ..getUserData()
+              ..getFavourites()
+              ..getLeagueTeams()
+              ..getAllMatches()),
         BlocProvider(
-          create: (BuildContext context)=>SignUpCubit(),
+          create: (BuildContext context) => SignUpCubit(),
         ),
       ],
-      child: BlocConsumer<KickCubit,KickStates>(
-        listener: (context,state){},
-        builder: (context,state){
+      child: BlocConsumer<KickCubit, KickStates>(
+        listener: (context, state) {},
+        builder: (context, state) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             home: Directionality(
-                textDirection:languageFun(
-                    ar: TextDirection.rtl,
-                    en: TextDirection.ltr
-                ),
-                child: homeWidget
-            ),
+                textDirection:
+                    languageFun(ar: TextDirection.rtl, en: TextDirection.ltr),
+                child: homeWidget),
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: ThemeMode.light,
             translations: Translation(),
-            locale: Locale(
-                languageFun(ar: 'ar', en: 'en')
-            ),
+            locale: Locale(languageFun(ar: 'ar', en: 'en')),
             fallbackLocale: const Locale('en'),
+            useInheritedMediaQuery: true,
             builder: (context, widget) => ResponsiveWrapper.builder(
               ClampingScrollWrapper.builder(context, widget!),
               maxWidth: 1200,
@@ -104,7 +103,7 @@ class MyApp extends StatelessWidget {
               defaultScale: true,
               breakpoints: [
                 const ResponsiveBreakpoint.resize(480, name: MOBILE),
-                const ResponsiveBreakpoint.resize(800, name: TABLET),
+                const ResponsiveBreakpoint.autoScale(800, name: TABLET),
                 const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
               ],
             ),

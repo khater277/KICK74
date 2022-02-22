@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,13 +14,12 @@ import 'package:transparent_image/transparent_image.dart';
 
 import 'constants.dart';
 
-
 class NoLeadingSpaceFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     if (newValue.text.startsWith(' ')) {
       final String trimedText = newValue.text.trimLeft();
 
@@ -34,9 +35,12 @@ class NoLeadingSpaceFormatter extends TextInputFormatter {
   }
 }
 
+// ignore: must_be_immutable
 class DefaultProgressIndicator extends StatelessWidget {
   final IconData icon;
-  const DefaultProgressIndicator({Key? key, required this.icon}) : super(key: key);
+  final double size;
+  const DefaultProgressIndicator({Key? key, required this.icon, required this.size})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +49,15 @@ class DefaultProgressIndicator extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GlowingProgressIndicator(
-            child: Icon(icon,size: 35,color: Colors.grey,),
+            child: Icon(
+              icon,
+              size: size,
+              color: Colors.grey,
+            ),
           ),
-          const SizedBox(height: 6,),
+          const SizedBox(
+            height: 6,
+          ),
         ],
       ),
     );
@@ -61,12 +71,16 @@ class DefaultLinerIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
         LinearProgressIndicator(
           color: havan.withOpacity(0.3),
           backgroundColor: Colors.white,
         ),
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
       ],
     );
   }
@@ -76,13 +90,15 @@ class DefaultButtonLoader extends StatelessWidget {
   final double size;
   final double width;
   final Color color;
-  const DefaultButtonLoader({Key? key, required this.size,
-    required this.width, required this.color}) : super(key: key);
+  const DefaultButtonLoader(
+      {Key? key, required this.size, required this.width, required this.color})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: size, height: size,
+      width: size,
+      height: size,
       child: CircularProgressIndicator(
         color: color,
         strokeWidth: width,
@@ -99,9 +115,7 @@ class BackIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Icon(
       languageFun(
-          ar: IconBroken.Arrow___Right_2,
-          en: IconBroken.Arrow___Left_2
-      ),
+          ar: IconBroken.Arrow___Right_2, en: IconBroken.Arrow___Left_2),
       size: size,
       color: darkGrey,
     );
@@ -116,20 +130,23 @@ Widget buildFlushBar({
   @required context,
   @required FlushbarPosition? position,
   @required IconData? icon,
-}){
+}) {
   return Flushbar(
     backgroundColor: color!,
     messageColor: messageColor,
     message: message,
     flushbarPosition: position!,
     duration: Duration(seconds: duration!),
-    icon: Icon(icon,color: messageColor,),
-    margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 2),
+    icon: Icon(
+      icon,
+      color: messageColor,
+    ),
+    margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
     borderRadius: BorderRadius.circular(5),
   )..show(context);
 }
 
-class FailedImage extends StatelessWidget{
+class FailedImage extends StatelessWidget {
   const FailedImage({Key? key}) : super(key: key);
 
   @override
@@ -138,18 +155,22 @@ class FailedImage extends StatelessWidget{
       height: 100,
       width: double.infinity,
       child: Center(
-        child: DefaultProgressIndicator(icon: IconBroken.Image),
+        child: DefaultProgressIndicator(icon: IconBroken.Image,size: 80,),
       ),
     );
   }
-
 }
 
 class DefaultFadedImage extends StatelessWidget {
   final String imgUrl;
   final double height;
   final double width;
-  const DefaultFadedImage({Key? key, required this.imgUrl, required this.height, required this.width}) : super(key: key);
+  const DefaultFadedImage(
+      {Key? key,
+      required this.imgUrl,
+      required this.height,
+      required this.width})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +180,7 @@ class DefaultFadedImage extends StatelessWidget {
       fit: BoxFit.cover,
       height: height,
       width: width,
-      imageErrorBuilder: (context,s,d)=>
+      imageErrorBuilder: (context, s, d) =>
           ErrorImage(width: width, height: height),
     );
   }
@@ -168,7 +189,8 @@ class DefaultFadedImage extends StatelessWidget {
 class ErrorImage extends StatelessWidget {
   final double? width;
   final double? height;
-  const ErrorImage({Key? key,@required this.width,@required this.height}) : super(key: key);
+  const ErrorImage({Key? key, @required this.width, @required this.height})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -180,8 +202,15 @@ class ErrorImage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            Icon(IconBroken.Danger,size: 50,color: Colors.grey,),
-            Text("connection error",style: TextStyle(color: Colors.grey),)
+            Icon(
+              IconBroken.Danger,
+              size: 50,
+              color: Colors.grey,
+            ),
+            Text(
+              "connection error",
+              style: TextStyle(color: Colors.grey),
+            )
           ],
         ),
       ),
@@ -193,7 +222,9 @@ class DefaultSvgNetworkImage extends StatelessWidget {
   final String url;
   final double width;
   final double height;
-  const DefaultSvgNetworkImage({Key? key, required this.url, required this.width, required this.height}) : super(key: key);
+  const DefaultSvgNetworkImage(
+      {Key? key, required this.url, required this.width, required this.height})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -202,9 +233,10 @@ class DefaultSvgNetworkImage extends StatelessWidget {
       height: height,
       child: SvgPicture.network(
         url,
-        placeholderBuilder: (BuildContext context) =>
-            const DefaultProgressIndicator(icon: IconBroken.Image),
-
+        placeholderBuilder: (BuildContext context) => DefaultProgressIndicator(
+          icon: IconBroken.Image,
+          size: (width + height) / 2-10,
+        ),
       ),
     );
   }
@@ -214,25 +246,22 @@ class DefaultNetworkImage extends StatelessWidget {
   final String? url;
   final double width;
   final double height;
-  const DefaultNetworkImage({Key? key, required this.url, required this.width, required this.height}) : super(key: key);
+  const DefaultNetworkImage(
+      {Key? key, required this.url, required this.width, required this.height})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return
-      url!=null?
-      url!.endsWith("svg")?DefaultSvgNetworkImage(
-          url: url!,
-          width: width, height:height
-      ):DefaultFadedImage(
-          imgUrl: url!,
-          width: width, height:height
-      ):SizedBox(
-          width: width,height: height,
-          child: Image.asset('assets/images/no_image.png')
-    );
+    return url != null
+        ? url!.endsWith("svg")
+            ? DefaultSvgNetworkImage(url: url!, width: width, height: height)
+            : DefaultFadedImage(imgUrl: url!, width: width, height: height)
+        : SizedBox(
+            width: width,
+            height: height,
+            child: Image.asset('assets/images/no_image.png'));
   }
 }
-
 
 class DefaultElevatedButton extends StatelessWidget {
   final Widget child;
@@ -241,22 +270,28 @@ class DefaultElevatedButton extends StatelessWidget {
   final double height;
   final double width;
   final onPressed;
-  const DefaultElevatedButton({Key? key, required this.child, required this.color, required this.rounded,
-    required this.height, required this.width, required this.onPressed}) : super(key: key);
+  const DefaultElevatedButton(
+      {Key? key,
+      required this.child,
+      required this.color,
+      required this.rounded,
+      required this.height,
+      required this.width,
+      required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed:onPressed,
-      child:child,
+      onPressed: onPressed,
+      child: child,
       style: ElevatedButton.styleFrom(
           elevation: 0,
-          primary:color,
+          primary: color,
           shape: RoundedRectangleBorder(
-            borderRadius:BorderRadius.circular(rounded),
+            borderRadius: BorderRadius.circular(rounded),
           ),
-          minimumSize: Size(width,height)
-      ),
+          minimumSize: Size(width, height)),
     );
   }
 }
@@ -269,26 +304,32 @@ class DefaultOutLinedButton extends StatelessWidget {
   final double width;
   final onPressed;
   Color? borderColor;
-  DefaultOutLinedButton({Key? key, required this.child, required this.rounded,
-    required this.height, required this.width, required this.onPressed,this.borderColor}) : super(key: key);
+  DefaultOutLinedButton(
+      {Key? key,
+      required this.child,
+      required this.rounded,
+      required this.height,
+      required this.width,
+      required this.onPressed,
+      this.borderColor})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed:onPressed,
-      child:child,
+      onPressed: onPressed,
+      child: child,
       style: OutlinedButton.styleFrom(
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius:BorderRadius.circular(rounded),
-          ),
-          minimumSize: Size(width,height),
-        side: BorderSide(color: borderColor??const Color(0xFF000000)),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(rounded),
+        ),
+        minimumSize: Size(width, height),
+        side: BorderSide(color: borderColor ?? const Color(0xFF000000)),
       ),
     );
   }
 }
-
 
 class BuildBackButton extends StatelessWidget {
   const BuildBackButton({Key? key}) : super(key: key);
@@ -296,7 +337,9 @@ class BuildBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: (){Get.back();},
+      onPressed: () {
+        Get.back();
+      },
       icon: const BackIcon(size: 22),
     );
   }
@@ -305,7 +348,11 @@ class BuildBackButton extends StatelessWidget {
 class NoItemsFounded extends StatelessWidget {
   final String text;
   final Widget widget;
-  const NoItemsFounded({Key? key, required this.text, required this.widget,}) : super(key: key);
+  const NoItemsFounded({
+    Key? key,
+    required this.text,
+    required this.widget,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -315,12 +362,16 @@ class NoItemsFounded extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             widget,
-            const SizedBox(height: 15,),
-            Text(text,style: TextStyle(
-                color: Colors.grey[400],
-                fontSize: 20,
-              fontWeight: FontWeight.normal
-            ),)
+            const SizedBox(
+              height: 15,
+            ),
+            Text(
+              text,
+              style: TextStyle(
+                  color: Colors.grey[400],
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal),
+            )
           ],
         ),
       ),
@@ -333,27 +384,23 @@ class DefaultSeparator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            width: double.infinity,
-            height: 1,
-            color: Colors.grey.withOpacity(0.2),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        Container(
+          width: double.infinity,
+          height: 1,
+          color: Colors.grey.withOpacity(0.5),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+      ],
     );
   }
 }
-
 
 void toastBuilder({
   @required String? msg,
@@ -370,7 +417,7 @@ void toastBuilder({
 }
 
 //ignore: must_be_immutable
-class DefaultTextFormFiled extends StatelessWidget{
+class DefaultTextFormFiled extends StatelessWidget {
   final TextEditingController? controller;
   final Color? textColor;
   final TextInputType? inputType;
@@ -388,18 +435,23 @@ class DefaultTextFormFiled extends StatelessWidget{
   Function? suffixPressed;
   IconData? suffixIcon;
 
-   DefaultTextFormFiled({Key? key,
-     required this.controller,
-     required this.textColor,
-     required this.inputType,
-     required this.prefixIcon,
-     required this.label,
-     required this.borderColor,
-     required this.preIconColor,
-     this.validateText, this.cursorHeight,
-     this.height,this.isPassword,
-     this.suffixIcon,this.suffixIconColor,this.suffixPressed}
-     ) : super(key: key);
+  DefaultTextFormFiled(
+      {Key? key,
+      required this.controller,
+      required this.textColor,
+      required this.inputType,
+      required this.prefixIcon,
+      required this.label,
+      required this.borderColor,
+      required this.preIconColor,
+      this.validateText,
+      this.cursorHeight,
+      this.height,
+      this.isPassword,
+      this.suffixIcon,
+      this.suffixIconColor,
+      this.suffixPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -417,22 +469,25 @@ class DefaultTextFormFiled extends StatelessWidget{
       ),
       cursorHeight: cursorHeight,
       keyboardType: inputType,
-      obscureText: isPassword==null?false:isPassword!,
+      obscureText: isPassword == null ? false : isPassword!,
       //onFieldSubmitted: (value) => onSubmit!(value),
       //onChanged: (value)=>onChanged!(value),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: height==null?18:height!),
+        contentPadding:
+            EdgeInsets.symmetric(vertical: height == null ? 18 : height!),
         prefixIcon: Icon(
           prefixIcon,
           color: preIconColor,
         ),
         //hintText: "ASD",
-        suffixIcon:suffixIcon!=null? IconButton(
-          onPressed: () => suffixPressed!(),
-          icon: Icon(suffixIcon),
-          color: suffixIconColor,
-          //focusColor: suffixIconColor,
-        ):null,
+        suffixIcon: suffixIcon != null
+            ? IconButton(
+                onPressed: () => suffixPressed!(),
+                icon: Icon(suffixIcon),
+                color: suffixIconColor,
+                //focusColor: suffixIconColor,
+              )
+            : null,
         focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: const BorderSide(
@@ -464,7 +519,6 @@ class DefaultTextFormFiled extends StatelessWidget{
 
 //ignore: must_be_immutable
 class DefaultTextFiled extends StatelessWidget {
-
   final TextEditingController controller;
   final String hint;
   final double hintSize;
@@ -478,10 +532,21 @@ class DefaultTextFiled extends StatelessWidget {
   var onSubmitted;
   var onChanged;
 
-  DefaultTextFiled({Key? key, required this.controller, required this.hint,
-    required this.hintSize, required this.height, required this.suffix,
-    required this.focusBorder, required this.border,this.validate,
-    this.onChanged,this.onSubmitted, required this.rounded,this.obscure}) : super(key: key);
+  DefaultTextFiled(
+      {Key? key,
+      required this.controller,
+      required this.hint,
+      required this.hintSize,
+      required this.height,
+      required this.suffix,
+      required this.focusBorder,
+      required this.border,
+      this.validate,
+      this.onChanged,
+      this.onSubmitted,
+      required this.rounded,
+      this.obscure})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -489,18 +554,16 @@ class DefaultTextFiled extends StatelessWidget {
       inputFormatters: [NoLeadingSpaceFormatter()],
       cursorColor: focusBorder,
       controller: controller,
-      onSubmitted: onSubmitted??(value){},
-      onChanged: onChanged??(value){},
-      obscureText: obscure??false,
-      decoration:  InputDecoration(
-        errorText: validate==true?null:"$hint ${"notEmpty".tr}",
+      onSubmitted: onSubmitted ?? (value) {},
+      onChanged: onChanged ?? (value) {},
+      obscureText: obscure ?? false,
+      decoration: InputDecoration(
+        errorText: validate == true ? null : "$hint ${"notEmpty".tr}",
         hintText: hint,
         hintStyle: TextStyle(
           fontSize: hintSize,
         ),
-        contentPadding: EdgeInsets.symmetric(
-            vertical: height,
-            horizontal: 15),
+        contentPadding: EdgeInsets.symmetric(vertical: height, horizontal: 15),
         suffixIcon: suffix,
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(rounded),
@@ -540,49 +603,49 @@ class DefaultDivider extends StatelessWidget {
   }
 }
 
-class OfflineWidget extends StatelessWidget{
+class OfflineWidget extends StatelessWidget {
   final Widget onlineWidget;
   const OfflineWidget({Key? key, required this.onlineWidget}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-        builder: (context) {
-          return OfflineBuilder(
-            connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-                ) {
-              final bool connected = connectivity != ConnectivityResult.none;
-              return connected? onlineWidget
-                  : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                   Icon(
-                    IconBroken.Danger,
-                    size: 250,
-                    color: Colors.grey.withOpacity(0.3),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "No internet connection found",
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption!
-                            .copyWith(fontSize: 20,color: Colors.grey.withOpacity(0.5),),
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
-            child: const Center(
-              child: Text("Online OR Offline"),
-            ),
-          );
-        });
+    return Builder(builder: (context) {
+      return OfflineBuilder(
+        connectivityBuilder: (
+          BuildContext context,
+          ConnectivityResult connectivity,
+          Widget child,
+        ) {
+          final bool connected = connectivity != ConnectivityResult.none;
+          return connected
+              ? onlineWidget
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      IconBroken.Danger,
+                      size: 250,
+                      color: Colors.grey.withOpacity(0.3),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "No internet connection found",
+                          style: Theme.of(context).textTheme.caption!.copyWith(
+                                fontSize: 20,
+                                color: Colors.grey.withOpacity(0.5),
+                              ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+        },
+        child: const Center(
+          child: Text("Online OR Offline"),
+        ),
+      );
+    });
   }
 }

@@ -4,7 +4,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/models/UserModel.dart';
@@ -59,6 +58,7 @@ class SignInCubit extends Cubit<SignInStates>{
       GetStorage().write('uId',value.user!.uid)
       .then((value){
         KickCubit.get(context).getUserData();
+        KickCubit.get(context).getFavourites();
         Get.offAll(()=>const HomeScreen());
       });
       emit(SignInUserLoginSuccessState());
@@ -106,6 +106,7 @@ class SignInCubit extends Cubit<SignInStates>{
       uID=value.user!.uid;
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
+      KickCubit.get(context).getFavourites();
       //print(uID);
       if(google==true){
         GetStorage().write('uId',value.user!.uid)
@@ -138,6 +139,7 @@ class SignInCubit extends Cubit<SignInStates>{
       uID=value.user!.uid;
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
+      KickCubit.get(context).getFavourites();
       //print(uID);
       if(facebook==true){
         GetStorage().write('uId',value.user!.uid)
@@ -181,7 +183,6 @@ class SignInCubit extends Cubit<SignInStates>{
     FirebaseFirestore.instance.collection('users')
         .doc(uid)
         .set(userModel.toJson()).then((value){
-      //uID=uid;
       GetStorage().write('uId', uid);
       KickCubit.get(context).getUserData();
       Get.offAll(()=>const HomeScreen());

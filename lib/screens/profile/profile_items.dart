@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
+import 'package:kick74/models/FavouriteTeamModel.dart';
 import 'package:kick74/models/LeagueTeamsModel.dart';
 import 'package:kick74/screens/favourites/favourites_screen.dart';
+import 'package:kick74/screens/team/team_screen.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
 import 'package:kick74/styles/icons_broken.dart';
@@ -28,36 +30,36 @@ class MyPicAndName extends StatelessWidget {
                   CircleAvatar(
                     radius: 90,
                     backgroundColor: offWhite,
-                    backgroundImage: cubit.profileImage==null?
-                    NetworkImage("${cubit.userModel!.profileImage}")
-                    :FileImage(File(cubit.profileImage!.path)) as ImageProvider,
+                    backgroundImage: cubit.profileImage == null
+                        ? NetworkImage("${cubit.userModel!.profileImage}")
+                        : FileImage(File(cubit.profileImage!.path))
+                            as ImageProvider,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 10,bottom: 10),
+                    padding: const EdgeInsets.only(right: 10, bottom: 10),
                     child: InkWell(
-                      onTap: (){
+                      onTap: () {
                         cubit.selectProfileImage();
                       },
                       child: CircleAvatar(
                         radius: 22,
                         backgroundColor: offWhite,
                         child: Icon(
-                            IconBroken.Camera,
-                            color: Colors.grey.shade800,
-                            size: 32,
-                          ),
+                          IconBroken.Camera,
+                          color: Colors.grey.shade800,
+                          size: 32,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            Text("${cubit.userModel!.name}",
+            Text(
+              "${cubit.userModel!.name}",
               style: TextStyle(
-                  color: grey,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold
-              ),),
+                  color: grey, fontSize: 28, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ],
@@ -76,21 +78,20 @@ class FavouritesTeamsHead extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(5.0),
           child: Text(
-              "Favourite Teams  (${cubit.favouriteTeams.length})",
+            "Favourite Teams  (${cubit.favouriteTeams.length})",
             style: TextStyle(
-                color: havan,
-                fontSize: 23,
-                fontWeight: FontWeight.bold
-            ),
+                color: grey, fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
         const Spacer(),
         IconButton(
-            onPressed: (){
-              Get.to(()=>const FavouritesScreen());
+            onPressed: () {
+              Get.to(() => const FavouritesScreen());
             },
-            icon: Icon(IconBroken.Edit_Square,color: darkGrey,)
-        )
+            icon: Icon(
+              IconBroken.Edit_Square,
+              color: darkGrey,
+            ))
       ],
     );
   }
@@ -102,15 +103,19 @@ class FavouriteTeams extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 20,right: 10,left: 10),
-        child: ListView.separated(
-            itemBuilder: (context,index)=>FavouriteTeam(cubit: cubit,index: index,),
-            separatorBuilder: (context,index)=>const SizedBox(height: 30,),
-            itemCount: cubit.favouriteTeams.length
-        ),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
+      child: ListView.separated(
+        shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) => FavouriteTeam(
+                cubit: cubit,
+                index: index,
+              ),
+          separatorBuilder: (context, index) => const SizedBox(
+                height: 30,
+              ),
+          itemCount: cubit.favouriteTeams.length),
     );
   }
 }
@@ -118,36 +123,53 @@ class FavouriteTeams extends StatelessWidget {
 class FavouriteTeam extends StatelessWidget {
   final KickCubit cubit;
   final int index;
-  const FavouriteTeam({Key? key, required this.cubit, required this.index}) : super(key: key);
+  const FavouriteTeam({Key? key, required this.cubit, required this.index})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Teams team = cubit.favouriteTeams[index];
-    return Row(
-      children: [
-        DefaultNetworkImage(
-          url: cubit.favouriteTeams[index].crestUrl,
-          width: 45,
-          height: 45,
-        ),
-        const SizedBox(width: 20,),
-        Text(
-          "${cubit.favouriteTeams[index].name}",
-          style: TextStyle(
-              color: grey,
-              fontSize: 20,
-              fontWeight: FontWeight.normal
+    FavouriteTeamModel favouriteTeam = cubit.favouriteTeams[index];
+    return InkWell(
+      onTap: () {
+        print(favouriteTeam.leagueID!);
+        cubit.getTeamDetails(
+            teamID: favouriteTeam.team!.id,
+            fromFav: true,
+            leagueID: favouriteTeam.leagueID!);
+        //print(cubit.scorers[favouriteTeam.leagueID]![0].player!.name);
+        if(cubit.scorers[favouriteTeam.leagueID]!=null) {
+          Get.to(() => TeamScreen(leagueID: cubit.favouriteTeams[index].leagueID!,));
+        }
+      },
+      child: Row(
+        children: [
+          DefaultNetworkImage(
+            url: favouriteTeam.team!.crestUrl,
+            width: 45,
+            height: 45,
           ),
-        ),
-        const Spacer(),
-        IconButton(
-            onPressed: (){
-              cubit.favouriteTeams.removeWhere((element) => element.id==team.id);
-              cubit.removeFromFavourites(team: team);
-            },
-            icon: const Icon(IconBroken.Delete,color: Colors.red,size: 25,)
-        )
-      ],
+          const SizedBox(
+            width: 20,
+          ),
+          Text(
+            "${favouriteTeam.team!.name}",
+            style: TextStyle(
+                color: grey, fontSize: 20, fontWeight: FontWeight.normal),
+          ),
+          const Spacer(),
+          IconButton(
+              onPressed: () {
+                cubit.favouriteTeams.removeWhere(
+                    (element) => element.team!.id == favouriteTeam.team!.id);
+                cubit.removeFromFavourites(favouriteTeamModel: favouriteTeam);
+              },
+              icon: const Icon(
+                IconBroken.Delete,
+                color: Colors.red,
+                size: 25,
+              ))
+        ],
+      ),
     );
   }
 }
