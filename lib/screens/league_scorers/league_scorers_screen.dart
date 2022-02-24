@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
-import 'package:kick74/screens/league_standing/league_standing_items.dart';
+import 'package:kick74/screens/league_scorers/league_scorers_items.dart';
 
 
-class LeagueStandingScreen extends StatelessWidget {
+class LeagueScorersScreen extends StatelessWidget {
   final KickCubit cubit;
   final int leagueID;
-  const LeagueStandingScreen({Key? key, required this.cubit, required this.leagueID}) : super(key: key);
+  const LeagueScorersScreen({Key? key, required this.cubit, required this.leagueID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +14,10 @@ class LeagueStandingScreen extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            const StandingDetails(),
+            const ScorersDetails(),
             const SizedBox(height: 20,),
-            StandingBody(cubit: cubit, leagueID: leagueID),
+            ScorersBody(cubit: cubit, leagueID: leagueID),
           ],
-        )
-    );
+        ));
   }
 }

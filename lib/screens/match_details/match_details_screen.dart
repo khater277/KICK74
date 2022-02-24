@@ -25,15 +25,15 @@ class MatchDetailsScreen extends StatelessWidget {
       builder: (context, state) {
         KickCubit cubit = KickCubit.get(context);
         return Scaffold(
+          appBar: AppBar(
+            leading: const BuildBackButton(),
+          ),
           body: state is! KickGetMatchDetailsLoadingState &&
                   state is! KickGetLeagueTopScorersLoadingState
               ? Padding(
-                  padding: const EdgeInsets.only(top: 30, bottom: 20),
+                  padding: const EdgeInsets.only(top:10,bottom: 20),
                   child: Column(
                     children: [
-                      Row(
-                        children: const [BuildBackButton()],
-                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(

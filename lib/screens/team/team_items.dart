@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/models/LeagueScorersModel.dart';
 import 'package:kick74/models/LeagueTeamsModel.dart';
-import 'package:kick74/screens/league_standing/league_standing_screen.dart';
+import 'package:kick74/screens/league_details/league_details_screen.dart';
 import 'package:kick74/screens/player_details/player_details_screen.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
@@ -105,8 +105,8 @@ class FoundedAndStadium extends StatelessWidget {
         Expanded(
           child: InkWell(
             onTap: (){
-              cubit.getLeagueStandings(leagueID: leagueID);
-              Get.to(()=>LeagueStandingScreen(leagueID: leagueID));
+              cubit.getLeagueStandings(context,leagueID: leagueID);
+              Get.to(()=>LeagueDetailsScreen(leagueID: leagueID));
             },
             child: Row(
               children: [

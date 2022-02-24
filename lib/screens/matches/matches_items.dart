@@ -4,6 +4,7 @@ import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/models/AllMatchesModel.dart';
 import 'package:kick74/models/LeagueTeamsModel.dart';
 import 'package:kick74/screens/match_details/match_details_screen.dart';
+import 'package:kick74/screens/team/team_screen.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
 import 'package:kick74/styles/icons_broken.dart';
@@ -23,7 +24,7 @@ class MyTeamsButton extends StatelessWidget {
           },
           child: Container(
             decoration: BoxDecoration(
-                color: cubit.leagueIndex==10?grey.withOpacity(0.2):offWhite,
+                color: cubit.leagueIndex==10?grey.withOpacity(0.2):Colors.white,
                 shape: BoxShape.rectangle,
                 border: Border.all(
                     color: cubit.leagueIndex==10?havan:grey,
@@ -99,7 +100,7 @@ class LeagueButton extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
                 color: cubit.leagueIndex==index?
-                Colors.grey.withOpacity(0.2):offWhite,
+                Colors.grey.withOpacity(0.2):Colors.white,
                 shape: BoxShape.rectangle,
                 border: Border.all(
                     color: cubit.leagueIndex==index?havan:grey,
@@ -239,8 +240,9 @@ class MatchItem extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width/3,
               child: TeamPicAndName(
-                teamName: awayTeam.shortName!,
-                teamImage: awayTeam.crestUrl!,
+                cubit: cubit,
+                team: awayTeam,
+                leagueID: cubit.leagues[leagueIndex]['id'],
               ),
             ),
             SizedBox(
@@ -258,8 +260,9 @@ class MatchItem extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width/3,
               child: TeamPicAndName(
-                teamName: homeTeam.shortName!,
-                teamImage: homeTeam.crestUrl!,
+                cubit: cubit,
+                team: homeTeam,
+                leagueID: cubit.leagues[leagueIndex]['id'],
               ),
             ),
           ],
@@ -270,31 +273,43 @@ class MatchItem extends StatelessWidget {
 }
 
 class TeamPicAndName extends StatelessWidget {
-  final String teamName;
-  final String teamImage;
-  const TeamPicAndName({Key? key ,required this.teamName, required this.teamImage}) : super(key: key);
+  final KickCubit cubit;
+  final Teams team;
+  final int leagueID;
+
+  const TeamPicAndName({Key? key ,required this.team,
+    required this.cubit, required this.leagueID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        teamImage.endsWith("svg")?DefaultSvgNetworkImage(
-            url: teamImage,
-            width: 60, height: 60
-        ):DefaultFadedImage(
-            imgUrl: teamImage,
-            width: 60, height: 60
-        ),
-        const SizedBox(height: 10,),
-        Text(
-          teamName,
-          style: TextStyle(
-            color: darkGrey,fontSize: 16,fontWeight: FontWeight.normal
+    return InkWell(
+      onTap: (){
+        cubit.getTeamDetails(teamID: team.id!);
+        Get.to(()=>TeamScreen(leagueID: leagueID));
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          DefaultNetworkImage(url: team.crestUrl!, width: 60, height: 60),
+          const SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    team.shortName!,
+                    style: TextStyle(
+                      color: darkGrey,fontSize: 16,fontWeight: FontWeight.normal
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -351,7 +366,7 @@ class MatchInfoItem extends StatelessWidget {
                     child: Text(
                       "${homeTeam.venue}",
                       style: TextStyle(
-                          color: grey,fontSize: 11,fontWeight: FontWeight.bold,
+                          color: grey,fontSize: 14,fontWeight: FontWeight.bold,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -365,7 +380,11 @@ class MatchInfoItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.calendar_today_outlined,color: darkGrey,size: 17,),
+              ImageIcon(
+                const AssetImage("assets/images/calendar.png"),
+                size: 17,
+                color: darkGrey,
+              ),
               const SizedBox(width: 5,),
               Text("Fixture ${matches[index].matchday}",
                 style: TextStyle(

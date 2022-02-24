@@ -119,3 +119,6 @@ class KickGetTeamAllMatchesLoadingState extends KickStates {}
 class KickGetTeamAllMatchesSuccessState extends KickStates {}
 
 class KickGetTeamAllMatchesErrorState extends KickStates {}
+
+class KickStandingScorersToggleLoadingState extends KickStates {}
+class KickStandingScorersToggleSuccessState extends KickStates {}

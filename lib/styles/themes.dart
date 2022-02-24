@@ -59,6 +59,7 @@ ThemeData darkTheme=ThemeData(
 );
 
 ThemeData lightTheme=ThemeData(
+  primarySwatch: Colors.orange,
     fontFamily: 'SF-Pro-Display',
     scaffoldBackgroundColor: Colors.white,
     floatingActionButtonTheme: const FloatingActionButtonThemeData(

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/models/LeagueScorersModel.dart';
 import 'package:kick74/models/LeagueTeamsModel.dart';
+import 'package:kick74/screens/league_details/league_details_screen.dart';
 import 'package:kick74/screens/player_details/player_details_screen.dart';
 import 'package:kick74/screens/team/team_screen.dart';
 import 'package:kick74/shared/constants.dart';
@@ -48,7 +49,7 @@ class TeamPicAndName extends StatelessWidget {
     return InkWell(
       onTap: () {
         KickCubit.get(context).getTeamDetails(teamID: teamID);
-        List<Scorers> teamScorers = KickCubit.get(context).scorers[leagueID]!;
+        //List<Scorers> teamScorers = KickCubit.get(context).scorers[leagueID]!;
         Get.to(() => TeamScreen(leagueID: leagueID,));
       },
       child: Column(
@@ -144,7 +145,7 @@ class MatchInfoItem extends StatelessWidget {
         ImageIcon(
           AssetImage(icon),
           color: havan,
-          size: 30,
+          size: icon=="assets/images/calendar.png"?25:30,
         ),
         const SizedBox(
           width: 20,
@@ -183,7 +184,8 @@ class MatchInfo extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                //cubit.getTopScorers();
+                cubit.getLeagueStandings(context,leagueID: leagueID);
+                Get.to(()=>LeagueDetailsScreen(leagueID: leagueID));
               },
               child: Container(
                 decoration: BoxDecoration(

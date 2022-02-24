@@ -18,6 +18,8 @@ import 'package:kick74/models/UserModel.dart';
 import 'package:kick74/models/FavouriteTeamModel.dart';
 import 'package:kick74/models/TeamAllMatchesModel.dart' as team_matches;
 import 'package:kick74/network/reomte/dio_helper.dart';
+import 'package:kick74/screens/league_scorers/league_scorers_screen.dart';
+import 'package:kick74/screens/league_standing/league_standing_screen.dart';
 import 'package:kick74/screens/matches/matches_screen.dart';
 import 'package:kick74/screens/profile/profile_screen.dart';
 import 'package:kick74/screens/settings/settings_screen.dart';
@@ -441,7 +443,7 @@ class KickCubit extends Cubit<KickStates> {
     }
   }
 
-  TeamModel? teamModel;
+ TeamModel? teamModel;
   void getTeamDetails({@required int? teamID, bool? fromFav, int? leagueID}) {
     if (teamModel == null || teamModel!.id != teamID) {
       emit(KickGetTeamDetailsLoadingState());
@@ -494,7 +496,9 @@ class KickCubit extends Cubit<KickStates> {
     2002 : <Standings>[],
     2015 : <Standings>[],
   };
-  void getLeagueStandings({@required int? leagueID}){
+
+
+  void getLeagueStandings(context,{@required int? leagueID}){
     if(leaguesStandings[leagueID]!.isEmpty){
       emit(KickGetLeagueStandingsLoadingState());
       DioHelper.getLeagueStanding(leagueID: leagueID)

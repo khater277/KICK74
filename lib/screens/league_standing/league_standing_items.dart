@@ -6,23 +6,6 @@ import 'package:kick74/screens/team/team_screen.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
 
-class StandingHead extends StatelessWidget {
-  final KickCubit cubit;
-  final int leagueID;
-  const StandingHead({Key? key, required this.cubit, required this.leagueID}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Map<String,dynamic> league = cubit.leagues.firstWhere((element) => element['id']==leagueID);
-    return Center(
-      child: SizedBox(
-        width: 200,height: 200,
-          child: Image.asset("${league['image']}")
-      ),
-    );
-  }
-}
-
 class StandingDetails extends StatelessWidget {
   const StandingDetails({Key? key}) : super(key: key);
 
@@ -34,8 +17,8 @@ class StandingDetails extends StatelessWidget {
           child: Text(
             "Teams",
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
               color: darkGrey,
             ),
           ),
@@ -86,7 +69,6 @@ class StandingDetails extends StatelessWidget {
   }
 }
 
-
 class StandingBody extends StatelessWidget {
   final KickCubit cubit;
   final int leagueID;
@@ -96,11 +78,11 @@ class StandingBody extends StatelessWidget {
   Widget build(BuildContext context) {
     List<standing.Table> table = cubit.leaguesStandings[leagueID]![0].table!;
     return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context,index)=> TeamInStanding(
-            index: index,
-            table: table,
+          index: index,
+          table: table,
           cubit: cubit,
           leagueID: leagueID,
         ),
@@ -129,7 +111,7 @@ class TeamInStanding extends StatelessWidget {
       },
       child: Row(
         children: [
-          DefaultNetworkImage(url: "${table[index].team!.crestUrl}", width: 30, height: 30),
+          DefaultNetworkImage(url: "${table[index].team!.crestUrl}", width: 40, height: 40),
           const SizedBox(width: 8,),
           SizedBox(
             width: MediaQuery.of(context).size.width/2-40,
