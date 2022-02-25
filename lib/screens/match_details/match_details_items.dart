@@ -46,9 +46,12 @@ class TeamPicAndName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Map<String,dynamic> league = KickCubit.get(context).leagues.firstWhere((element) =>
+    element['id']==leagueID);
     return InkWell(
       onTap: () {
         KickCubit.get(context).getTeamDetails(teamID: teamID);
+        KickCubit.get(context).getTeamAllMatches(teamID: teamID, fromFav: false, league: league);
         //List<Scorers> teamScorers = KickCubit.get(context).scorers[leagueID]!;
         Get.to(() => TeamScreen(leagueID: leagueID,));
       },

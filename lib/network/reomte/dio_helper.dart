@@ -57,8 +57,15 @@ class DioHelper {
     return dio!.get("/competitions/$leagueID/standings");
   }
 
-  static Future<Response> getTeamAllMatches({@required int? teamID}) async {
-    return dio!.get("/teams/$teamID/matches");
+  static Future<Response> getTeamAllMatches({
+    @required int? teamID,
+    @required String? startDate,
+    @required String? endDate,
+  }) async {
+    return dio!.get("/teams/$teamID/matches",queryParameters: {
+      'dateFrom': startDate,
+      'dateTo': endDate,
+    });
   }
 
 }

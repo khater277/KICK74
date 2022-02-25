@@ -104,9 +104,14 @@ class TeamInStanding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final Map<String,dynamic> league = cubit.leagues.firstWhere((element) =>
+    element['id']==leagueID);
+
     return InkWell(
       onTap: (){
         cubit.getTeamDetails(teamID: table[index].team!.id!);
+        cubit.getTeamAllMatches(teamID: table[index].team!.id!, fromFav: false, league: league);
         Get.to(()=>TeamScreen(leagueID: leagueID));
       },
       child: Row(

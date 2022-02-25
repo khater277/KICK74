@@ -129,13 +129,15 @@ class FavouriteTeam extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FavouriteTeamModel favouriteTeam = cubit.favouriteTeams[index];
+
+    Map<String,dynamic> league = cubit.leagues.firstWhere((element) =>
+    element['id']==favouriteTeam.leagueID!);
+
     return InkWell(
       onTap: () {
         print(favouriteTeam.leagueID!);
-        cubit.getTeamDetails(
-            teamID: favouriteTeam.team!.id,
-            fromFav: true,
-            leagueID: favouriteTeam.leagueID!);
+        cubit.getTeamDetails(teamID: favouriteTeam.team!.id,);
+        cubit.getTeamAllMatches(teamID: favouriteTeam.team!.id, fromFav: true, league: league);
         //print(cubit.scorers[favouriteTeam.leagueID]![0].player!.name);
         if(cubit.scorers[favouriteTeam.leagueID]!=null) {
           Get.to(() => TeamScreen(leagueID: cubit.favouriteTeams[index].leagueID!,));

@@ -444,13 +444,14 @@ class KickCubit extends Cubit<KickStates> {
   }
 
  TeamModel? teamModel;
-  void getTeamDetails({@required int? teamID, bool? fromFav, int? leagueID}) {
+  void getTeamDetails({@required int? teamID}) {
     if (teamModel == null || teamModel!.id != teamID) {
       emit(KickGetTeamDetailsLoadingState());
       DioHelper.getTeamDetails(teamID: teamID!).then((value) {
         teamModel = TeamModel.fromJson(value.data);
         print(teamModel!.name!);
-        getTeamAllMatches(teamID: teamID,fromFav: fromFav,leagueID: leagueID);
+        //getTeamAllMatches(teamID: teamID,fromFav: fromFav,league: league);
+        emit(KickGetTeamDetailsSuccessState());
       }).catchError((error) {
         printError("getTeamDetails", error.toString());
         emit(KickGetTeamDetailsErrorState());
@@ -518,23 +519,27 @@ class KickCubit extends Cubit<KickStates> {
   }
 
   List<team_matches.Matches> teamMatches = [];
-  void getTeamAllMatches({@required int? teamID,@required bool? fromFav,@required int? leagueID}){
+  void getTeamAllMatches({@required int? teamID,@required bool? fromFav,@required Map<String,dynamic>? league}){
+    teamMatches = [];
     emit(KickGetTeamAllMatchesLoadingState());
-    DioHelper.getTeamAllMatches(teamID: teamID)
-    .then((value){
-      team_matches.TeamAllMatchesModel? teamAllMatchesModel =
+    DioHelper.getTeamAllMatches(
+        teamID: teamID,
+      startDate: league!['startDate'],
+      endDate: league['endDate'])
+        .then((value){
+          team_matches.TeamAllMatchesModel? teamAllMatchesModel =
           team_matches.TeamAllMatchesModel.fromJson(value.data);
-      teamMatches = teamAllMatchesModel.matches!;
-      print(teamMatches[0].homeTeam!.name!);
-      if (fromFav == true) {
-        getTopScorers(leagueID: leagueID!);
-      } else {
-        emit(KickGetTeamAllMatchesSuccessState());
-      }
-    }).catchError((error){
-      printError("getTeamAllMatches", error.toString());
-      emit(KickGetTeamAllMatchesErrorState());
-    });
+          teamMatches = teamAllMatchesModel.matches!.where((element) =>
+          element.competition!.id==league['id']).toList();
+          print(teamMatches[0].homeTeam!.name!);
+          if (fromFav == true) {
+            getTopScorers(leagueID: league['id']);
+          } else {
+            emit(KickGetTeamAllMatchesSuccessState());
+          }
+        }).catchError((error){
+          printError("getTeamAllMatches", error.toString());
+          emit(KickGetTeamAllMatchesErrorState());
+        });
   }
-
 }

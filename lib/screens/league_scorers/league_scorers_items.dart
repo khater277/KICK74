@@ -63,7 +63,8 @@ class ScorersBody extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 8),
           child: DefaultSeparator(),
         ),
-        itemCount: scorers.length
+        itemCount: 10
+        //scorers.length
     );
   }
 }

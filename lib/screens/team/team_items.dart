@@ -147,6 +147,46 @@ class FoundedAndStadium extends StatelessWidget {
   }
 }
 
+class SquadAndScorersHead extends StatelessWidget {
+  final String icon;
+  final String text;
+  final Color color;
+  const SquadAndScorersHead({Key? key, required this.icon, required this.text,
+    required this.color,}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment:MainAxisAlignment.center,
+          children: [
+            ImageIcon(
+              AssetImage(icon),
+              color: darkGrey,
+              size: 20,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(text,
+                style: TextStyle(
+                  color: darkGrey,
+                  fontSize: 22,
+                  fontWeight: FontWeight.normal,
+                )),
+          ],
+        ),
+        const SizedBox(height: 2,),
+        Divider(
+          thickness: 2,
+          color: color,
+        )
+      ],
+    );
+  }
+}
+
 class TeamSquad extends StatelessWidget {
   final KickCubit cubit;
   final int leagueID;
@@ -157,36 +197,6 @@ class TeamSquad extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: grey),
-              ),
-              child: Row(
-                children: [
-                  ImageIcon(
-                    const AssetImage("assets/images/squad.png"),
-                    color: darkGrey,
-                    size: 22,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text("Squad",
-                      style: TextStyle(
-                        color: darkGrey,
-                        fontSize: 22,
-                        fontWeight: FontWeight.normal,
-                      )),
-                ],
-              ),
-            ),
-          ],
-        ),
         const SizedBox(
           height: 20,
         ),
@@ -266,52 +276,20 @@ class TeamTopScorers extends StatelessWidget {
     element.team!.id==teamID).toList();
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: darkGrey),
-              ),
-              child: Row(
-                children: [
-                  ImageIcon(
-                    const AssetImage("assets/images/matches.png"),
-                    color: darkGrey,
-                    size: 20,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text("Top Scorers",
-                      style: TextStyle(
-                        color: darkGrey,
-                        fontSize: 22,
-                        fontWeight: FontWeight.normal,
-                      )),
-                ],
-              ),
-            ),
-          ],
-        ),
         const SizedBox(
           height: 20,
         ),
-        ListView.separated(
+        ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) => ScorerPlayer(
+              index: index,
                   leagueID: leagueID,
                   teamID: teamID,
                   cubit: cubit,
                   scorer: teamScorers[index],
                 ),
-            separatorBuilder: (context, index) => const SizedBox(
-                  height: 15,
-                ),
-            itemCount:teamScorers.length>=10?10:teamScorers.length)
+            itemCount:teamScorers.length)
       ],
     );
   }
@@ -322,13 +300,14 @@ class ScorerPlayer extends StatelessWidget {
   final Scorers scorer;
   final int leagueID;
   final int teamID;
+  final int index;
 
   const ScorerPlayer({
     Key? key,
     required this.scorer,
     required this.cubit,
     required this.leagueID,
-    required this.teamID,
+    required this.teamID, required this.index,
   }) : super(key: key);
 
   @override
@@ -338,30 +317,447 @@ class ScorerPlayer extends StatelessWidget {
 
     Teams team = teams.firstWhere((element) => element.id == teamID);
 
-    return InkWell(
-      onTap: () {
-        //cubit.getPlayerDetails(playerID: scorer.player!.id!);
-        cubit.getPlayerAllDetails(
-            playerID: scorer.player!.id!, leagueID: leagueID);
-        Get.to(() => PlayerDetailsScreen(
-            leagueID: leagueID,
-            teamID: teamID,
-            teamName: team.name!,
-            teamImage: team.crestUrl!));
-      },
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 10),
+      color: index % 2 == 0 ? Colors.grey.withOpacity(0.1) : Colors.white,
+      child: InkWell(
+        onTap: () {
+          //cubit.getPlayerDetails(playerID: scorer.player!.id!);
+          cubit.getPlayerAllDetails(
+              playerID: scorer.player!.id!, leagueID: leagueID);
+          Get.to(() => PlayerDetailsScreen(
+              leagueID: leagueID,
+              teamID: teamID,
+              teamName: team.name!,
+              teamImage: team.crestUrl!));
+        },
+        child: Row(
+          children: [
+            Text(
+              "${scorer.player!.name}",
+              style: TextStyle(
+                  color: grey, fontSize: 20, fontWeight: FontWeight.normal),
+            ),
+            const Spacer(),
+            Text(
+              "${scorer.numberOfGoals!} Goal",
+              style: TextStyle(
+                  color: grey, fontSize: 18, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TeamMatchesHead extends StatelessWidget {
+  final String image;
+  final String name;
+  const TeamMatchesHead({Key? key, required this.image, required this.name}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 15),
+          decoration: BoxDecoration(
+            border: Border.all(color: grey,),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 35,height: 35,
+                child: Image.asset(image),
+              ),
+              const SizedBox(width: 10,),
+              Text("$name matches",
+                  style: TextStyle(
+                    color: darkGrey,
+                    fontSize: 20,
+                    fontWeight: FontWeight.normal,
+                  )),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class TeamMatches extends StatelessWidget {
+  final KickCubit cubit;
+  final int leagueID;
+  const TeamMatches({Key? key, required this.cubit, required this.leagueID,}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 15,
+          childAspectRatio: 1.18,
+        ),
+        itemBuilder: (context, index) =>
+            MatchInTeamMatches(
+            cubit: cubit,
+            index: index,
+          leagueID: leagueID,
+        ),
+        itemCount: cubit.teamMatches.length
+    );
+  }
+}
+
+class MatchInTeamMatches extends StatelessWidget {
+  final KickCubit cubit;
+  final int index;
+  final int leagueID;
+  const MatchInTeamMatches({Key? key, required this.cubit, required this.index, required this.leagueID}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    int leagueIndex = cubit.leaguesIDs.indexOf(leagueID)+1;
+    List<Teams> teams = cubit.leagues[leagueIndex]['teams'];
+
+    Teams homeTeam = teams.firstWhere((element) =>
+    element.id==cubit.teamMatches[index].homeTeam!.id!);
+
+    Teams awayTeam = teams.firstWhere((element) =>
+    element.id==cubit.teamMatches[index].awayTeam!.id!);
+
+    String winner = "${cubit.teamMatches[index].score!.winner}";
+    Color? matchStatusColor;
+    String? matchStatusLetter;
+    if (winner == "AWAY_TEAM") {
+      if (cubit.teamModel!.id == awayTeam.id) {
+        matchStatusColor = Colors.green;
+        matchStatusLetter = "W";
+      } else {
+        matchStatusColor = Colors.red;
+        matchStatusLetter = "L";
+      }
+    } else if (winner == "HOME_TEAM") {
+      if (cubit.teamModel!.id == homeTeam.id) {
+        matchStatusColor = Colors.green;
+        matchStatusLetter = "W";
+      } else {
+        matchStatusColor = Colors.red;
+        matchStatusLetter = "L";
+      }
+    } else {
+      matchStatusColor = havan;
+      matchStatusLetter = "D";
+    }
+
+    return Container(
+      padding: const EdgeInsets.only(top: 5),
+      decoration: BoxDecoration(
+        border: Border.all(color: grey),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: Text(
+              "Fixture ${cubit.teamMatches[index].matchday}",
+              style: TextStyle(
+                  color: grey, fontSize: 14, fontWeight: FontWeight.normal),
+            ),
+          ),
+          if(cubit.teamMatches[index].status=="FINISHED")
+            FinishedMatch(cubit: cubit, index: index, homeTeam: homeTeam, awayTeam: awayTeam,
+                matchStatusColor: matchStatusColor, matchStatusLetter: matchStatusLetter)
+          else if(cubit.teamMatches[index].status=="IN_PLAY")
+            InPlayMatch(cubit: cubit, index: index, homeTeam: homeTeam, awayTeam: awayTeam)
+          else if(cubit.teamMatches[index].status=="POSTPONED")
+            PostponedMatch(cubit: cubit, index: index, homeTeam: homeTeam, awayTeam: awayTeam)
+          else
+            ScheduledMatch(cubit: cubit, index: index, homeTeam: homeTeam, awayTeam: awayTeam),
+        ],
+      ),
+    );
+  }
+}
+
+class FinishedMatch extends StatelessWidget {
+  final KickCubit cubit;
+  final int index;
+  final Teams homeTeam;
+  final Teams awayTeam;
+  final Color matchStatusColor;
+  final String matchStatusLetter;
+  const FinishedMatch({Key? key, required this.cubit, required this.index, required this.homeTeam,
+    required this.awayTeam, required this.matchStatusColor, required this.matchStatusLetter}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
       child: Row(
         children: [
-          Text(
-            "${scorer.player!.name}",
-            style: TextStyle(
-                color: grey, fontSize: 20, fontWeight: FontWeight.normal),
+          Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  DefaultNetworkImage(
+                      url: homeTeam.crestUrl, width: 30, height: 30),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    "${cubit.teamMatches[index].score!.fullTime!.homeTeam!}",
+                    style: TextStyle(
+                        color: grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal),
+                  ),
+                ],
+              )),
+          Container(
+            width: 25,
+            height: 25,
+            decoration: BoxDecoration(
+              border: Border.all(color: matchStatusColor,width: 1.5),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Center(
+                child: Text(
+                  matchStatusLetter,
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: matchStatusColor,
+                      fontWeight: FontWeight.bold),
+                )),
           ),
-          const Spacer(),
-          Text(
-            "${scorer.numberOfGoals!} Goal",
-            style: TextStyle(
-                color: grey, fontSize: 18, fontWeight: FontWeight.normal),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DefaultNetworkImage(
+                    url: awayTeam.crestUrl, width: 30, height: 30),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  "${cubit.teamMatches[index].score!.fullTime!.awayTeam!}",
+                  style: TextStyle(
+                      color: grey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal),
+                ),
+              ],
+            ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class InPlayMatch extends StatelessWidget {
+  final KickCubit cubit;
+  final int index;
+  final Teams homeTeam;
+  final Teams awayTeam;
+  const InPlayMatch({Key? key, required this.cubit, required this.index, required this.homeTeam,
+    required this.awayTeam,}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Row(
+        children: [
+          Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  DefaultNetworkImage(
+                      url: homeTeam.crestUrl, width: 30, height: 30),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    "${cubit.teamMatches[index].score!.fullTime!.homeTeam!}",
+                    style: TextStyle(
+                        color: grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal),
+                  ),
+                ],
+              )),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 10),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(5)
+            ),
+            child: const Text(
+              "Live",
+              style: TextStyle(
+                  color: Colors.white,
+                fontSize:15,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DefaultNetworkImage(
+                    url: awayTeam.crestUrl, width: 30, height: 30),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  "${cubit.teamMatches[index].score!.fullTime!.awayTeam!}",
+                  style: TextStyle(
+                      color: grey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PostponedMatch extends StatelessWidget {
+  final KickCubit cubit;
+  final int index;
+  final Teams homeTeam;
+  final Teams awayTeam;
+  const PostponedMatch({Key? key, required this.cubit, required this.index, required this.homeTeam,
+    required this.awayTeam}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      DefaultNetworkImage(
+                          url: homeTeam.crestUrl, width: 30, height: 30),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                    ],
+                  )),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DefaultNetworkImage(
+                        url: awayTeam.crestUrl, width: 30, height: 30),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 10),
+              decoration: BoxDecoration(
+                  color: havan,
+                  borderRadius: BorderRadius.circular(3)
+              ),
+              child: const Text(
+                "POSTPONED",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ScheduledMatch extends StatelessWidget {
+  final KickCubit cubit;
+  final int index;
+  final Teams homeTeam;
+  final Teams awayTeam;
+  const ScheduledMatch({Key? key, required this.cubit, required this.index, required this.homeTeam,
+    required this.awayTeam}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            timeFormat(cubit.teamMatches[index].utcDate!),
+            style: TextStyle(
+                fontSize: 13,
+                color: darkGrey,
+                fontWeight: FontWeight.normal
+            ),
+          ),
+          const SizedBox(height: 8,),
+          Row(
+            children: [
+              Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      DefaultNetworkImage(
+                          url: homeTeam.crestUrl, width: 30, height: 30),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                    ],
+                  )),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DefaultNetworkImage(
+                        url: awayTeam.crestUrl, width: 30, height: 30),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          //const SizedBox(height: 3,),
+          Text(
+            cubit.teamMatches[index].utcDate!.substring(0,10),
+            style: TextStyle(
+                fontSize: 13,
+                color: darkGrey,
+                fontWeight: FontWeight.normal
+            ),
+          ),
+          const SizedBox(height: 2,),
         ],
       ),
     );

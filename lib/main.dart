@@ -12,7 +12,6 @@ import 'package:kick74/network/reomte/dio_helper.dart';
 import 'package:kick74/screens/home/home_screen.dart';
 import 'package:kick74/screens/onBoarding/onBoarding_screen.dart';
 import 'package:kick74/screens/opening/opening_screen.dart';
-import 'package:kick74/screens/select_language/select_language_screen.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/styles/themes.dart';
