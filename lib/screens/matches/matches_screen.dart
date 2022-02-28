@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/cubit/kick_states.dart';
 import 'package:kick74/screens/matches/matches_items.dart';
+import 'package:kick74/shared/default_widgets.dart';
 
 class MatchesScreen extends StatelessWidget {
   const MatchesScreen({Key? key}) : super(key: key);
@@ -14,7 +15,7 @@ class MatchesScreen extends StatelessWidget {
       builder: (context, state) {
         KickCubit cubit = KickCubit.get(context);
         return Scaffold(
-          body: Column(
+          body: OfflineWidget(onlineWidget: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -26,12 +27,12 @@ class MatchesScreen extends StatelessWidget {
                       itemBuilder: (context, index) => index == 0
                           ? MyTeamsButton(cubit: cubit)
                           : LeagueButton(
-                              index: index - 1,
-                              cubit: cubit,
-                            ),
+                        index: index - 1,
+                        cubit: cubit,
+                      ),
                       separatorBuilder: (context, index) => const SizedBox(
-                            width: 15,
-                          ),
+                        width: 15,
+                      ),
                       itemCount: 7),
                 ),
               ),
@@ -43,10 +44,10 @@ class MatchesScreen extends StatelessWidget {
                   matches: cubit.leagueIndex == 0
                       ? cubit.shownMatches[0]!
                       : cubit.shownMatches[
-                          cubit.leaguesIDs[cubit.leagueIndex - 1]]!,
+                  cubit.leaguesIDs[cubit.leagueIndex - 1]]!,
                 ),
             ],
-          ),
+          )),
         );
       },
     );

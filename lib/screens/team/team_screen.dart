@@ -26,108 +26,122 @@ class TeamScreen extends StatelessWidget {
             cubit.teamMatches.isNotEmpty
         ) {
           return Scaffold(
-            appBar: AppBar(
-              leading: const BuildBackButton(),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    TeamHead(cubit: cubit),
-                    const SizedBox(
-                      height: 30,
+            body: OfflineWidget(onlineWidget: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  pinned: false,
+                  snap: false,
+                  floating: false,
+                  expandedHeight: 220.0,
+                  leading: const BuildBackButton(),
+                  flexibleSpace: FlexibleSpaceBar(
+                    //title: Text('SliverAppBar'),
+                    background: Padding(
+                      padding: const EdgeInsets.only(top: 120),
+                      child: TeamHead(cubit: cubit),
                     ),
-                    FoundedAndStadium(cubit: cubit,leagueID: leagueID,),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    TeamDetailsItem(
-                        icon: "assets/images/location.png",
-                        text: "${cubit.teamModel!.address}"),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TeamDetailsItem(
-                        icon: "assets/images/phone.png",
-                        text: "${cubit.teamModel!.phone}"),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TeamDetailsItem(
-                        icon: "assets/images/email.png",
-                        text: "${cubit.teamModel!.email}"),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TeamDetailsItem(
-                        isLink: true,
-                        icon: "assets/images/website.png",
-                        text: "${cubit.teamModel!.website}"),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    TeamMatchesHead(image: league['image'], name: league['name']),
-                    const SizedBox(height: 20,),
-                    TeamMatches(cubit: cubit, leagueID: leagueID),
-                    const SizedBox(height: 40,),
-                    ValueListenableBuilder(
-                      valueListenable: isSquad,
-                      builder: (BuildContext context, bool value, Widget? child) {
-                        return Row(
-                          children: [
-                            Expanded(
-                                child: TextButton(
-                                  onPressed: (){
-                                    isSquad.value=true;
-                                    print("${isSquad.value}");
-                                  },
-                                  child: SquadAndScorersHead(
-                                    icon: "assets/images/player.png",
-                                    text: "Squad",
-                                    color: isSquad.value?havan:Colors.white,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          FoundedAndStadium(cubit: cubit,leagueID: leagueID,),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          TeamDetailsItem(
+                              icon: "assets/images/location.png",
+                              text: "${cubit.teamModel!.address}"),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TeamDetailsItem(
+                              icon: "assets/images/phone.png",
+                              text: "${cubit.teamModel!.phone}"),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TeamDetailsItem(
+                              icon: "assets/images/email.png",
+                              text: "${cubit.teamModel!.email}"),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TeamDetailsItem(
+                              isLink: true,
+                              icon: "assets/images/website.png",
+                              text: "${cubit.teamModel!.website}"),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          TeamMatchesHead(image: league['image'], name: league['name']),
+                          //const SizedBox(height: 20,),
+                          TeamMatches(cubit: cubit, leagueID: leagueID),
+                          const SizedBox(height: 50,),
+                          ValueListenableBuilder(
+                            valueListenable: isSquad,
+                            builder: (BuildContext context, bool value, Widget? child) {
+                              return Row(
+                                children: [
+                                  Expanded(
+                                      child: TextButton(
+                                        onPressed: (){
+                                          isSquad.value=true;
+                                          print("${isSquad.value}");
+                                        },
+                                        child: SquadAndScorersHead(
+                                          icon: "assets/images/player.png",
+                                          text: "Squad",
+                                          color: isSquad.value?havan:Colors.white,
+                                        ),
+                                      )
                                   ),
-                                )
-                            ),
-                              Expanded(
-                                    child: TextButton(
+                                  Expanded(
+                                      child: TextButton(
                                         onPressed: (){
                                           isSquad.value=false;
                                           print("${isSquad.value}");
                                         },
                                         child:  SquadAndScorersHead(
-                                            icon: "assets/images/matches.png",
-                                            text: "Top scorers",
+                                          icon: "assets/images/matches.png",
+                                          text: "Top scorers",
                                           color: !isSquad.value?havan:Colors.white,
                                         ),
-                                    )
-                                ),
-                          ],
-                        );
-                        },
+                                      )
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                          ValueListenableBuilder(
+                            valueListenable: isSquad,
+                            builder: (BuildContext context, value, Widget? child) {
+                              if(isSquad.value) {
+                                return TeamSquad(
+                                  cubit: cubit,
+                                  leagueID: leagueID,
+                                );
+                              } else {
+                                return TeamTopScorers(
+                                    cubit: cubit,
+                                    leagueID: leagueID,
+                                    teamID: cubit.teamModel!.id!
+                                );
+                              }
+                            },
+                          )
+                        ],
+                      ),
                     ),
-                    ValueListenableBuilder(
-                      valueListenable: isSquad,
-                      builder: (BuildContext context, value, Widget? child) {
-                        if(isSquad.value) {
-                          return TeamSquad(
-                            cubit: cubit,
-                            leagueID: leagueID,
-                          );
-                        } else {
-                          return TeamTopScorers(
-                              cubit: cubit,
-                              leagueID: leagueID,
-                              teamID: cubit.teamModel!.id!
-                          );
-                        }
-                      },
-                    )
-                  ],
-                ),
-              ),
-            ),
+                  ),
+                )
+              ],
+            ),),
           );
         } else {
           return const Scaffold(

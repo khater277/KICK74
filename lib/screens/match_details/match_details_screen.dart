@@ -30,52 +30,52 @@ class MatchDetailsScreen extends StatelessWidget {
           ),
           body: state is! KickGetMatchDetailsLoadingState &&
                   state is! KickGetLeagueTopScorersLoadingState
-              ? Padding(
-                  padding: const EdgeInsets.only(top:10,bottom: 20),
+              ? OfflineWidget(onlineWidget: Padding(
+            padding: const EdgeInsets.only(top:10,bottom: 20),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: [
-                            const Head2Head(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                TeamPicAndName(
-                                  leagueID: leagueID,
-                                    teamID: awayTeam.id!,
-                                    teamName: awayTeam.shortName!,
-                                    teamImage: awayTeam.crestUrl!),
-                                Head2HeadDetails(cubit: cubit),
-                                TeamPicAndName(
-                                  leagueID: leagueID,
-                                    teamID: homeTeam.id!,
-                                    teamName: homeTeam.shortName!,
-                                    teamImage: homeTeam.crestUrl!),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            MatchInfo(cubit: cubit),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            TeamBestPlayer(
-                                cubit: cubit,
-                                leagueID: leagueID,
-                                homeTeam: homeTeam,
-                                awayTeam: awayTeam),
-                          ],
-                        ),
-                      )
+                      const Head2Head(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          TeamPicAndName(
+                              leagueID: leagueID,
+                              teamID: awayTeam.id!,
+                              teamName: awayTeam.shortName!,
+                              teamImage: awayTeam.crestUrl!),
+                          Head2HeadDetails(cubit: cubit),
+                          TeamPicAndName(
+                              leagueID: leagueID,
+                              teamID: homeTeam.id!,
+                              teamName: homeTeam.shortName!,
+                              teamImage: homeTeam.crestUrl!),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      MatchInfo(cubit: cubit),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      TeamBestPlayer(
+                          cubit: cubit,
+                          leagueID: leagueID,
+                          homeTeam: homeTeam,
+                          awayTeam: awayTeam),
                     ],
                   ),
                 )
+              ],
+            ),
+          ))
               : const DefaultProgressIndicator(icon: IconBroken.Work,size: 35,),
         );
       },

@@ -24,10 +24,10 @@ class HomeScreen extends StatelessWidget {
                 state is! KickGetLeagueTeamsSuccessState &&
                 cubit.leagues[0]['teams'].length == cubit.leaguesIDs.length
             ? Scaffold(
-                body: SafeArea(
+                body: OfflineWidget(onlineWidget: SafeArea(
                     top: true,
                     bottom: false,
-                    child: cubit.screens[cubit.currentIndex]),
+                    child: cubit.screens[cubit.currentIndex])),
                 extendBody: true,
                 bottomNavigationBar: Padding(
                   padding: const EdgeInsets.only(bottom: 10),

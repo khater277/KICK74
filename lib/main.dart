@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             home: Directionality(
                 textDirection:
-                    languageFun(ar: TextDirection.rtl, en: TextDirection.ltr),
+                languageFun(ar: TextDirection.rtl, en: TextDirection.ltr),
                 child: homeWidget),
             theme: lightTheme,
             darkTheme: darkTheme,

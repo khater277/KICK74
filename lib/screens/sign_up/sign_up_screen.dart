@@ -6,6 +6,7 @@ import 'package:kick74/screens/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_states.dart';
 import 'package:kick74/screens/sign_up/sign_up_items.dart';
 import 'package:kick74/shared/constants.dart';
+import 'package:kick74/shared/default_widgets.dart';
 
 
 class SignUpScreen extends StatefulWidget {
@@ -39,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         SignUpCubit cubit = SignUpCubit.get(context);
         return Scaffold(
           backgroundColor: offWhite,
-          body: Padding(
+          body: OfflineWidget(onlineWidget: Padding(
             padding: const EdgeInsets.all(25.0),
             child: SingleChildScrollView(
               child: Column(
@@ -82,7 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ],
               ),
             ),
-          ),
+          )),
         );
       },
     );

@@ -28,43 +28,60 @@ class PlayerDetailsScreen extends StatelessWidget {
         if (state is! KickGetPlayerAllDetailsLoadingState&&
             cubit.playerAllDetailsModel!=null) {
           return Scaffold(
-            appBar: AppBar(
-              leading: const BuildBackButton(),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(20),
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    PlayerHead(
-                      teamName: teamName,
-                      teamImage: teamImage,
-                      cubit: cubit,
+            body: OfflineWidget(onlineWidget: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  pinned: false,
+                  snap: false,
+                  floating: false,
+                  expandedHeight: 220.0,
+                  leading: const BuildBackButton(),
+                  flexibleSpace: FlexibleSpaceBar(
+                    //title: Text('SliverAppBar'),
+                    background: Padding(
+                      padding: const EdgeInsets.only(top: 120),
+                      child: PlayerHead(
+                        teamName: teamName,
+                        teamImage: teamImage,
+                        cubit: cubit,
+                      ),
                     ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    PlayerDetails(
-                      teamID: teamID,
-                      cubit: cubit,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    MatchesPlayedHead(cubit: cubit, leagueID: leagueID),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    MatchesPlayed(
-                      cubit: cubit,
-                      leagueID: leagueID,
-                      teamID: teamID,
-                    )
-                  ],
+                  ),
                 ),
-              ),
-            ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          PlayerDetails(
+                            teamID: teamID,
+                            cubit: cubit,
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          MatchesPlayedHead(cubit: cubit, leagueID: leagueID),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          MatchesPlayed(
+                            cubit: cubit,
+                            leagueID: leagueID,
+                            teamID: teamID,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            )),
           );
         } else {
           return const Scaffold(

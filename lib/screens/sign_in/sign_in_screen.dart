@@ -37,10 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
         SignInCubit cubit = SignInCubit.get(context);
         return Scaffold(
           backgroundColor: offWhite,
-          body:
-          // state is! GoogleSignInLoadingState&&
-          //     state is! SignInCreateUserLoadingState?
-          Padding(
+          body:OfflineWidget(onlineWidget: Padding(
             padding: const EdgeInsets.all(25.0),
             child: SingleChildScrollView(
               child: Column(
@@ -81,8 +78,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ],
               ),
             ),
-          ),
-              //:const DefaultProgressIndicator(icon: IconBroken.Home),
+          ))
         );
       },
     ),

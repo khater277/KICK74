@@ -592,17 +592,11 @@ class KickCubit extends Cubit<KickStates> {
         });
   }
 
-  bool viewAllLoading = false;
-  void viewAllScorers(bool isLoading){
-    viewAllLoading = isLoading;
-    emit(KickViewAllScorersLoadingState());
+  void test(){
+    Future.delayed(const Duration(minutes: 1)).then((value){
+
+      getAllMatches();
+    });
   }
 
-  bool isStanding = true;
-  bool isScorers = false;
-  void standingAndScorersToggle({@required bool? standing,@required bool? scorers}){
-    isStanding=standing!;
-    isScorers=scorers!;
-    emit(KickStandingScorersToggleSuccessState());
-  }
 }

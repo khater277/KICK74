@@ -197,22 +197,15 @@ class TeamSquad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 20,
-        ),
-        ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) => PlayerInSquad(
-                  cubit: cubit,
-                  index: index,
-                  leagueID: leagueID,
-                ),
-            itemCount: cubit.teamModel!.squad!.length)
-      ],
-    );
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => PlayerInSquad(
+              cubit: cubit,
+              index: index,
+              leagueID: leagueID,
+            ),
+        itemCount: cubit.teamModel!.squad!.length);
   }
 }
 
@@ -276,24 +269,17 @@ class TeamTopScorers extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Scorers> teamScorers = cubit.scorers[leagueID]!.where((element) =>
     element.team!.id==teamID).toList();
-    return Column(
-      children: [
-        const SizedBox(
-          height: 20,
-        ),
-        ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) => ScorerPlayer(
-              index: index,
-                  leagueID: leagueID,
-                  teamID: teamID,
-                  cubit: cubit,
-                  scorer: teamScorers[index],
-                ),
-            itemCount:teamScorers.length)
-      ],
-    );
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => ScorerPlayer(
+          index: index,
+              leagueID: leagueID,
+              teamID: teamID,
+              cubit: cubit,
+              scorer: teamScorers[index],
+            ),
+        itemCount:teamScorers.length);
   }
 }
 
@@ -478,7 +464,7 @@ class MatchInTeamMatches extends StatelessWidget {
           if(cubit.teamMatches[index].status=="FINISHED")
             FinishedMatch(cubit: cubit, index: index, homeTeam: homeTeam, awayTeam: awayTeam,
                 matchStatusColor: matchStatusColor, matchStatusLetter: matchStatusLetter)
-          else if(cubit.teamMatches[index].status=="IN_PLAY")
+          else if(cubit.teamMatches[index].status=="IN_PLAY"||cubit.teamMatches[index].status=="PAUSED")
             InPlayMatch(cubit: cubit, index: index, homeTeam: homeTeam, awayTeam: awayTeam)
           else if(cubit.teamMatches[index].status=="POSTPONED")
             PostponedMatch(cubit: cubit, index: index, homeTeam: homeTeam, awayTeam: awayTeam)

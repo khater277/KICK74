@@ -265,7 +265,7 @@ class MatchItem extends StatelessWidget {
              cubit: cubit, matches: matches,
              homeTeam: homeTeam, awayTeam: awayTeam,
              index: index, leagueIndex: leagueIndex)
-        else if(matches[index].status=="IN_PLAY")
+        else if(matches[index].status=="IN_PLAY"||matches[index].status=="PAUSED")
           InPlayMatch(
               cubit: cubit, matches: matches,
               homeTeam: homeTeam, awayTeam: awayTeam,
@@ -538,6 +538,7 @@ class InPlayMatchInfo extends StatelessWidget {
     );
   }
 }
+
 
 class FinishedMatch extends StatelessWidget {
   final KickCubit cubit;

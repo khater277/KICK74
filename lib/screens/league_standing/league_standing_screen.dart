@@ -15,7 +15,7 @@ class LeagueStandingScreen extends StatelessWidget {
         child: Column(
           children: [
             const StandingDetails(),
-            const SizedBox(height: 20,),
+            //const SizedBox(height: 20,),
             StandingBody(cubit: cubit, leagueID: leagueID),
           ],
         )

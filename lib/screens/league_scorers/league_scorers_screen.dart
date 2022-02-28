@@ -18,7 +18,6 @@ class LeagueScorersScreen extends StatelessWidget {
         child: Column(
           children: [
             const ScorersDetails(),
-            const SizedBox(height: 20,),
             ScorersBody(cubit: cubit, leagueID: leagueID,length: 20,),
             const SizedBox(height: 10,),
             TextButton(

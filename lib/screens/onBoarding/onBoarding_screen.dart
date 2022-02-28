@@ -52,7 +52,7 @@ class OnBoardingScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                body: Column(
+                body: OfflineWidget(onlineWidget: Column(
                   children: [
                     TeamsBuilder(
                       cubit: cubit,
@@ -62,7 +62,7 @@ class OnBoardingScreen extends StatelessWidget {
                       cubit: cubit,
                     ),
                   ],
-                ),
+                )),
               )
             : const Scaffold(
                 body: DefaultProgressIndicator(icon: IconBroken.Heart,size: 35,),

@@ -25,7 +25,7 @@ class FavouritesScreen extends StatelessWidget {
               icon: const BackIcon(size: 22),
             ),
           ),
-          body: Padding(
+          body: OfflineWidget(onlineWidget: Padding(
             padding: const EdgeInsets.only(top: 10,bottom: 20),
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -44,7 +44,7 @@ class FavouritesScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+          )),
         );
       },
     );
