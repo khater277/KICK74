@@ -25,7 +25,8 @@ class PlayerDetailsScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         KickCubit cubit = KickCubit.get(context);
-        if (state is! KickGetPlayerAllDetailsLoadingState) {
+        if (state is! KickGetPlayerAllDetailsLoadingState&&
+            cubit.playerAllDetailsModel!=null) {
           return Scaffold(
             appBar: AppBar(
               leading: const BuildBackButton(),
@@ -67,7 +68,7 @@ class PlayerDetailsScreen extends StatelessWidget {
           );
         } else {
           return const Scaffold(
-            body: DefaultProgressIndicator(icon: IconBroken.Activity,size: 35,),
+            body: DefaultProgressIndicator(icon: IconBroken.Profile,size: 35,),
           );
         }
       },

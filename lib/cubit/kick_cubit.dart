@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart' as dio;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ import 'package:kick74/screens/profile/profile_screen.dart';
 import 'package:kick74/screens/settings/settings_screen.dart';
 import 'package:kick74/screens/sign_in/sign_in_screen.dart';
 import 'package:kick74/shared/constants.dart';
+import 'package:kick74/shared/default_widgets.dart';
 
 class KickCubit extends Cubit<KickStates> {
   KickCubit() : super(KickInitState());
@@ -122,7 +124,12 @@ class KickCubit extends Cubit<KickStates> {
       userModel = UserModel.fromJson(value.data()!);
       emit(KickGetUserDataSuccessState());
     }).catchError((error) {
-      printError("getUserData", error.toString());
+      dio.DioError e = error;
+      if(e.response!.statusCode == 429){
+        Get.back();
+        showSnackBar();
+      }
+      printError("getUserData", e.response!.statusCode!.toString());
       emit(KickGetUserDataErrorState());
     });
   }
@@ -208,7 +215,12 @@ class KickCubit extends Cubit<KickStates> {
       print(shownMatches[0]!.length);
       emit(KickGetAllMatchesSuccessState());
     }).catchError((error) {
-      printError("getAllMatches", error.toString());
+      dio.DioError e = error;
+      if(e.response!.statusCode == 429){
+        Get.back();
+        showSnackBar();
+      }
+      printError("getAllMatches", e.response!.statusCode!.toString());
       emit(KickGetAllMatchesErrorState());
     });
   }
@@ -240,7 +252,12 @@ class KickCubit extends Cubit<KickStates> {
         leagues[i + 1]['endDate'] = leagueTeamsModel.season!.endDate;
         emit(KickGetLeagueTeamsSuccessState());
       }).catchError((error) {
-        printError("getLeagueTeams", error.toString());
+        dio.DioError e = error;
+        if(e.response!.statusCode == 429){
+          Get.back();
+          showSnackBar();
+        }
+        printError("getAllMatches", e.response!.statusCode!.toString());
         emit(KickGetLeagueTeamsErrorState());
       });
     }
@@ -302,6 +319,7 @@ class KickCubit extends Cubit<KickStates> {
       getFavouritesMatches();
       emit(KickAddToFavouritesSuccessState());
     }).catchError((error) {
+      printError("AddToFavourites", error.toString());
       emit(KickAddToFavouritesErrorState());
     });
   }
@@ -319,6 +337,7 @@ class KickCubit extends Cubit<KickStates> {
       getFavouritesMatches();
       emit(KickRemoveFromFavouritesSuccessState());
     }).catchError((error) {
+      printError("RemoveToFavourites", error.toString());
       emit(KickRemoveFromFavouritesErrorState());
     });
   }
@@ -412,7 +431,12 @@ class KickCubit extends Cubit<KickStates> {
         print(matchDetailsModel!.match!.venue);
         getTopScorers(leagueID: leagueID);
       }).catchError((error) {
-        printError("getMatchDetails", error.toString());
+        dio.DioError e = error;
+        if(e.response!.statusCode == 429){
+          Get.back();
+          showSnackBar();
+        }
+        printError("getMatchDetails", e.response!.statusCode!.toString());
         emit(KickGetMatchDetailsErrorState());
       });
     }
@@ -435,7 +459,12 @@ class KickCubit extends Cubit<KickStates> {
         print(scorers[leagueID]![0].player!.name);
         emit(KickGetLeagueTopScorersSuccessState());
       }).catchError((error) {
-        printError("getTopScorers", error.toString());
+        dio.DioError e = error;
+        if(e.response!.statusCode == 429){
+          Get.back();
+          showSnackBar();
+        }
+        printError("getTopScorers", e.response!.statusCode!.toString());
         emit(KickGetLeagueTopScorersErrorState());
       });
     } else {
@@ -453,7 +482,12 @@ class KickCubit extends Cubit<KickStates> {
         //getTeamAllMatches(teamID: teamID,fromFav: fromFav,league: league);
         emit(KickGetTeamDetailsSuccessState());
       }).catchError((error) {
-        printError("getTeamDetails", error.toString());
+        dio.DioError e = error;
+        if(e.response!.statusCode == 429){
+          Get.back();
+          showSnackBar();
+        }
+        printError("getTeamDetails", e.response!.statusCode!.toString());
         emit(KickGetTeamDetailsErrorState());
       });
     }
@@ -480,8 +514,13 @@ class KickCubit extends Cubit<KickStates> {
         print(playerAllDetailsModel!.player!.name);
         emit(KickGetPlayerAllDetailsSuccessState());
       }).catchError((error) {
-        printError("getPlayerAllDetails", error.toString());
-        emit(KickGetPlayerAllDetailsLoadingState());
+        dio.DioError e = error;
+        if(e.response!.statusCode == 429){
+          Get.back();
+          showSnackBar();
+        }
+        printError("getPlayerAllDetails", e.response!.statusCode!.toString());
+        emit(KickGetPlayerAllDetailsErrorState());
       });
     } else {
       emit(KickGetPlayerAllDetailsSuccessState());
@@ -510,7 +549,12 @@ class KickCubit extends Cubit<KickStates> {
         print(leaguesStandings[leagueID]![0].table![4].team!.name!);
         emit(KickGetLeagueStandingsSuccessState());
       }).catchError((error){
-        printError("getLeagueStandings", error.toString());
+        dio.DioError e = error;
+        if(e.response!.statusCode == 429){
+          Get.back();
+          showSnackBar();
+        }
+        printError("getLeagueStandings", e.response!.statusCode!.toString());
         emit(KickGetLeagueStandingsErrorState());
       });
     }else{
@@ -538,8 +582,27 @@ class KickCubit extends Cubit<KickStates> {
             emit(KickGetTeamAllMatchesSuccessState());
           }
         }).catchError((error){
-          printError("getTeamAllMatches", error.toString());
+          dio.DioError e = error;
+          if(e.response!.statusCode == 429){
+            Get.back();
+            showSnackBar();
+          }
+          printError("getTeamAllMatches", e.response!.statusCode!.toString());
           emit(KickGetTeamAllMatchesErrorState());
         });
+  }
+
+  bool viewAllLoading = false;
+  void viewAllScorers(bool isLoading){
+    viewAllLoading = isLoading;
+    emit(KickViewAllScorersLoadingState());
+  }
+
+  bool isStanding = true;
+  bool isScorers = false;
+  void standingAndScorersToggle({@required bool? standing,@required bool? scorers}){
+    isStanding=standing!;
+    isScorers=scorers!;
+    emit(KickStandingScorersToggleSuccessState());
   }
 }

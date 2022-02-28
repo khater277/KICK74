@@ -136,37 +136,34 @@ class PlayerDetails extends StatelessWidget {
       children: [
         Row(
           children: [
-            if (cubit.playerAllDetailsModel!.player!.firstName != null)
               Flexible(
                   child: PlayerDetailItem(
                       title: "First Name",
                       description:
-                          cubit.playerAllDetailsModel!.player!.firstName!)),
-            if (cubit.playerAllDetailsModel!.player!.lastName != null)
+                          cubit.playerAllDetailsModel!.player!.firstName??"Unknown")),
               Flexible(
                   child: PlayerDetailItem(
                       title: "Last Name",
                       description:
-                          cubit.playerAllDetailsModel!.player!.lastName!)),
+                          cubit.playerAllDetailsModel!.player!.lastName??"Unknown")),
           ],
         ),
         const SizedBox(
           height: 10,
         ),
-        if (cubit.playerAllDetailsModel!.player!.dateOfBirth != null)
           Row(
             children: [
               Flexible(
                   child: PlayerDetailItem(
                       title: "Born",
                       description:
-                          cubit.playerAllDetailsModel!.player!.dateOfBirth!)),
+                          cubit.playerAllDetailsModel!.player!.dateOfBirth??"Unknown")),
               Flexible(
                   child: PlayerDetailItem(
                       title: "Age",
                       description: ageFormat(
                           date: cubit
-                              .playerAllDetailsModel!.player!.dateOfBirth!))),
+                              .playerAllDetailsModel!.player!.dateOfBirth??"Unknown"))),
             ],
           ),
         const SizedBox(
@@ -174,18 +171,16 @@ class PlayerDetails extends StatelessWidget {
         ),
         Row(
           children: [
-            if (cubit.playerAllDetailsModel!.player!.nationality != null)
               Flexible(
                   child: PlayerDetailItem(
                       title: "Nationality",
                       description:
-                          cubit.playerAllDetailsModel!.player!.nationality!)),
-            if (cubit.playerAllDetailsModel!.player!.countryOfBirth != null)
+                          cubit.playerAllDetailsModel!.player!.nationality??"Unknown")),
               Flexible(
                   child: PlayerDetailItem(
                       title: "Country Of Birth",
                       description: cubit
-                          .playerAllDetailsModel!.player!.countryOfBirth!)),
+                          .playerAllDetailsModel!.player!.countryOfBirth??"Unknown")),
           ],
         ),
         const SizedBox(
@@ -197,7 +192,7 @@ class PlayerDetails extends StatelessWidget {
                 child: PlayerDetailItem(
                     title: "Position",
                     description:
-                        cubit.playerAllDetailsModel!.player!.position!)),
+                        cubit.playerAllDetailsModel!.player!.position??"Unknown")),
             Flexible(
                 child: PlayerDetailItem(
                     title: "Goals this season", description: "$numberOfGoals")),

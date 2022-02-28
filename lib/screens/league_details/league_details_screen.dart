@@ -8,7 +8,7 @@ import 'package:kick74/screens/league_standing/league_standing_screen.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
 import 'package:kick74/styles/icons_broken.dart';
-import 'package:kick74/models/LeagueStandingModel.dart' as standing;
+
 
 class LeagueDetailsScreen extends StatelessWidget {
   final int leagueID;
@@ -20,7 +20,6 @@ class LeagueDetailsScreen extends StatelessWidget {
       listener: (context,state){},
       builder: (context,state){
         KickCubit cubit = KickCubit.get(context);
-        final visableNotifier = ValueNotifier<bool>(true);
         if (state is! KickGetLeagueStandingsLoadingState) {
           return Scaffold(
             appBar: AppBar(
@@ -40,21 +39,15 @@ class LeagueDetailsScreen extends StatelessWidget {
                          Expanded(
                              child: InkWell(
                                onTap:(){
-                                 visableNotifier.value = true;
-                                 //cubit.standingAndScorersToggle(standing: true, scorers: false);
+                                 cubit.standingAndScorersToggle(standing: true, scorers: false);
                                },
                                child: Column(
                                  children: [
                                    const StandingAndScorers(text: "Standing"),
                                    const SizedBox(height: 5,),
-                                   ValueListenableBuilder(
-                                     valueListenable: visableNotifier,
-                                     builder: (BuildContext context, bool value, Widget? child) {
-                                       return Divider(
-                                         thickness: 2,
-                                         color:value?havan:Colors.white,
-                                       );
-                                     },
+                                   Divider(
+                                     thickness: 2,
+                                     color:cubit.isStanding?havan:Colors.white,
                                    )
                                  ],
                                ),
@@ -62,21 +55,15 @@ class LeagueDetailsScreen extends StatelessWidget {
                          Expanded(
                              child: InkWell(
                                onTap:(){
-                                 visableNotifier.value = false;
-                                 //cubit.standingAndScorersToggle(standing: false, scorers: true);
+                                 cubit.standingAndScorersToggle(standing: false, scorers: true);
                                },
                                child: Column(
                                  children: [
                                    const StandingAndScorers(text: "Scorers"),
                                    const SizedBox(height: 5,),
-                                   ValueListenableBuilder(
-                                     valueListenable: visableNotifier,
-                                     builder: (BuildContext context, bool value, Widget? child) {
-                                       return Divider(
-                                         thickness: 2,
-                                         color:value?Colors.white:havan,
-                                       );
-                                     },
+                                   Divider(
+                                     thickness: 2,
+                                     color:cubit.isStanding?Colors.white:havan,
                                    )
                                  ],
                                ),
@@ -84,20 +71,14 @@ class LeagueDetailsScreen extends StatelessWidget {
                        ],
                      ),
                     const SizedBox(height: 20,),
-                    ValueListenableBuilder(
-                      valueListenable: visableNotifier,
-                      builder: (BuildContext context, bool value, Widget? child) {
-                        return Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            if(value)
-                              LeagueStandingScreen(cubit: cubit, leagueID: leagueID)
-                            else
-                              LeagueScorersScreen(cubit: cubit, leagueID: leagueID),
-                          ],
-                        );
-                      },
-
+                    Column(
+                      children: [
+                        const SizedBox(height: 10,),
+                        if(cubit.isStanding)
+                          LeagueStandingScreen(cubit: cubit, leagueID: leagueID)
+                        else
+                          LeagueScorersScreen(cubit: cubit, leagueID: leagueID),
+                      ],
                     ),
                      const SizedBox(height: 30,),
                   ],

@@ -14,6 +14,37 @@ import 'package:transparent_image/transparent_image.dart';
 
 import 'constants.dart';
 
+
+SnackbarController showSnackBar (){
+  return Get.snackbar(
+      "Please wait...",
+      "we are poor, only have 10 requests per minute",
+      titleText: const Text("Please wait..",
+        style: TextStyle(
+            fontSize: 20,
+            color: Colors.white
+        ),),
+      messageText: const Text(
+        "we are poor, only have 10 requests per minute",
+        style: TextStyle(
+            fontSize: 16,
+            color: Colors.white
+        ),
+      ),
+      icon: const Icon(
+        IconBroken.Danger,
+        color: Colors.white,
+        size: 30,),
+      duration: const Duration(seconds: 5),
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: havan,
+      borderRadius: 10,
+      margin: const EdgeInsets.symmetric(vertical: 12,horizontal: 15)
+    //padding: const EdgeInsets.all(0)
+  );
+}
+
+
 class NoLeadingSpaceFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(

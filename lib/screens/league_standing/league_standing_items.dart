@@ -26,27 +26,36 @@ class StandingDetails extends StatelessWidget {
         Expanded(
           child: Row(
             children: [
-              Expanded(
+              const Expanded(
                 child: Text(
-                  "P",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: darkGrey,
-                  ),
-                  textAlign: TextAlign.end,
+                  "",
                 ),
               ),
               //const SizedBox(width: 20,),
               Expanded(
-                child: Text(
-                  "+ / -",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: darkGrey,
-                  ),
-                  textAlign: TextAlign.end,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "P",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: darkGrey,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    Text(
+                      "+ / -",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: darkGrey,
+                      ),
+                      textAlign: TextAlign.end,
+                    ),
+                  ],
                 ),
               ),
               //const SizedBox(width: 20,),

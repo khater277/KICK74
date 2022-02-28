@@ -44,7 +44,8 @@ class ScorersDetails extends StatelessWidget {
 class ScorersBody extends StatelessWidget {
   final KickCubit cubit;
   final int leagueID;
-  const ScorersBody({Key? key, required this.cubit, required this.leagueID}) : super(key: key);
+  final int length;
+  const ScorersBody({Key? key, required this.cubit, required this.leagueID, required this.length}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class ScorersBody extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 8),
           child: DefaultSeparator(),
         ),
-        itemCount: 10
+        itemCount: length
         //scorers.length
     );
   }
@@ -142,5 +143,14 @@ class PlayerInScorers extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class ViewAll extends StatelessWidget {
+  const ViewAll({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

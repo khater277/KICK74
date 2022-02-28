@@ -28,6 +28,7 @@ class FavouritesScreen extends StatelessWidget {
           body: Padding(
             padding: const EdgeInsets.only(top: 10,bottom: 20),
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   LeagueBuilder(league: cubit.leagues[1]),

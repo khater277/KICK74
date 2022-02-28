@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
@@ -7,6 +8,7 @@ import 'package:kick74/screens/league_details/league_details_screen.dart';
 import 'package:kick74/screens/player_details/player_details_screen.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
+import 'package:kick74/styles/icons_broken.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TeamHead extends StatelessWidget {
@@ -227,22 +229,22 @@ class PlayerInSquad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-      color: index % 2 == 0 ? Colors.grey.withOpacity(0.1) : Colors.white,
-      child: InkWell(
-        onTap: () {
-          cubit.getPlayerAllDetails(
-              playerID: cubit.teamModel!.squad![index].id, leagueID: leagueID);
-          // cubit.getPlayerDetails(playerID: cubit.teamModel!.squad![index].id);
-          Get.to(() => PlayerDetailsScreen(
-                leagueID: leagueID,
-                teamID: cubit.teamModel!.id!,
-                teamName: cubit.teamModel!.name!,
-                teamImage: cubit.teamModel!.crestUrl!,
-              ));
-          print(cubit.teamModel!.squad![index].position!);
-        },
+    return InkWell(
+      onTap: () {
+        cubit.getPlayerAllDetails(
+            playerID: cubit.teamModel!.squad![index].id, leagueID: leagueID);
+        // cubit.getPlayerDetails(playerID: cubit.teamModel!.squad![index].id);
+        Get.to(() => PlayerDetailsScreen(
+          leagueID: leagueID,
+          teamID: cubit.teamModel!.id!,
+          teamName: cubit.teamModel!.name!,
+          teamImage: cubit.teamModel!.crestUrl!,
+        ));
+        print(cubit.teamModel!.squad![index].position!);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 10),
+        color: index % 2 == 0 ? Colors.grey.withOpacity(0.1) : Colors.white,
         child: Row(
           children: [
             Text(
@@ -317,20 +319,20 @@ class ScorerPlayer extends StatelessWidget {
 
     Teams team = teams.firstWhere((element) => element.id == teamID);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-      color: index % 2 == 0 ? Colors.grey.withOpacity(0.1) : Colors.white,
-      child: InkWell(
-        onTap: () {
-          //cubit.getPlayerDetails(playerID: scorer.player!.id!);
-          cubit.getPlayerAllDetails(
-              playerID: scorer.player!.id!, leagueID: leagueID);
-          Get.to(() => PlayerDetailsScreen(
-              leagueID: leagueID,
-              teamID: teamID,
-              teamName: team.name!,
-              teamImage: team.crestUrl!));
-        },
+    return InkWell(
+      onTap: () {
+        //cubit.getPlayerDetails(playerID: scorer.player!.id!);
+        cubit.getPlayerAllDetails(
+            playerID: scorer.player!.id!, leagueID: leagueID);
+        Get.to(() => PlayerDetailsScreen(
+            leagueID: leagueID,
+            teamID: teamID,
+            teamName: team.name!,
+            teamImage: team.crestUrl!));
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 10),
+        color: index % 2 == 0 ? Colors.grey.withOpacity(0.1) : Colors.white,
         child: Row(
           children: [
             Text(

@@ -302,16 +302,16 @@ class TeamBestPlayer extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: grey)),
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 child: Row(
                   children: [
                     ImageIcon(
                       const AssetImage('assets/images/matches.png'),
-                      color: havan,
+                      color: grey,
                       size: 25,
                     ),
                     const SizedBox(

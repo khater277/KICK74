@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
-import 'package:kick74/models/LeagueScorersModel.dart';
-import 'package:kick74/models/LeagueStandingModel.dart' as standing;
-import 'package:kick74/models/LeagueTeamsModel.dart';
-import 'package:kick74/screens/player_details/player_details_screen.dart';
-import 'package:kick74/screens/team/team_screen.dart';
 import 'package:kick74/shared/constants.dart';
-import 'package:kick74/shared/default_widgets.dart';
 
 class StandingHead extends StatelessWidget {
   final KickCubit cubit;
