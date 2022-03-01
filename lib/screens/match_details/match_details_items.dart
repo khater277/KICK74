@@ -187,7 +187,7 @@ class MatchInfo extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                cubit.getLeagueStandings(context,leagueID: leagueID);
+                cubit.getLeagueStandings(leagueID: leagueID);
                 Get.to(()=>LeagueDetailsScreen(leagueID: leagueID));
               },
               child: Container(

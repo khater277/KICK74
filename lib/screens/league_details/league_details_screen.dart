@@ -22,7 +22,7 @@ class LeagueDetailsScreen extends StatelessWidget {
       builder: (context,state){
         ValueNotifier<bool> valueNotifier = ValueNotifier<bool>(true);
         KickCubit cubit = KickCubit.get(context);
-        if (state is! KickGetLeagueStandingsLoadingState) {
+        if (state is! KickGetLeagueStandingsLoadingState&&cubit.leaguesStandings[leagueID]!.isNotEmpty) {
           return Scaffold(
             body: OfflineWidget(onlineWidget: CustomScrollView(
               physics: const BouncingScrollPhysics(),

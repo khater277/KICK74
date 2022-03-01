@@ -107,7 +107,7 @@ class FoundedAndStadium extends StatelessWidget {
         Expanded(
           child: InkWell(
             onTap: (){
-              cubit.getLeagueStandings(context,leagueID: leagueID);
+              cubit.getLeagueStandings(leagueID: leagueID);
               Get.to(()=>LeagueDetailsScreen(leagueID: leagueID));
             },
             child: Row(

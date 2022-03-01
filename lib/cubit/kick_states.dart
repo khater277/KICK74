@@ -24,6 +24,8 @@ class KickGetUserDataSuccessState extends KickStates {}
 
 class KickGetUserDataErrorState extends KickStates {}
 
+class KickZeroRequestsState extends KickStates {}
+
 class KickSignOutLoadingState extends KickStates {}
 
 class KickSignOutSuccessState extends KickStates {}

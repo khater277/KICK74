@@ -23,7 +23,8 @@ class TeamScreen extends StatelessWidget {
         if (state is! KickGetTeamDetailsLoadingState &&
             state is! KickGetLeagueTopScorersLoadingState &&
             state is! KickGetTeamAllMatchesLoadingState &&
-            cubit.teamMatches.isNotEmpty
+            cubit.teamMatches.isNotEmpty&&
+            cubit.teamModel!=null
         ) {
           return Scaffold(
             body: OfflineWidget(onlineWidget: CustomScrollView(

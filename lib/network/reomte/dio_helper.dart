@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:kick74/cubit/kick_cubit.dart';
 
 class DioHelper {
   static Dio? dio;
@@ -20,11 +21,6 @@ class DioHelper {
   static Future<Response> getAllMatches() async {
     return dio!.get("/matches");
   }
-
-  static Future<Response> test() async {
-    return dio!.get("/matches");
-  }
-
   static Future<Response> getLeagueTeams({@required int? leagueID}) async {
     return dio!.get("/competitions/$leagueID/teams");
   }
@@ -71,13 +67,4 @@ class DioHelper {
       'dateTo': endDate,
     });
   }
-
-
-  static Future<Stream> getMatchesStream() async {
-    Response<ResponseBody> rs = await dio!.get<ResponseBody>("/matches",
-      options: Options(responseType: ResponseType.stream),  // set responseType to `stream`
-    );
-    return rs.data!.stream;
-  }
-
 }

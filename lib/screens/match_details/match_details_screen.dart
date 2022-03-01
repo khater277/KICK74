@@ -11,6 +11,7 @@ class MatchDetailsScreen extends StatelessWidget {
   final int leagueID;
   final Teams homeTeam;
   final Teams awayTeam;
+
   const MatchDetailsScreen(
       {Key? key,
       required this.homeTeam,
@@ -29,54 +30,59 @@ class MatchDetailsScreen extends StatelessWidget {
             leading: const BuildBackButton(),
           ),
           body: state is! KickGetMatchDetailsLoadingState &&
-                  state is! KickGetLeagueTopScorersLoadingState
-              ? OfflineWidget(onlineWidget: Padding(
-            padding: const EdgeInsets.only(top:10,bottom: 20),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  state is! KickGetLeagueTopScorersLoadingState &&
+                  cubit.matchDetailsModel != null
+              ? OfflineWidget(
+                  onlineWidget: Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 20),
                   child: Column(
                     children: [
-                      const Head2Head(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          TeamPicAndName(
-                              leagueID: leagueID,
-                              teamID: awayTeam.id!,
-                              teamName: awayTeam.shortName!,
-                              teamImage: awayTeam.crestUrl!),
-                          Head2HeadDetails(cubit: cubit),
-                          TeamPicAndName(
-                              leagueID: leagueID,
-                              teamID: homeTeam.id!,
-                              teamName: homeTeam.shortName!,
-                              teamImage: homeTeam.crestUrl!),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      MatchInfo(cubit: cubit),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      TeamBestPlayer(
-                          cubit: cubit,
-                          leagueID: leagueID,
-                          homeTeam: homeTeam,
-                          awayTeam: awayTeam),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          children: [
+                            const Head2Head(),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                TeamPicAndName(
+                                    leagueID: leagueID,
+                                    teamID: awayTeam.id!,
+                                    teamName: awayTeam.shortName!,
+                                    teamImage: awayTeam.crestUrl!),
+                                Head2HeadDetails(cubit: cubit),
+                                TeamPicAndName(
+                                    leagueID: leagueID,
+                                    teamID: homeTeam.id!,
+                                    teamName: homeTeam.shortName!,
+                                    teamImage: homeTeam.crestUrl!),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            MatchInfo(cubit: cubit),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            TeamBestPlayer(
+                                cubit: cubit,
+                                leagueID: leagueID,
+                                homeTeam: homeTeam,
+                                awayTeam: awayTeam),
+                          ],
+                        ),
+                      )
                     ],
                   ),
-                )
-              ],
-            ),
-          ))
-              : const DefaultProgressIndicator(icon: IconBroken.Work,size: 35,),
+                ))
+              : const DefaultProgressIndicator(
+                  icon: IconBroken.Work,
+                  size: 35,
+                ),
         );
       },
     );

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -13,17 +15,8 @@ String? defaultLang;
 bool? facebook;
 bool? google;
 
-final ScrollController scrollController = ScrollController();
-
-void scrollDown()async{
-  await Future.delayed(const Duration(milliseconds: 300));
-  SchedulerBinding.instance?.addPostFrameCallback((_) {
-    scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.fastOutSlowIn);
-  });
-}
+StreamSubscription  periodicSub = Stream.periodic(const Duration(seconds: 60))
+    .listen((_){print("DONE");});
 
 String? validateEmail(String value) {
   String pattern =

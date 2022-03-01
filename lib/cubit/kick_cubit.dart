@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -30,9 +31,11 @@ import 'package:kick74/shared/default_widgets.dart';
 
 class KickCubit extends Cubit<KickStates> {
   KickCubit() : super(KickInitState());
+
   static KickCubit get(context) => BlocProvider.of(context);
 
   String? selectedValue = lang ?? (defaultLang == 'ar' ? 'ar' : 'en');
+
   void changeAppLanguage(String value) {
     selectedValue = value;
     GetStorage d = GetStorage();
@@ -53,6 +56,7 @@ class KickCubit extends Cubit<KickStates> {
   Color enTextColor = Colors.grey.shade500;
   Color nextButtonColor = Colors.grey.shade200;
   Color nextIconColor = havan.withOpacity(0.4);
+
   void selectLanguage({@required bool? arabic, @required bool? english}) {
     if (arabic == true) {
       ar = true;
@@ -104,6 +108,7 @@ class KickCubit extends Cubit<KickStates> {
   ];
 
   int currentIndex = 1;
+
   void changeNavBar(
     int index,
   ) {
@@ -112,12 +117,14 @@ class KickCubit extends Cubit<KickStates> {
   }
 
   int leagueIndex = 10;
+
   void changeLeagueIndex(int index) {
     leagueIndex = index;
     emit(KickLeagueIndexState());
   }
 
   UserModel? userModel;
+
   void getUserData() {
     emit(KickGetUserDataLoadingState());
     FirebaseFirestore.instance.collection('users').doc(uID).get().then((value) {
@@ -125,7 +132,7 @@ class KickCubit extends Cubit<KickStates> {
       emit(KickGetUserDataSuccessState());
     }).catchError((error) {
       dio.DioError e = error;
-      if(e.response!.statusCode == 429){
+      if (e.response!.statusCode == 429) {
         Get.back();
         showSnackBar();
       }
@@ -134,13 +141,11 @@ class KickCubit extends Cubit<KickStates> {
     });
   }
 
-  int numberOfRequests = 0;
-  void zeroRequests(){
-    Future.delayed(const Duration(minutes: 1)).then((value){
-      numberOfRequests = 0;
+  void realTimeMatches(BuildContext context) {
+    Future.delayed(const Duration(seconds: 60)).then((value) {
+      getAllMatches(realTime: true);
     });
   }
-
 
   List<Map<String, dynamic>> leagues = [
     {
@@ -207,13 +212,21 @@ class KickCubit extends Cubit<KickStates> {
     2015: <Matches>[],
   };
 
+  int numberOfRequests = 0;
+
+  void test() {
+    numberOfRequests = 0;
+    print("======= $numberOfRequests REQUESTS =======");
+    emit(KickTestSuccessState());
+  }
+
   void getAllMatches({bool? realTime}) {
-    if(realTime!=true) {
+    if (realTime != true) {
       emit(KickGetAllMatchesLoadingState());
     }
-    if(numberOfRequests<10) {
+    DioHelper.getAllMatches().then((value) {
       numberOfRequests++;
-      DioHelper.getAllMatches().then((value) {
+      print("NUMBER OF REQUESTS $numberOfRequests");
       shownMatches[0] = <Matches>[];
       shownMatches[2021] = <Matches>[];
       shownMatches[2014] = <Matches>[];
@@ -234,20 +247,17 @@ class KickCubit extends Cubit<KickStates> {
       emit(KickGetAllMatchesSuccessState());
     }).catchError((error) {
       dio.DioError e = error;
-      if(e.response!.statusCode == 429){
+      if (e.response!.statusCode == 429) {
         Get.back();
         showSnackBar();
       }
       printError("getAllMatches", e.response!.statusCode!.toString());
       emit(KickGetAllMatchesErrorState());
     });
-    }
-    else{
-      emit(KickGetAllMatchesSuccessState());
-    }
   }
 
   List<Matches> favMatches = [];
+
   void getFavouritesMatches() {
     favMatches = [];
     for (var element in shownMatches[0]!) {
@@ -266,6 +276,8 @@ class KickCubit extends Cubit<KickStates> {
     emit(KickGetLeagueTeamsLoadingState());
     for (int i = 0; i < leaguesIDs.length; i++) {
       DioHelper.getLeagueTeams(leagueID: leaguesIDs[i]).then((value) {
+        numberOfRequests++;
+        print("NUMBER OF REQUESTS $numberOfRequests");
         LeagueTeamsModel leagueTeamsModel =
             LeagueTeamsModel.fromJson(value.data);
         leagues[0]['teams'].add(leagueTeamsModel.teams!);
@@ -275,7 +287,7 @@ class KickCubit extends Cubit<KickStates> {
         emit(KickGetLeagueTeamsSuccessState());
       }).catchError((error) {
         dio.DioError e = error;
-        if(e.response!.statusCode == 429){
+        if (e.response!.statusCode == 429) {
           Get.back();
           showSnackBar();
         }
@@ -292,6 +304,7 @@ class KickCubit extends Cubit<KickStates> {
     Colors.grey.withOpacity(0.4),
     Colors.grey.withOpacity(0.4),
   ];
+
   void changeOnBoardingIndex() {
     onBoardingIndex++;
     indicatorColors[onBoardingIndex - 2] = havan.withOpacity(0.8);
@@ -306,6 +319,7 @@ class KickCubit extends Cubit<KickStates> {
   List<int> selectedTeamsIDs = [];
   List<FavouriteTeamModel> favouriteTeams = [];
   Color selectFavColor = offWhite;
+
   void selectOnBoardingFavourite({
     @required int? index,
     @required int? teamID,
@@ -365,7 +379,7 @@ class KickCubit extends Cubit<KickStates> {
   }
 
   void getFavourites() {
-    if(uID!=null){
+    if (uID != null) {
       emit(KickGetFavouritesLoadingState());
       FirebaseFirestore.instance
           .collection("users")
@@ -384,13 +398,14 @@ class KickCubit extends Cubit<KickStates> {
         printError("getFavourites", error.toString());
         emit(KickGetFavouritesErrorState());
       });
-    }else{
+    } else {
       emit(KickGetFavouritesLoadingState());
     }
   }
 
   ImagePicker picker = ImagePicker();
   File? profileImage;
+
   void selectProfileImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -444,28 +459,25 @@ class KickCubit extends Cubit<KickStates> {
   }
 
   MatchDetailsModel? matchDetailsModel;
+
   void getMatchDetails({@required int? matchID, @required int? leagueID}) {
-    if(numberOfRequests<10){
-      numberOfRequests++;
-      if (matchDetailsModel == null || matchDetailsModel!.match!.id != matchID) {
-        emit(KickGetMatchDetailsLoadingState());
-        DioHelper.getMatchDetails(matchID: matchID).then((value) {
-          matchDetailsModel = MatchDetailsModel.fromJson(value.data);
-          print(matchDetailsModel!.match!.venue);
-          getTopScorers(leagueID: leagueID);
-        }).catchError((error) {
-          dio.DioError e = error;
-          if(e.response!.statusCode == 429){
-            Get.back();
-            showSnackBar();
-          }
-          printError("getMatchDetails", e.response!.statusCode!.toString());
-          emit(KickGetMatchDetailsErrorState());
-        });
-      }
-    }
-    else{
-      emit(KickGetMatchDetailsSuccessState());
+    if (matchDetailsModel == null || matchDetailsModel!.match!.id != matchID) {
+      emit(KickGetMatchDetailsLoadingState());
+      DioHelper.getMatchDetails(matchID: matchID).then((value) {
+        numberOfRequests++;
+        print("NUMBER OF REQUESTS $numberOfRequests");
+        matchDetailsModel = MatchDetailsModel.fromJson(value.data);
+        print(matchDetailsModel!.match!.venue);
+        getTopScorers(leagueID: leagueID);
+      }).catchError((error) {
+        dio.DioError e = error;
+        if (e.response!.statusCode == 429) {
+          Get.back();
+          showSnackBar();
+        }
+        printError("getMatchDetails", e.response!.statusCode!.toString());
+        emit(KickGetMatchDetailsErrorState());
+      });
     }
   }
 
@@ -476,170 +488,161 @@ class KickCubit extends Cubit<KickStates> {
     2002: [],
     2015: [],
   };
+
   void getTopScorers({@required int? leagueID}) {
-    if(numberOfRequests<10){
-      numberOfRequests++;
-      if (scorers[leagueID]!.isEmpty) {
-        emit(KickGetLeagueTopScorersLoadingState());
-        DioHelper.getLeagueTopScorers(leagueID: leagueID!).then((value) {
-          LeagueScorersModel leagueScorersModel =
-          LeagueScorersModel.fromJson(value.data);
-          scorers[leagueID] = leagueScorersModel.scorers!;
-          print(scorers[leagueID]![0].player!.name);
-          emit(KickGetLeagueTopScorersSuccessState());
-        }).catchError((error) {
-          dio.DioError e = error;
-          if(e.response!.statusCode == 429){
-            Get.back();
-            showSnackBar();
-          }
-          printError("getTopScorers", e.response!.statusCode!.toString());
-          emit(KickGetLeagueTopScorersErrorState());
-        });
-      } else {
+    if (scorers[leagueID]!.isEmpty) {
+      emit(KickGetLeagueTopScorersLoadingState());
+      DioHelper.getLeagueTopScorers(leagueID: leagueID!).then((value) {
+        numberOfRequests++;
+        print("NUMBER OF REQUESTS $numberOfRequests");
+        LeagueScorersModel leagueScorersModel =
+            LeagueScorersModel.fromJson(value.data);
+        scorers[leagueID] = leagueScorersModel.scorers!;
+        print(scorers[leagueID]![0].player!.name);
         emit(KickGetLeagueTopScorersSuccessState());
-      }
-    }else{
+      }).catchError((error) {
+        dio.DioError e = error;
+        if (e.response!.statusCode == 429) {
+          Get.back();
+          showSnackBar();
+        }
+        printError("getTopScorers", e.response!.statusCode!.toString());
+        emit(KickGetLeagueTopScorersErrorState());
+      });
+    } else {
       emit(KickGetLeagueTopScorersSuccessState());
     }
   }
 
- TeamModel? teamModel;
+  TeamModel? teamModel;
+
   void getTeamDetails({@required int? teamID}) {
-    if(numberOfRequests<10){
-      numberOfRequests++;
-      if (teamModel == null || teamModel!.id != teamID) {
-        emit(KickGetTeamDetailsLoadingState());
-        DioHelper.getTeamDetails(teamID: teamID!).then((value) {
-          teamModel = TeamModel.fromJson(value.data);
-          print(teamModel!.name!);
-          //getTeamAllMatches(teamID: teamID,fromFav: fromFav,league: league);
-          emit(KickGetTeamDetailsSuccessState());
-        }).catchError((error) {
-          dio.DioError e = error;
-          if(e.response!.statusCode == 429){
-            Get.back();
-            showSnackBar();
-          }
-          printError("getTeamDetails", e.response!.statusCode!.toString());
-          emit(KickGetTeamDetailsErrorState());
-        });
-      }
-    }else{
-      emit(KickGetTeamDetailsSuccessState());
+    if (teamModel == null || teamModel!.id != teamID) {
+      emit(KickGetTeamDetailsLoadingState());
+      DioHelper.getTeamDetails(teamID: teamID!).then((value) {
+        numberOfRequests++;
+        print("NUMBER OF REQUESTS $numberOfRequests");
+        teamModel = TeamModel.fromJson(value.data);
+        print(teamModel!.name!);
+        //getTeamAllMatches(teamID: teamID,fromFav: fromFav,league: league);
+        emit(KickGetTeamDetailsSuccessState());
+      }).catchError((error) {
+        dio.DioError e = error;
+        if (e.response!.statusCode == 429) {
+          Get.back();
+          showSnackBar();
+        }
+        printError("getTeamDetails", e.response!.statusCode!.toString());
+        emit(KickGetTeamDetailsErrorState());
+      });
     }
   }
 
   PLAYER_ALL_DETAILS.PlayerAllDetailsModel? playerAllDetailsModel;
+
   void getPlayerAllDetails({
     @required int? playerID,
     @required int? leagueID,
   }) {
-    if(numberOfRequests<10){
-      numberOfRequests++;
-      if (playerAllDetailsModel == null ||
-          playerAllDetailsModel!.player!.id != playerID) {
-        emit(KickGetPlayerAllDetailsLoadingState());
-        Map<String, dynamic> league =
-        leagues.firstWhere((element) => element['id'] == leagueID);
-        DioHelper.getPlayerAllDetails(
-          playerID: playerID!,
-          endDate: league['endDate'],
-          leagueID: leagueID,
-          startDate: league['startDate'],
-        ).then((value) {
-          playerAllDetailsModel =
-              PLAYER_ALL_DETAILS.PlayerAllDetailsModel.fromJson(value.data);
-          print(playerAllDetailsModel!.player!.name);
-          emit(KickGetPlayerAllDetailsSuccessState());
-        }).catchError((error) {
-          dio.DioError e = error;
-          if(e.response!.statusCode == 429){
-            Get.back();
-            showSnackBar();
-          }
-          printError("getPlayerAllDetails", e.response!.statusCode!.toString());
-          emit(KickGetPlayerAllDetailsErrorState());
-        });
-      } else {
+    if (playerAllDetailsModel == null ||
+        playerAllDetailsModel!.player!.id != playerID) {
+      emit(KickGetPlayerAllDetailsLoadingState());
+      Map<String, dynamic> league =
+          leagues.firstWhere((element) => element['id'] == leagueID);
+      DioHelper.getPlayerAllDetails(
+        playerID: playerID!,
+        endDate: league['endDate'],
+        leagueID: leagueID,
+        startDate: league['startDate'],
+      ).then((value) {
+        numberOfRequests++;
+        print("NUMBER OF REQUESTS $numberOfRequests");
+        playerAllDetailsModel =
+            PLAYER_ALL_DETAILS.PlayerAllDetailsModel.fromJson(value.data);
+        print(playerAllDetailsModel!.player!.name);
         emit(KickGetPlayerAllDetailsSuccessState());
-      }
-    }else{
+      }).catchError((error) {
+        dio.DioError e = error;
+        if (e.response!.statusCode == 429) {
+          Get.back();
+          showSnackBar();
+        }
+        printError("getPlayerAllDetails", e.response!.statusCode!.toString());
+        emit(KickGetPlayerAllDetailsErrorState());
+      });
+    } else {
       emit(KickGetPlayerAllDetailsSuccessState());
     }
   }
 
-
   //List<int> leaguesIDs = [2021, 2014, 2019, 2002, 2015];
-  Map<int,List<Standings>> leaguesStandings = {
-    2021 : <Standings>[],
-    2014 : <Standings>[],
-    2019 : <Standings>[],
-    2002 : <Standings>[],
-    2015 : <Standings>[],
+  Map<int, List<Standings>> leaguesStandings = {
+    2021: <Standings>[],
+    2014: <Standings>[],
+    2019: <Standings>[],
+    2002: <Standings>[],
+    2015: <Standings>[],
   };
 
-
-  void getLeagueStandings(context,{@required int? leagueID}){
-    if(numberOfRequests<10){
-      numberOfRequests++;
-      if(leaguesStandings[leagueID]!.isEmpty){
-        emit(KickGetLeagueStandingsLoadingState());
-        DioHelper.getLeagueStanding(leagueID: leagueID)
-            .then((value){
-          LeagueStandingModel leagueStandingModel =
-          LeagueStandingModel.fromJson(value.data);
-          leaguesStandings[leagueID!] = leagueStandingModel.standings!;
-          print(leaguesStandings[leagueID]![0].table![4].team!.name!);
-          emit(KickGetLeagueStandingsSuccessState());
-        }).catchError((error){
-          dio.DioError e = error;
-          if(e.response!.statusCode == 429){
-            Get.back();
-            showSnackBar();
-          }
-          printError("getLeagueStandings", e.response!.statusCode!.toString());
-          emit(KickGetLeagueStandingsErrorState());
-        });
-      }else{
+  void getLeagueStandings({@required int? leagueID}) {
+    if (leaguesStandings[leagueID]!.isEmpty) {
+      emit(KickGetLeagueStandingsLoadingState());
+      DioHelper.getLeagueStanding(leagueID: leagueID).then((value) {
+        numberOfRequests++;
+        print("NUMBER OF REQUESTS $numberOfRequests");
+        LeagueStandingModel leagueStandingModel =
+            LeagueStandingModel.fromJson(value.data);
+        leaguesStandings[leagueID!] = leagueStandingModel.standings!;
+        print(leaguesStandings[leagueID]![0].table![4].team!.name!);
         emit(KickGetLeagueStandingsSuccessState());
-      }
-    }else{
+      }).catchError((error) {
+        dio.DioError e = error;
+        if (e.response!.statusCode == 429) {
+          Get.back();
+          showSnackBar();
+        }
+        printError("getLeagueStandings", e.response!.statusCode!.toString());
+        emit(KickGetLeagueStandingsErrorState());
+      });
+    } else {
       emit(KickGetLeagueStandingsSuccessState());
     }
   }
 
   List<team_matches.Matches> teamMatches = [];
-  void getTeamAllMatches({@required int? teamID,@required bool? fromFav,@required Map<String,dynamic>? league}){
-    if(numberOfRequests<10){
-      teamMatches = [];
-      emit(KickGetTeamAllMatchesLoadingState());
-      DioHelper.getTeamAllMatches(
-          teamID: teamID,
-          startDate: league!['startDate'],
-          endDate: league['endDate'])
-          .then((value){
-        team_matches.TeamAllMatchesModel? teamAllMatchesModel =
-        team_matches.TeamAllMatchesModel.fromJson(value.data);
-        teamMatches = teamAllMatchesModel.matches!.where((element) =>
-        element.competition!.id==league['id']).toList();
-        print(teamMatches[0].homeTeam!.name!);
-        if (fromFav == true) {
-          getTopScorers(leagueID: league['id']);
-        } else {
-          emit(KickGetTeamAllMatchesSuccessState());
-        }
-      }).catchError((error){
-        dio.DioError e = error;
-        if(e.response!.statusCode == 429){
-          Get.back();
-          showSnackBar();
-        }
-        printError("getTeamAllMatches", e.response!.statusCode!.toString());
-        emit(KickGetTeamAllMatchesErrorState());
-      });
-    }else{
-      emit(KickGetTeamAllMatchesSuccessState());
-    }
+
+  void getTeamAllMatches(
+      {@required int? teamID,
+      @required bool? fromFav,
+      @required Map<String, dynamic>? league}) {
+    teamMatches = [];
+    emit(KickGetTeamAllMatchesLoadingState());
+    DioHelper.getTeamAllMatches(
+            teamID: teamID,
+            startDate: league!['startDate'],
+            endDate: league['endDate'])
+        .then((value) {
+      numberOfRequests++;
+      print("NUMBER OF REQUESTS $numberOfRequests");
+      team_matches.TeamAllMatchesModel? teamAllMatchesModel =
+          team_matches.TeamAllMatchesModel.fromJson(value.data);
+      teamMatches = teamAllMatchesModel.matches!
+          .where((element) => element.competition!.id == league['id'])
+          .toList();
+      print(teamMatches[0].homeTeam!.name!);
+      if (fromFav == true) {
+        getTopScorers(leagueID: league['id']);
+      } else {
+        emit(KickGetTeamAllMatchesSuccessState());
+      }
+    }).catchError((error) {
+      dio.DioError e = error;
+      if (e.response!.statusCode == 429) {
+        Get.back();
+        showSnackBar();
+      }
+      printError("getTeamAllMatches", e.response!.statusCode!.toString());
+      emit(KickGetTeamAllMatchesErrorState());
+    });
   }
 }

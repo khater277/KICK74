@@ -25,45 +25,38 @@ class _MatchesScreenState extends State<MatchesScreen> {
       builder: (context, state) {
         KickCubit cubit = KickCubit.get(context);
         return Scaffold(
-          body: OfflineWidget(onlineWidget:  Builder(
-            builder: (context) {
-              Future.delayed(const Duration(seconds: 60)).then((value){
-                //cubit.getAllMatches(realTime: true);
-              });
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: SizedBox(
-                      height: 100,
-                      child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) => index == 0
-                              ? MyTeamsButton(cubit: cubit)
-                              : LeagueButton(
-                            index: index - 1,
-                            cubit: cubit,
-                          ),
-                          separatorBuilder: (context, index) => const SizedBox(
-                            width: 15,
-                          ),
-                          itemCount: 7),
-                    ),
-                  ),
-                  if (cubit.leagueIndex == 10)
-                    FavouriteMatches(cubit: cubit, matches: cubit.favMatches)
-                  else
-                    LeagueMatches(
-                      cubit: cubit,
-                      matches: cubit.leagueIndex == 0
-                          ? cubit.shownMatches[0]!
-                          : cubit.shownMatches[
-                      cubit.leaguesIDs[cubit.leagueIndex - 1]]!,
-                    ),
-                ],
-              );
-            }
+          body: OfflineWidget(onlineWidget:  Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: SizedBox(
+                  height: 100,
+                  child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) => index == 0
+                          ? MyTeamsButton(cubit: cubit)
+                          : LeagueButton(
+                        index: index - 1,
+                        cubit: cubit,
+                      ),
+                      separatorBuilder: (context, index) => const SizedBox(
+                        width: 15,
+                      ),
+                      itemCount: 7),
+                ),
+              ),
+              if (cubit.leagueIndex == 10)
+                FavouriteMatches(cubit: cubit, matches: cubit.favMatches)
+              else
+                LeagueMatches(
+                  cubit: cubit,
+                  matches: cubit.leagueIndex == 0
+                      ? cubit.shownMatches[0]!
+                      : cubit.shownMatches[
+                  cubit.leaguesIDs[cubit.leagueIndex - 1]]!,
+                ),
+            ],
           )),
         );
       },

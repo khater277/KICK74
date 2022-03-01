@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,20 +16,40 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // StreamSubscription  periodicSub = Stream.periodic(const Duration(seconds: 10))
+    //     .listen((_){
+    //       showSnackBar();
+    // });
+
     return BlocConsumer<KickCubit, KickStates>(
       listener: (context, state) {},
       builder: (context, state) {
         KickCubit cubit = KickCubit.get(context);
-        return state is! KickGetUserDataLoadingState &&
+        if (state is! KickGetUserDataLoadingState &&
                 state is! KickGetAllMatchesLoadingState &&
                 state is! KickGetFavouritesLoadingState &&
                 state is! KickGetLeagueTeamsSuccessState &&
-                cubit.leagues[0]['teams'].length == cubit.leaguesIDs.length
-            ? Scaffold(
-                body: OfflineWidget(onlineWidget: SafeArea(
-                    top: true,
-                    bottom: false,
-                    child: cubit.screens[cubit.currentIndex])),
+                cubit.leagues[0]['teams'].length == cubit.leaguesIDs.length) {
+          return Scaffold(
+                body: OfflineWidget(onlineWidget: StreamBuilder(
+                  stream: null,
+                  builder: (context,snapshot) {
+                    periodicSub.onData((data) {
+                         cubit.test();
+                      //showSnackBar();
+                      //cubit.getAllMatches();
+                    });
+                    // Timer.periodic(const Duration(seconds: 10), (timer) {
+                    //   print("SSSSSSS");
+                    //   //timer.cancel();
+                    // });
+                    return SafeArea(
+                        top: true,
+                        bottom: false,
+                        child: cubit.screens[cubit.currentIndex]);
+                  }
+                )),
                 extendBody: true,
                 bottomNavigationBar: Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -65,10 +87,12 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-              )
-            : const Scaffold(
+              );
+        } else {
+          return const Scaffold(
                 body: DefaultProgressIndicator(icon: IconBroken.Home,size: 35,),
               );
+        }
       },
     );
   }
