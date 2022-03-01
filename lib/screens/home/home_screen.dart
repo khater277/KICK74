@@ -37,14 +37,11 @@ class HomeScreen extends StatelessWidget {
                       cubit.changeNavBar(index);
                     },
                     marginR: const EdgeInsets.symmetric(horizontal: 40),
-                    //margin: const EdgeInsets.symmetric(horizontal: 40),
                     dotIndicatorColor: Colors.transparent,
                     selectedItemColor: Colors.white,
                     unselectedItemColor: Colors.grey.shade800,
                     backgroundColor: havan,
-                    itemPadding:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-                    //margin: const EdgeInsets.symmetric(horizontal: 40),
+                    itemPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
                     borderRadius: 50,
                     items: [
                       DotNavigationBarItem(

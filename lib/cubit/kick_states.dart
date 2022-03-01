@@ -125,4 +125,6 @@ class KickStandingScorersToggleSuccessState extends KickStates {}
 
 class KickViewAllScorersLoadingState extends KickStates {}
 
-class KickTestState extends KickStates {}
+class KickTestLoadingState extends KickStates {}
+class KickTestSuccessState extends KickStates {}
+class KickTestErrorState extends KickStates {}

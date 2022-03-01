@@ -21,6 +21,10 @@ class DioHelper {
     return dio!.get("/matches");
   }
 
+  static Future<Response> test() async {
+    return dio!.get("/matches");
+  }
+
   static Future<Response> getLeagueTeams({@required int? leagueID}) async {
     return dio!.get("/competitions/$leagueID/teams");
   }
@@ -66,6 +70,14 @@ class DioHelper {
       'dateFrom': startDate,
       'dateTo': endDate,
     });
+  }
+
+
+  static Future<Stream> getMatchesStream() async {
+    Response<ResponseBody> rs = await dio!.get<ResponseBody>("/matches",
+      options: Options(responseType: ResponseType.stream),  // set responseType to `stream`
+    );
+    return rs.data!.stream;
   }
 
 }
