@@ -15,8 +15,11 @@ String? defaultLang;
 bool? facebook;
 bool? google;
 
-StreamSubscription  periodicSub = Stream.periodic(const Duration(seconds: 60))
-    .listen((_){print("DONE");});
+StreamSubscription  getMatchesRealTime = Stream.periodic(const Duration(seconds: 61))
+    .listen((_){print("getMatchesRealTime DONE");});
+
+StreamSubscription  zeroRequests = Stream.periodic(const Duration(seconds: 60))
+    .listen((_){print("zeroRequests DONE");});
 
 String? validateEmail(String value) {
   String pattern =

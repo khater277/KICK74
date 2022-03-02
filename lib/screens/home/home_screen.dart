@@ -1,12 +1,10 @@
 import 'dart:async';
 
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/cubit/kick_states.dart';
-import 'package:kick74/screens/home/home_items.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
 import 'package:kick74/styles/icons_broken.dart';
@@ -16,11 +14,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    // StreamSubscription  periodicSub = Stream.periodic(const Duration(seconds: 10))
-    //     .listen((_){
-    //       showSnackBar();
-    // });
 
     return BlocConsumer<KickCubit, KickStates>(
       listener: (context, state) {},
@@ -32,18 +25,14 @@ class HomeScreen extends StatelessWidget {
                 state is! KickGetLeagueTeamsSuccessState &&
                 cubit.leagues[0]['teams'].length == cubit.leaguesIDs.length) {
           return Scaffold(
-                body: OfflineWidget(onlineWidget: StreamBuilder(
-                  stream: null,
-                  builder: (context,snapshot) {
-                    periodicSub.onData((data) {
-                         cubit.test();
-                      //showSnackBar();
-                      //cubit.getAllMatches();
+                body: OfflineWidget(onlineWidget: Builder(
+                  builder: (context) {
+                    getMatchesRealTime.onData((data) {
+                      cubit.getAllMatches(realTime: true);
                     });
-                    // Timer.periodic(const Duration(seconds: 10), (timer) {
-                    //   print("SSSSSSS");
-                    //   //timer.cancel();
-                    // });
+                    zeroRequests.onData((data) {
+                      cubit.zeroRequests();
+                    });
                     return SafeArea(
                         top: true,
                         bottom: false,

@@ -1,11 +1,7 @@
-import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/cubit/kick_states.dart';
-import 'package:kick74/models/AllMatchesModel.dart';
-import 'package:kick74/network/reomte/dio_helper.dart';
 import 'package:kick74/screens/matches/matches_items.dart';
 import 'package:kick74/shared/default_widgets.dart';
 

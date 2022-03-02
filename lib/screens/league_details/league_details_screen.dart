@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/cubit/kick_states.dart';
 import 'package:kick74/screens/league_details/league_details_items.dart';
-import 'package:kick74/screens/league_scorers/league_scorers_screen.dart';
-import 'package:kick74/screens/league_standing/league_standing_screen.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
 import 'package:kick74/styles/icons_broken.dart';
@@ -50,63 +47,51 @@ class LeagueDetailsScreen extends StatelessWidget {
                         children: [
                           const SizedBox(height: 10,),
                           const SizedBox(height: 20,),
-                          ValueListenableBuilder(
-                            valueListenable: valueNotifier,
-                            builder: (BuildContext context, value, Widget? child) {
-                              return Row(
-                                children: [
-                                  Expanded(
-                                      child: InkWell(
-                                        onTap:(){
-                                          valueNotifier.value=true;
-                                          //cubit.standingAndScorersToggle(standing: true, scorers: false);
-                                        },
-                                        child: Column(
-                                          children: [
-                                            const StandingAndScorers(text: "Standing"),
-                                            const SizedBox(height: 5,),
-                                            Divider(
-                                              thickness: 2,
-                                              color:valueNotifier.value?havan:Colors.white,
-                                            )
-                                          ],
-                                        ),
-                                      )),
-                                  Expanded(
-                                      child: InkWell(
-                                        onTap:(){
-                                          valueNotifier.value=false;
-                                          //cubit.standingAndScorersToggle(standing: false, scorers: true);
-                                        },
-                                        child: Column(
-                                          children: [
-                                            const StandingAndScorers(text: "Scorers"),
-                                            const SizedBox(height: 5,),
-                                            Divider(
-                                              thickness: 2,
-                                              color:valueNotifier.value?Colors.white:havan,
-                                            )
-                                          ],
-                                        ),
-                                      )),
-                                ],
-                              );
-                            },
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: InkWell(
+                                    onTap:(){
+                                      cubit.standingAndScorersToggle(standing: true, scorers: false);
+                                    },
+                                    child: Column(
+                                      children: [
+                                        const StandingAndScorers(text: "Standing"),
+                                        const SizedBox(height: 5,),
+                                        Divider(
+                                          thickness: 2,
+                                          color:cubit.isStanding?havan:Colors.white,
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                              Expanded(
+                                  child: InkWell(
+                                    onTap:(){
+                                      cubit.standingAndScorersToggle(standing: false, scorers: true);
+                                    },
+                                    child: Column(
+                                      children: [
+                                        const StandingAndScorers(text: "Scorers"),
+                                        const SizedBox(height: 5,),
+                                        Divider(
+                                          thickness: 2,
+                                          color:cubit.isStanding?Colors.white:havan,
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                            ],
                           ),
                           const SizedBox(height: 20,),
-                          ValueListenableBuilder(
-                            valueListenable: valueNotifier,
-                            builder: (BuildContext context, value, Widget? child) {
-                              return Column(
-                                children: [
-                                  const SizedBox(height: 10,),
-                                  if(valueNotifier.value)
-                                    LeagueStandingScreen(cubit: cubit, leagueID: leagueID)
-                                  else
-                                    LeagueScorersScreen(cubit: cubit, leagueID: leagueID),
-                                ],
-                              );
-                            },
+                          Column(
+                            children: [
+                              const SizedBox(height: 10,),
+                              if(cubit.isStanding)
+                                ShowLeagueStanding(cubit: cubit, leagueID: leagueID)
+                              else
+                                ShowLeagueScorers(cubit: cubit, leagueID: leagueID),
+                            ],
                           ),
                           const SizedBox(height: 30,),
                         ],

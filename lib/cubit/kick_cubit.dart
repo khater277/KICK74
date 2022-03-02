@@ -20,8 +20,6 @@ import 'package:kick74/models/UserModel.dart';
 import 'package:kick74/models/FavouriteTeamModel.dart';
 import 'package:kick74/models/TeamAllMatchesModel.dart' as team_matches;
 import 'package:kick74/network/reomte/dio_helper.dart';
-import 'package:kick74/screens/league_scorers/league_scorers_screen.dart';
-import 'package:kick74/screens/league_standing/league_standing_screen.dart';
 import 'package:kick74/screens/matches/matches_screen.dart';
 import 'package:kick74/screens/profile/profile_screen.dart';
 import 'package:kick74/screens/settings/settings_screen.dart';
@@ -131,12 +129,7 @@ class KickCubit extends Cubit<KickStates> {
       userModel = UserModel.fromJson(value.data()!);
       emit(KickGetUserDataSuccessState());
     }).catchError((error) {
-      dio.DioError e = error;
-      if (e.response!.statusCode == 429) {
-        Get.back();
-        showSnackBar();
-      }
-      printError("getUserData", e.response!.statusCode!.toString());
+      printError("getUserData", error.toString());
       emit(KickGetUserDataErrorState());
     });
   }
@@ -215,16 +208,22 @@ class KickCubit extends Cubit<KickStates> {
   int numberOfRequests = 0;
 
   void test() {
-    numberOfRequests = 0;
-    print("======= $numberOfRequests REQUESTS =======");
+    toastBuilder(msg: '$numberOfRequests REQUESTS', color: Colors.red);
     emit(KickTestSuccessState());
+  }
+
+  void zeroRequests() {
+    numberOfRequests = 0;
+    toastBuilder(msg: '$numberOfRequests REQUESTS', color: Colors.red);
+    emit(KickTestLoadingState());
   }
 
   void getAllMatches({bool? realTime}) {
     if (realTime != true) {
       emit(KickGetAllMatchesLoadingState());
     }
-    DioHelper.getAllMatches().then((value) {
+    if(numberOfRequests<10) {
+      DioHelper.getAllMatches().then((value) {
       numberOfRequests++;
       print("NUMBER OF REQUESTS $numberOfRequests");
       shownMatches[0] = <Matches>[];
@@ -246,14 +245,14 @@ class KickCubit extends Cubit<KickStates> {
       print(shownMatches[0]!.length);
       emit(KickGetAllMatchesSuccessState());
     }).catchError((error) {
-      dio.DioError e = error;
-      if (e.response!.statusCode == 429) {
-        Get.back();
-        showSnackBar();
-      }
-      printError("getAllMatches", e.response!.statusCode!.toString());
+      printError("getAllMatches", error.toString());
       emit(KickGetAllMatchesErrorState());
     });
+    }
+    else{
+      Get.back();
+      showSnackBar();
+    }
   }
 
   List<Matches> favMatches = [];
@@ -269,31 +268,6 @@ class KickCubit extends Cubit<KickStates> {
       }
       print(favMatches);
       emit(KickGetFavouritesMatchesSuccessState());
-    }
-  }
-
-  void getLeagueTeams() {
-    emit(KickGetLeagueTeamsLoadingState());
-    for (int i = 0; i < leaguesIDs.length; i++) {
-      DioHelper.getLeagueTeams(leagueID: leaguesIDs[i]).then((value) {
-        numberOfRequests++;
-        print("NUMBER OF REQUESTS $numberOfRequests");
-        LeagueTeamsModel leagueTeamsModel =
-            LeagueTeamsModel.fromJson(value.data);
-        leagues[0]['teams'].add(leagueTeamsModel.teams!);
-        leagues[i + 1]['teams'] = leagueTeamsModel.teams!;
-        leagues[i + 1]['startDate'] = leagueTeamsModel.season!.startDate;
-        leagues[i + 1]['endDate'] = leagueTeamsModel.season!.endDate;
-        emit(KickGetLeagueTeamsSuccessState());
-      }).catchError((error) {
-        dio.DioError e = error;
-        if (e.response!.statusCode == 429) {
-          Get.back();
-          showSnackBar();
-        }
-        printError("getAllMatches", e.response!.statusCode!.toString());
-        emit(KickGetLeagueTeamsErrorState());
-      });
     }
   }
 
@@ -329,7 +303,7 @@ class KickCubit extends Cubit<KickStates> {
     List<Teams> teams = leagues[onBoardingIndex]['teams'];
     Teams team = teams.firstWhere((element) => element.id == teamID);
     FavouriteTeamModel favouriteTeamModel =
-        FavouriteTeamModel(leagueID: leagueID, team: team);
+    FavouriteTeamModel(leagueID: leagueID, team: team);
     if (!isFav) {
       selectedTeamsIDs.add(teamID!);
       addToFavourites(team: team, leagueID: leagueID);
@@ -343,7 +317,7 @@ class KickCubit extends Cubit<KickStates> {
 
   void addToFavourites({@required Teams? team, @required int? leagueID}) {
     FavouriteTeamModel favouriteTeamModel =
-        FavouriteTeamModel(leagueID: leagueID, team: team!);
+    FavouriteTeamModel(leagueID: leagueID, team: team!);
     emit(KickAddToFavouritesLoadingState());
     FirebaseFirestore.instance
         .collection('users')
@@ -458,6 +432,32 @@ class KickCubit extends Cubit<KickStates> {
     });
   }
 
+
+  void getLeagueTeams() {
+    emit(KickGetLeagueTeamsLoadingState());
+    for (int i = 0; i < leaguesIDs.length; i++) {
+      DioHelper.getLeagueTeams(leagueID: leaguesIDs[i]).then((value) {
+        numberOfRequests++;
+        print("NUMBER OF REQUESTS $numberOfRequests");
+        LeagueTeamsModel leagueTeamsModel =
+            LeagueTeamsModel.fromJson(value.data);
+        leagues[0]['teams'].add(leagueTeamsModel.teams!);
+        leagues[i + 1]['teams'] = leagueTeamsModel.teams!;
+        leagues[i + 1]['startDate'] = leagueTeamsModel.season!.startDate;
+        leagues[i + 1]['endDate'] = leagueTeamsModel.season!.endDate;
+        emit(KickGetLeagueTeamsSuccessState());
+      }).catchError((error) {
+        dio.DioError e = error;
+        if (e.response!.statusCode == 429) {
+          Get.back();
+          showSnackBar();
+        }
+        printError("getAllMatches", error.toString());
+        emit(KickGetLeagueTeamsErrorState());
+      });
+    }
+  }
+
   MatchDetailsModel? matchDetailsModel;
 
   void getMatchDetails({@required int? matchID, @required int? leagueID}) {
@@ -496,7 +496,7 @@ class KickCubit extends Cubit<KickStates> {
         numberOfRequests++;
         print("NUMBER OF REQUESTS $numberOfRequests");
         LeagueScorersModel leagueScorersModel =
-            LeagueScorersModel.fromJson(value.data);
+        LeagueScorersModel.fromJson(value.data);
         scorers[leagueID] = leagueScorersModel.scorers!;
         print(scorers[leagueID]![0].player!.name);
         emit(KickGetLeagueTopScorersSuccessState());
@@ -548,7 +548,7 @@ class KickCubit extends Cubit<KickStates> {
         playerAllDetailsModel!.player!.id != playerID) {
       emit(KickGetPlayerAllDetailsLoadingState());
       Map<String, dynamic> league =
-          leagues.firstWhere((element) => element['id'] == leagueID);
+      leagues.firstWhere((element) => element['id'] == leagueID);
       DioHelper.getPlayerAllDetails(
         playerID: playerID!,
         endDate: league['endDate'],
@@ -591,7 +591,7 @@ class KickCubit extends Cubit<KickStates> {
         numberOfRequests++;
         print("NUMBER OF REQUESTS $numberOfRequests");
         LeagueStandingModel leagueStandingModel =
-            LeagueStandingModel.fromJson(value.data);
+        LeagueStandingModel.fromJson(value.data);
         leaguesStandings[leagueID!] = leagueStandingModel.standings!;
         print(leaguesStandings[leagueID]![0].table![4].team!.name!);
         emit(KickGetLeagueStandingsSuccessState());
@@ -613,19 +613,19 @@ class KickCubit extends Cubit<KickStates> {
 
   void getTeamAllMatches(
       {@required int? teamID,
-      @required bool? fromFav,
-      @required Map<String, dynamic>? league}) {
+        @required bool? fromFav,
+        @required Map<String, dynamic>? league}) {
     teamMatches = [];
     emit(KickGetTeamAllMatchesLoadingState());
     DioHelper.getTeamAllMatches(
-            teamID: teamID,
-            startDate: league!['startDate'],
-            endDate: league['endDate'])
+        teamID: teamID,
+        startDate: league!['startDate'],
+        endDate: league['endDate'])
         .then((value) {
       numberOfRequests++;
       print("NUMBER OF REQUESTS $numberOfRequests");
       team_matches.TeamAllMatchesModel? teamAllMatchesModel =
-          team_matches.TeamAllMatchesModel.fromJson(value.data);
+      team_matches.TeamAllMatchesModel.fromJson(value.data);
       teamMatches = teamAllMatchesModel.matches!
           .where((element) => element.competition!.id == league['id'])
           .toList();
@@ -644,5 +644,13 @@ class KickCubit extends Cubit<KickStates> {
       printError("getTeamAllMatches", e.response!.statusCode!.toString());
       emit(KickGetTeamAllMatchesErrorState());
     });
+  }
+
+  bool isStanding = true;
+  bool isScorers = false;
+  void standingAndScorersToggle({@required bool? standing,@required bool? scorers}){
+    isStanding=standing!;
+    isScorers=scorers!;
+    emit(KickStandingScorersToggleSuccessState());
   }
 }

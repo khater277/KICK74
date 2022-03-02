@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/cubit/kick_states.dart';
 import 'package:kick74/screens/league_details/league_details_items.dart';
-import 'package:kick74/screens/league_scorers/league_scorers_items.dart';
 import 'package:kick74/shared/default_widgets.dart';
 
 class ShowAllScorersScreen extends StatelessWidget {

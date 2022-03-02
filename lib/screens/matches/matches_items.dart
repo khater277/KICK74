@@ -28,7 +28,7 @@ class MyTeamsButton extends StatelessWidget {
                 shape: BoxShape.rectangle,
                 border: Border.all(
                     color: cubit.leagueIndex==10?havan:grey,
-                    width: 2
+                    width: cubit.leagueIndex==10?2:1,
                 ),
                 borderRadius: BorderRadius.circular(30)
             ),
@@ -36,7 +36,10 @@ class MyTeamsButton extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
               child: Row(
                 children: [
-                  Icon(IconBroken.Heart,size: 30,color: havan,),
+                  const ImageIcon(
+                    AssetImage("assets/images/favorite.png"),
+                    size: 30
+                  ),
                   const SizedBox(width: 5),
                   Text("My Teams",
                     style: TextStyle(
@@ -153,7 +156,7 @@ class LeagueButton extends StatelessWidget {
                 shape: BoxShape.rectangle,
                 border: Border.all(
                     color: cubit.leagueIndex==index?havan:grey,
-                    width: 2
+                    width: cubit.leagueIndex==index?2:1,
                 ),
                 borderRadius: BorderRadius.circular(30)
             ),
