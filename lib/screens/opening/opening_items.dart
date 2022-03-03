@@ -16,8 +16,8 @@ class OpeningHeadText extends StatelessWidget {
         Text(
           "openingHead".tr,
           style: TextStyle(
-            fontWeight: FontWeight.normal,
-            fontSize: 27,
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
             color: havan,
           ),
         ),
@@ -25,7 +25,7 @@ class OpeningHeadText extends StatelessWidget {
           "openingCaption".tr,
           style: const TextStyle(
             fontWeight: FontWeight.normal,
-            fontSize: 15,
+            fontSize: 16,
             color: Colors.grey,
           ),
         ),
@@ -45,11 +45,11 @@ class OpeningSignInButton extends StatelessWidget {
         child: Text("signIn".tr,
           style: TextStyle(
             color: havan,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),),
         rounded: 25,
-        height: 45,
+        height: 50,
         width: double.infinity,
         onPressed: (){
           Get.off(() =>const SignInScreen());
@@ -71,12 +71,12 @@ class OpeningSignUpButton extends StatelessWidget {
           child: Text("signUp".tr,
             style: TextStyle(
               color: white,
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),),
           color: havan,
           rounded: 25,
-          height: 45,
+          height: 50,
           width: double.infinity,
           onPressed: (){Get.off(() =>const SignUpScreen());}
       ),

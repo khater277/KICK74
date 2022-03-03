@@ -109,15 +109,21 @@ class SignInCubit extends Cubit<SignInStates>{
       String? userToken = await FirebaseMessaging.instance.getToken();
       KickCubit.get(context).getFavourites();
       //print(uID);
-      if(google==true){
+      FirebaseFirestore.instance.collection('users')
+          .doc(user.uid)
+          .get()
+          .then((v){
+        print(v.data()!['uId']);
+        print("trueeeeeeeeeeeeeeee");
+        KickCubit.get(context).getUserData();
         GetStorage().write('uId',value.user!.uid)
             .then((value){
-          KickCubit.get(context).getUserData();
           Get.offAll(()=>const HomeScreen());
         });
         emit(GoogleSignInSuccessState());
-      }else{
-        GetStorage().write('google', true);
+      }).catchError((error){
+        print("falseeeeeeeeeeee");
+        GetStorage().write('facebook', true);
         createUser(context,
           uid: user.uid,
           name: name,
@@ -125,7 +131,7 @@ class SignInCubit extends Cubit<SignInStates>{
           email: user.email,
           userToken:userToken,
         );
-      }
+      });
     }).catchError((error){
       emit(GoogleSignInErrorState());
       printError("googleSignIn", error.toString());
@@ -141,17 +147,16 @@ class SignInCubit extends Cubit<SignInStates>{
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
       KickCubit.get(context).getFavourites();
-      //print(uID);
       FirebaseFirestore.instance.collection('users')
-      .doc(user.uid)
+          .doc(user.uid)
           .get()
           .then((v){
-            print(v.data()!['uId']);
-            print("trueeeeeeeeeeeeeeee");
-            KickCubit.get(context).getUserData();
-            GetStorage().write('uId',value.user!.uid)
-                .then((value){
-                  Get.offAll(()=>const HomeScreen());
+        print(v.data()!['uId']);
+        print("trueeeeeeeeeeeeeeee");
+        KickCubit.get(context).getUserData();
+        GetStorage().write('uId',value.user!.uid)
+            .then((value){
+          Get.offAll(()=>const HomeScreen());
         });
         emit(FacebookSignInSuccessState());
       }).catchError((error){
@@ -165,23 +170,6 @@ class SignInCubit extends Cubit<SignInStates>{
           userToken:userToken,
         );
       });
-      // if(facebook==true){
-      //   GetStorage().write('uId',value.user!.uid)
-      //       .then((value){
-      //     KickCubit.get(context).getUserData();
-      //     Get.offAll(()=>const HomeScreen());
-      //   });
-      //   emit(FacebookSignInSuccessState());
-      // }else{
-      //   GetStorage().write('facebook', true);
-      //   createUser(context,
-      //     uid: user.uid,
-      //     name: name,
-      //     profileImage: user.photoURL,
-      //     email: user.email,
-      //     userToken:userToken,
-      //   );
-      // }
     }).catchError((error){
       emit(FacebookSignInErrorState());
       printError("facebookSignIn", error.toString());

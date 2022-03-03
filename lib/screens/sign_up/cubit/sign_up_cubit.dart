@@ -127,15 +127,21 @@ class SignUpCubit extends Cubit<SignUpStates>{
       String? userToken = await FirebaseMessaging.instance.getToken();
       KickCubit.get(context).getFavourites();
       //print(uID);
-      if(google==true){
+      FirebaseFirestore.instance.collection('users')
+          .doc(user.uid)
+          .get()
+          .then((v){
+        print(v.data()!['uId']);
+        print("trueeeeeeeeeeeeeeee");
+        KickCubit.get(context).getUserData();
         GetStorage().write('uId',value.user!.uid)
             .then((value){
-          KickCubit.get(context).getUserData();
           Get.offAll(()=>const HomeScreen());
         });
         emit(GoogleSignUpSuccessState());
-      }else{
-        GetStorage().write('google', true);
+      }).catchError((error){
+        print("falseeeeeeeeeeee");
+        GetStorage().write('facebook', true);
         createUser(context,
           uId: user.uid,
           name: name,
@@ -143,7 +149,7 @@ class SignUpCubit extends Cubit<SignUpStates>{
           email: user.email,
           userToken:userToken,
         );
-      }
+      });
     }).catchError((error){
       emit(GoogleSignUpErrorState());
       printError("googleSignIn", error.toString());
@@ -160,23 +166,29 @@ class SignUpCubit extends Cubit<SignUpStates>{
       String? userToken = await FirebaseMessaging.instance.getToken();
       KickCubit.get(context).getFavourites();
       //print(uID);
-      if(facebook==true){
+      FirebaseFirestore.instance.collection('users')
+          .doc(user.uid)
+          .get()
+          .then((v){
+        print(v.data()!['uId']);
+        print("trueeeeeeeeeeeeeeee");
+        KickCubit.get(context).getUserData();
         GetStorage().write('uId',value.user!.uid)
             .then((value){
-          KickCubit.get(context).getUserData();
           Get.offAll(()=>const HomeScreen());
         });
         emit(FacebookSignUpSuccessState());
-      }else{
+      }).catchError((error){
+        print("falseeeeeeeeeeee");
         GetStorage().write('facebook', true);
         createUser(context,
           uId: user.uid,
           name: name,
-          profileImage: user.photoURL!,
+          profileImage: user.photoURL,
           email: user.email,
           userToken:userToken,
         );
-      }
+      });
     }).catchError((error){
       emit(FacebookSignUpErrorState());
       printError("facebookSignIn", error.toString());

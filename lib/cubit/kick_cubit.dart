@@ -82,7 +82,11 @@ class KickCubit extends Cubit<KickStates> {
   void signOut() {
     GetStorage().remove('uId').then((value) {
       favouriteTeams=[];
+      selectedTeamsIDs = [];
       favMatches=[];
+      leagueIndex = 10;
+      currentIndex = 1;
+      onBoardingIndex = 1;
       Get.off(() => const SignInScreen());
     });
     emit(KickSignOutSuccessState());
