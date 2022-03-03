@@ -14,6 +14,7 @@ String? lang;
 String? defaultLang;
 bool? facebook;
 bool? google;
+bool? onBoarding;
 bool? isDarkMode;
 
 StreamSubscription  getMatchesRealTime = Stream.periodic(const Duration(seconds: 61))

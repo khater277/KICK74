@@ -19,39 +19,40 @@ class OnBoardingScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         KickCubit cubit = KickCubit.get(context);
-        return state is! KickGetUserDataLoadingState &&
+        if (state is! KickGetUserDataLoadingState &&
                 state is! KickGetAllMatchesLoadingState &&
-                cubit.leagues[0]['teams'].length == cubit.leaguesIDs.length
-            ? Scaffold(
-                appBar: AppBar(
-                  centerTitle: true,
-                  title: Text(
-                    "Select your favourite teams",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: darkGrey,
-                    ),
-                  ),
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        GetStorage().write('onBoarding', true);
-                        if (cubit.onBoardingIndex < 5) {
-                          cubit.changeOnBoardingIndex();
-                          print("FAVOURITES DONE");
-                        } else {
-                          cubit.getFavourites();
-                          Get.offAll(() => const HomeScreen());
-                        }
-                      },
-                      icon: Icon(IconBroken.Arrow___Right_2,
-                          color: havan, size: 25),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                  ],
+                cubit.leagues[0]['teams'].length == cubit.leaguesIDs.length) {
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text(
+                "Select your favourite teams",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: darkGrey,
                 ),
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    if (cubit.onBoardingIndex < 5) {
+                      cubit.changeOnBoardingIndex();
+                      print("FAVOURITES DONE");
+                    } else {
+                      onBoarding = true;
+                      GetStorage().write('onBoarding', true);
+                      cubit.getFavourites();
+                      Get.offAll(() => const HomeScreen());
+                    }
+                  },
+                  icon: Icon(IconBroken.Arrow___Right_2,
+                      color: havan, size: 25),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+              ],
+            ),
                 body: OfflineWidget(onlineWidget: Column(
                   children: [
                     TeamsBuilder(
@@ -63,10 +64,12 @@ class OnBoardingScreen extends StatelessWidget {
                     ),
                   ],
                 )),
-              )
-            : const Scaffold(
+              );
+        } else {
+          return const Scaffold(
                 body: DefaultProgressIndicator(icon: IconBroken.Heart,size: 35,),
               );
+        }
       },
     );
   }

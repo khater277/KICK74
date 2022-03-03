@@ -33,13 +33,13 @@ void main() async {
   /// get device language
   final String defaultLocale = Platform.localeName.substring(0, 2);
   defaultLang = defaultLocale;
-  bool? onBoarding = GetStorage().read('onBoarding');
+  onBoarding = GetStorage().read('onBoarding');
   uID = GetStorage().read('uId');
   lang = GetStorage().read('lang');
   facebook = GetStorage().read('facebook');
   google = GetStorage().read('google');
   isDarkMode = GetStorage().read('isDarkMode');
-  print(google);
+  print(onBoarding);
   print(uID);
 
   if (uID == null || uID!.isEmpty) {

@@ -29,21 +29,25 @@ class ProfileScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         children: [
-                          DefaultElevatedButton(
-                              child: const Text(
-                                  "Update Image",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 18
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 50),
+                            child: DefaultElevatedButton(
+                                child: const Text(
+                                    "Update Image",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.white
+                                  ),
                                 ),
-                              ),
-                              color: havan,
-                              rounded: 5,
-                              height: 40,
-                              width: double.infinity,
-                              onPressed: (){
-                                cubit.setProfileImage();
-                              }
+                                color: havan,
+                                rounded: 30,
+                                height: 50,
+                                width: double.infinity,
+                                onPressed: (){
+                                  cubit.setProfileImage();
+                                }
+                            ),
                           ),
                           if(state is KickSetProfileImageLoadingState
                               ||state is KickUpdateUserDataLoadingState

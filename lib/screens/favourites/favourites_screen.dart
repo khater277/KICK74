@@ -16,34 +16,51 @@ class FavouritesScreen extends StatelessWidget {
       builder: (context,state){
         KickCubit cubit = KickCubit.get(context);
         return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: (){
-                //cubit.getFavourites();
-                Get.back();
-                },
-              icon: const BackIcon(size: 22),
-            ),
-          ),
-          body: OfflineWidget(onlineWidget: Padding(
-            padding: const EdgeInsets.only(top: 10,bottom: 20),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  LeagueBuilder(league: cubit.leagues[1]),
-                  const SizedBox(height: 30,),
-                  LeagueBuilder(league: cubit.leagues[2]),
-                  const SizedBox(height: 30,),
-                  LeagueBuilder(league: cubit.leagues[3]),
-                  const SizedBox(height: 30,),
-                  LeagueBuilder(league: cubit.leagues[4]),
-                  const SizedBox(height: 30,),
-                  LeagueBuilder(league: cubit.leagues[5]),
-
-                ],
+          body: OfflineWidget(onlineWidget: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                pinned: false,
+                snap: false,
+                floating: false,
+                expandedHeight: 60.0,
+                leading: const BuildBackButton(),
+                flexibleSpace: FlexibleSpaceBar(
+                  //title: Text('SliverAppBar'),
+                  background: AppBar(
+                    leading: IconButton(
+                      onPressed: (){
+                        //cubit.getFavourites();
+                        Get.back();
+                      },
+                      icon: const BackIcon(size: 22),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10,bottom: 20),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        LeagueBuilder(league: cubit.leagues[1]),
+                        const SizedBox(height: 80,),
+                        LeagueBuilder(league: cubit.leagues[2]),
+                        const SizedBox(height: 80,),
+                        LeagueBuilder(league: cubit.leagues[3]),
+                        const SizedBox(height: 80,),
+                        LeagueBuilder(league: cubit.leagues[4]),
+                        const SizedBox(height: 80,),
+                        LeagueBuilder(league: cubit.leagues[5]),
+
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
           )),
         );
       },

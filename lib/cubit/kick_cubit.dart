@@ -87,6 +87,7 @@ class KickCubit extends Cubit<KickStates> {
       leagueIndex = 10;
       currentIndex = 1;
       onBoardingIndex = 1;
+      GetStorage().write("onBoarding", null).then((value) => onBoarding=null);
       Get.off(() => const SignInScreen());
     });
     emit(KickSignOutSuccessState());

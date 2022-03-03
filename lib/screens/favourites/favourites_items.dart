@@ -14,9 +14,6 @@ class LeagueBuilder extends StatelessWidget {
     return Column(
       children: [
         LeagueHead(image: league['image'], name: league['name']),
-        const SizedBox(
-          height: 30,
-        ),
         TeamsBuilder(league: league),
       ],
     );
@@ -37,7 +34,7 @@ class LeagueHead extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(40),
-          border: Border.all(color: havan, width: 1),
+          border: Border.all(color: grey, width: 1),
         ),
         child: Padding(
           padding: EdgeInsets.all(ligue1 ? 5 : 10),
@@ -55,7 +52,7 @@ class LeagueHead extends StatelessWidget {
               Text(
                 name,
                 style: TextStyle(
-                    color: grey, fontSize: 18, fontWeight: FontWeight.bold),
+                    color: darkGrey, fontSize: 18, fontWeight: FontWeight.bold),
               )
             ],
           ),
