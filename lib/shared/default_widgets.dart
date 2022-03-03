@@ -602,7 +602,7 @@ class DefaultTextFiled extends StatelessWidget {
               color: border,
             )),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(rounded),
             borderSide: BorderSide(
               color: focusBorder,
             )),
@@ -612,7 +612,7 @@ class DefaultTextFiled extends StatelessWidget {
               color: border,
             )),
         focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(rounded),
             borderSide: BorderSide(
               color: focusBorder,
             )),

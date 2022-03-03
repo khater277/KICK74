@@ -81,6 +81,8 @@ class KickCubit extends Cubit<KickStates> {
 
   void signOut() {
     GetStorage().remove('uId').then((value) {
+      favouriteTeams=[];
+      favMatches=[];
       Get.off(() => const SignInScreen());
     });
     emit(KickSignOutSuccessState());
@@ -214,7 +216,6 @@ class KickCubit extends Cubit<KickStates> {
 
   void zeroRequests() {
     numberOfRequests = 0;
-    toastBuilder(msg: '$numberOfRequests REQUESTS', color: Colors.red);
     emit(KickTestLoadingState());
   }
 

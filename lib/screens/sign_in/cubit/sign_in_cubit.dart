@@ -8,6 +8,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/models/UserModel.dart';
 import 'package:kick74/screens/home/home_screen.dart';
+import 'package:kick74/screens/onBoarding/onBoarding_screen.dart';
 import 'package:kick74/screens/sign_in/cubit/sign_in_states.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
@@ -141,14 +142,20 @@ class SignInCubit extends Cubit<SignInStates>{
       String? userToken = await FirebaseMessaging.instance.getToken();
       KickCubit.get(context).getFavourites();
       //print(uID);
-      if(facebook==true){
-        GetStorage().write('uId',value.user!.uid)
-            .then((value){
-          KickCubit.get(context).getUserData();
-          Get.offAll(()=>const HomeScreen());
+      FirebaseFirestore.instance.collection('users')
+      .doc(user.uid)
+          .get()
+          .then((v){
+            print(v.data()!['uId']);
+            print("trueeeeeeeeeeeeeeee");
+            KickCubit.get(context).getUserData();
+            GetStorage().write('uId',value.user!.uid)
+                .then((value){
+                  Get.offAll(()=>const HomeScreen());
         });
         emit(FacebookSignInSuccessState());
-      }else{
+      }).catchError((error){
+        print("falseeeeeeeeeeee");
         GetStorage().write('facebook', true);
         createUser(context,
           uid: user.uid,
@@ -157,7 +164,24 @@ class SignInCubit extends Cubit<SignInStates>{
           email: user.email,
           userToken:userToken,
         );
-      }
+      });
+      // if(facebook==true){
+      //   GetStorage().write('uId',value.user!.uid)
+      //       .then((value){
+      //     KickCubit.get(context).getUserData();
+      //     Get.offAll(()=>const HomeScreen());
+      //   });
+      //   emit(FacebookSignInSuccessState());
+      // }else{
+      //   GetStorage().write('facebook', true);
+      //   createUser(context,
+      //     uid: user.uid,
+      //     name: name,
+      //     profileImage: user.photoURL,
+      //     email: user.email,
+      //     userToken:userToken,
+      //   );
+      // }
     }).catchError((error){
       emit(FacebookSignInErrorState());
       printError("facebookSignIn", error.toString());
@@ -185,7 +209,7 @@ class SignInCubit extends Cubit<SignInStates>{
         .set(userModel.toJson()).then((value){
       GetStorage().write('uId', uid);
       KickCubit.get(context).getUserData();
-      Get.offAll(()=>const HomeScreen());
+      Get.offAll(()=>const OnBoardingScreen());
       emit(SignInCreateUserSuccessState());
     }).catchError((error){
       printError("create user", error.toString());

@@ -17,17 +17,17 @@ class SignInHead extends StatelessWidget {
         Text(
           "signInHead".tr,
           style: TextStyle(
-            fontWeight: FontWeight.normal,
-            fontSize: 27,
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
             color: havan,
           ),
         ),
-        const SizedBox(height: 2,),
+        const SizedBox(height: 5,),
         Text(
           "signInCaption".tr,
           style: const TextStyle(
             fontWeight: FontWeight.normal,
-            fontSize: 12,
+            fontSize: 16,
             color: Colors.grey,
           ),
         ),
@@ -49,8 +49,8 @@ class SignInEmailAndPassword extends StatelessWidget {
           controller: emailController,
           validate: SignInCubit.get(context).emailTextFieldValidate??true,
           hint: "email".tr,
-          hintSize: 14,
-          height: 14,
+          hintSize: 16,
+          height: 18,
           suffix: const Text(""),
           focusBorder: darkGrey,
           border: darkGrey,
@@ -63,13 +63,15 @@ class SignInEmailAndPassword extends StatelessWidget {
         DefaultTextFiled(
           controller: passwordController,
           validate: SignInCubit.get(context).passwordTextFieldValidate??true,
+          obscure: true,
           hint: "password".tr,
-          hintSize: 14,
-          height: 14,
+          hintSize: 16,
+          height: 18,
           suffix: TextButton(
               onPressed: (){},
               child: Text("forget".tr,
                 style:TextStyle(
+                  fontSize: 16,
                   color: darkGrey,
                 ),)
           ),
@@ -134,7 +136,7 @@ class SignInButton extends StatelessWidget {
           Text("signIn".tr,
             style: TextStyle(
               color: white,
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),)
         :const DefaultButtonLoader(size: 25, width: 4, color: Colors.white),
@@ -166,7 +168,7 @@ class SignInNoAccount extends StatelessWidget {
           "noAccount".tr,
           style: TextStyle(
               color: grey,
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: FontWeight.normal
           ),
         ),
@@ -177,6 +179,7 @@ class SignInNoAccount extends StatelessWidget {
             style: TextStyle(
                 color: havan,
                 fontWeight: FontWeight.bold,
+              fontSize: 18
             ),
           ),
         )

@@ -12,6 +12,7 @@ import 'package:kick74/network/reomte/dio_helper.dart';
 import 'package:kick74/screens/home/home_screen.dart';
 import 'package:kick74/screens/onBoarding/onBoarding_screen.dart';
 import 'package:kick74/screens/opening/opening_screen.dart';
+import 'package:kick74/screens/sign_in/sign_in_screen.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/styles/themes.dart';
@@ -38,6 +39,7 @@ void main() async {
   lang = GetStorage().read('lang');
   facebook = GetStorage().read('facebook');
   google = GetStorage().read('google');
+  isDarkMode = GetStorage().read('isDarkMode');
   print(google);
   print(uID);
 
@@ -87,7 +89,7 @@ class MyApp extends StatelessWidget {
             home: Directionality(
                 textDirection:
                 languageFun(ar: TextDirection.rtl, en: TextDirection.ltr),
-                child: homeWidget),
+                child: const SignInScreen()),
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: ThemeMode.light,

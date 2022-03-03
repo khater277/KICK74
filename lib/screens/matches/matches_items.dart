@@ -479,6 +479,7 @@ class InPlayMatchInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     bool notAll = cubit.leagueIndex!=0||cubit.leagueIndex!=10;
     int leagueID = matches[index].competition!.id!;
+
     return InkWell(
         onTap: (){
           cubit.getMatchDetails(matchID: matches[index].id!,leagueID: leagueID);

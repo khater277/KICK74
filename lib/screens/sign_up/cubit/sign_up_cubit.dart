@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kick74/cubit/kick_cubit.dart';
 import 'package:kick74/models/UserModel.dart';
 import 'package:kick74/screens/home/home_screen.dart';
+import 'package:kick74/screens/onBoarding/onBoarding_screen.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_states.dart';
 import 'package:kick74/shared/constants.dart';
 import 'package:kick74/shared/default_widgets.dart';
@@ -172,7 +172,7 @@ class SignUpCubit extends Cubit<SignUpStates>{
         createUser(context,
           uId: user.uid,
           name: name,
-          profileImage: user.photoURL,
+          profileImage: user.photoURL!,
           email: user.email,
           userToken:userToken,
         );
@@ -204,7 +204,7 @@ class SignUpCubit extends Cubit<SignUpStates>{
         .set(userModel.toJson()).then((value){
       GetStorage().write('uId', uId);
       KickCubit.get(context).getUserData();
-      Get.offAll(()=>const HomeScreen());
+      Get.offAll(()=>const OnBoardingScreen());
       emit(SignUpCreateUserSuccessState());
     }).catchError((error){
       printError("create user", error.toString());
