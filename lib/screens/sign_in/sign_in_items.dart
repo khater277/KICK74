@@ -105,7 +105,7 @@ class SignInGoogleFacebook extends StatelessWidget {
             radius: 23,
             backgroundImage: const AssetImage('assets/images/google.png'),
             backgroundColor: offWhite,
-          ):const DefaultButtonLoader(size: 25, width: 4, color: Colors.white),
+          ):DefaultButtonLoader(size: 25, width: 4, color: havan),
         ),
         const SizedBox(width: 35,),
         InkWell(
@@ -117,7 +117,7 @@ class SignInGoogleFacebook extends StatelessWidget {
             radius: 23,
             backgroundImage: const AssetImage('assets/images/facebook.png'),
             backgroundColor: offWhite,
-          ):const DefaultButtonLoader(size: 25, width: 4, color: Colors.white),
+          ):DefaultButtonLoader(size: 25, width: 4, color: havan),
         ),
       ],
     );

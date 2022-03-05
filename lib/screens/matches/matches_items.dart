@@ -66,6 +66,7 @@ class FavouriteMatches extends StatelessWidget {
     return Expanded(
       child: matches.isNotEmpty?
       ListView.separated(
+        physics: const BouncingScrollPhysics(),
         itemBuilder: (context,index)=>MatchItem(
             cubit: cubit, index: index, matches: matches),
         separatorBuilder: (context,index)=>const Padding(
@@ -203,6 +204,7 @@ class LeagueMatches extends StatelessWidget {
     return Expanded(
       child: matches.isNotEmpty?
       ListView.separated(
+        physics: const BouncingScrollPhysics(),
         itemBuilder: (context,index)=> MatchItem(cubit: cubit,index: index,
         matches: matches,),
         separatorBuilder: (context,index)=>const Padding(
