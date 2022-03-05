@@ -1,7 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kick74/cubit/kick_states.dart';
 import 'package:kick74/screens/home/home_screen.dart';
+import 'package:kick74/screens/sign_in/cubit/sign_in_states.dart';
 import 'package:kick74/screens/sign_in/sign_in_screen.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kick74/screens/sign_up/cubit/sign_up_states.dart';
@@ -100,7 +102,8 @@ class SignUpEmailAndPassword extends StatelessWidget {
 }
 
 class SignUpGoogleFacebook extends StatelessWidget {
-  const SignUpGoogleFacebook({Key? key}) : super(key: key);
+  final SignUpStates state;
+  const SignUpGoogleFacebook({Key? key, required this.state}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -110,22 +113,24 @@ class SignUpGoogleFacebook extends StatelessWidget {
           onTap: (){
             SignUpCubit.get(context).googleSignIn(context);
           },
-          child: CircleAvatar(
-            radius: 25,
+          child: state is! GoogleSignInLoadingState?
+          CircleAvatar(
+            radius: 23,
             backgroundImage: const AssetImage('assets/images/google.png'),
             backgroundColor: offWhite,
-          ),
+          ):const DefaultButtonLoader(size: 25, width: 4, color: Colors.white),
         ),
         const SizedBox(width: 35,),
         InkWell(
           onTap: (){
             SignUpCubit.get(context).facebookSignIn(context);
           },
-          child: CircleAvatar(
-            radius: 25,
+          child: state is! FacebookSignInLoadingState?
+          CircleAvatar(
+            radius: 23,
             backgroundImage: const AssetImage('assets/images/facebook.png'),
             backgroundColor: offWhite,
-          ),
+          ):const DefaultButtonLoader(size: 25, width: 4, color: Colors.white),
         ),
       ],
     );
@@ -145,8 +150,6 @@ class SignUpButton extends StatelessWidget {
     return Expanded(
       child: DefaultElevatedButton(
           child: state is! SignUpCreateUserLoadingState&&
-              state is! FacebookSignUpLoadingState&&
-              state is! GoogleSignUpLoadingState&&
               state is! SignUpUserRegisterLoadingState?
           Text("signUp".tr,
             style: TextStyle(

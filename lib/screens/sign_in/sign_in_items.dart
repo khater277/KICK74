@@ -89,7 +89,8 @@ class SignInEmailAndPassword extends StatelessWidget {
 
 class SignInGoogleFacebook extends StatelessWidget {
   final SignInCubit cubit;
-  const SignInGoogleFacebook({Key? key, required this.cubit}) : super(key: key);
+  final SignInStates state;
+  const SignInGoogleFacebook({Key? key, required this.cubit, required this.state}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -99,22 +100,24 @@ class SignInGoogleFacebook extends StatelessWidget {
           onTap: (){
             cubit.googleSignIn(context);
           },
-          child: CircleAvatar(
-            radius: 25,
+          child: state is! GoogleSignInLoadingState?
+          CircleAvatar(
+            radius: 23,
             backgroundImage: const AssetImage('assets/images/google.png'),
             backgroundColor: offWhite,
-          ),
+          ):const DefaultButtonLoader(size: 25, width: 4, color: Colors.white),
         ),
         const SizedBox(width: 35,),
         InkWell(
           onTap: (){
             cubit.facebookSignIn(context);
           },
-          child: CircleAvatar(
-            radius: 25,
+          child: state is! FacebookSignInLoadingState?
+          CircleAvatar(
+            radius: 23,
             backgroundImage: const AssetImage('assets/images/facebook.png'),
             backgroundColor: offWhite,
-          ),
+          ):const DefaultButtonLoader(size: 25, width: 4, color: Colors.white),
         ),
       ],
     );
@@ -133,8 +136,6 @@ class SignInButton extends StatelessWidget {
     return Expanded(
       child: DefaultElevatedButton(
           child:state is! SignInUserLoginLoadingState&&
-              state is! FacebookSignInLoadingState&&
-              state is! GoogleSignInLoadingState&&
               state is! SignInCreateUserLoadingState?
           Text("signIn".tr,
             style: TextStyle(

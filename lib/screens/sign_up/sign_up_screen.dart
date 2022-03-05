@@ -65,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Row(
                         children: [
                           const SizedBox(width: 20,),
-                          const SignUpGoogleFacebook(),
+                          SignUpGoogleFacebook(state: state,),
                           const SizedBox(width: 45,),
                           SignUpButton(
                             state: state,

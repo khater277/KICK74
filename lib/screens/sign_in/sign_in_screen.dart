@@ -61,7 +61,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       Row(
                         children: [
                           const SizedBox(width: 20,),
-                          SignInGoogleFacebook(cubit: cubit,),
+                          SignInGoogleFacebook(cubit: cubit,state: state,),
                           const SizedBox(width: 45,),
                           SignInButton(
                             state: state,
