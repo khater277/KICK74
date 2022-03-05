@@ -40,7 +40,7 @@ class KickCubit extends Cubit<KickStates> {
     d.write('lang', value).then((v) {
       lang = value;
       Get.updateLocale(Locale(value));
-      print(lang);
+      debugPrint(lang);
     });
     emit(KickChangeLanguageState());
   }
@@ -231,7 +231,7 @@ class KickCubit extends Cubit<KickStates> {
     if(numberOfRequests<10) {
       DioHelper.getAllMatches().then((value) {
       numberOfRequests++;
-      print("NUMBER OF REQUESTS $numberOfRequests");
+      debugPrint("NUMBER OF REQUESTS $numberOfRequests");
       shownMatches[0] = <Matches>[];
       shownMatches[2021] = <Matches>[];
       shownMatches[2014] = <Matches>[];
@@ -248,7 +248,7 @@ class KickCubit extends Cubit<KickStates> {
         }
       }
       getFavouritesMatches();
-      print(shownMatches[0]!.length);
+      debugPrint(shownMatches[0]!.length.toString());
       emit(KickGetAllMatchesSuccessState());
     }).catchError((error) {
       printError("getAllMatches", error.toString());
@@ -272,7 +272,7 @@ class KickCubit extends Cubit<KickStates> {
           favMatches.add(element);
         }
       }
-      print(favMatches);
+      debugPrint(favMatches.toString());
       emit(KickGetFavouritesMatchesSuccessState());
     }
   }
@@ -288,7 +288,7 @@ class KickCubit extends Cubit<KickStates> {
   void changeOnBoardingIndex() {
     onBoardingIndex++;
     indicatorColors[onBoardingIndex - 2] = havan.withOpacity(0.8);
-    print(onBoardingIndex);
+    debugPrint(onBoardingIndex.toString());
     emit(KickOnBoardingIndexLoadingState());
     Future.delayed(const Duration(milliseconds: 500)).then((value) {
       emit(KickOnBoardingIndexSuccessState());
@@ -317,7 +317,7 @@ class KickCubit extends Cubit<KickStates> {
       selectedTeamsIDs.remove(teamID);
       removeFromFavourites(favouriteTeamModel: favouriteTeamModel);
     }
-    print(favouriteTeams);
+    debugPrint(favouriteTeams.toString());
     emit(KickSelectFavTeamState());
   }
 
@@ -430,7 +430,7 @@ class KickCubit extends Cubit<KickStates> {
         .update(updatedUserModel.toJson())
         .then((value) {
       getUserData();
-      print("USER UPDATED");
+      debugPrint("USER UPDATED");
       emit(KickUpdateUserDataSuccessState());
     }).catchError((error) {
       printError("updateUserData", error.toString());
@@ -444,7 +444,7 @@ class KickCubit extends Cubit<KickStates> {
     for (int i = 0; i < leaguesIDs.length; i++) {
       DioHelper.getLeagueTeams(leagueID: leaguesIDs[i]).then((value) {
         numberOfRequests++;
-        print("NUMBER OF REQUESTS $numberOfRequests");
+        debugPrint("NUMBER OF REQUESTS $numberOfRequests");
         LeagueTeamsModel leagueTeamsModel =
             LeagueTeamsModel.fromJson(value.data);
         leagues[0]['teams'].add(leagueTeamsModel.teams!);
@@ -471,9 +471,9 @@ class KickCubit extends Cubit<KickStates> {
       emit(KickGetMatchDetailsLoadingState());
       DioHelper.getMatchDetails(matchID: matchID).then((value) {
         numberOfRequests++;
-        print("NUMBER OF REQUESTS $numberOfRequests");
+        debugPrint("NUMBER OF REQUESTS $numberOfRequests");
         matchDetailsModel = MatchDetailsModel.fromJson(value.data);
-        print(matchDetailsModel!.match!.venue);
+        debugPrint(matchDetailsModel!.match!.venue);
         getTopScorers(leagueID: leagueID);
       }).catchError((error) {
         dio.DioError e = error;
@@ -500,11 +500,11 @@ class KickCubit extends Cubit<KickStates> {
       emit(KickGetLeagueTopScorersLoadingState());
       DioHelper.getLeagueTopScorers(leagueID: leagueID!).then((value) {
         numberOfRequests++;
-        print("NUMBER OF REQUESTS $numberOfRequests");
+        debugPrint("NUMBER OF REQUESTS $numberOfRequests");
         LeagueScorersModel leagueScorersModel =
         LeagueScorersModel.fromJson(value.data);
         scorers[leagueID] = leagueScorersModel.scorers!;
-        print(scorers[leagueID]![0].player!.name);
+        debugPrint(scorers[leagueID]![0].player!.name);
         emit(KickGetLeagueTopScorersSuccessState());
       }).catchError((error) {
         dio.DioError e = error;
@@ -527,9 +527,9 @@ class KickCubit extends Cubit<KickStates> {
       emit(KickGetTeamDetailsLoadingState());
       DioHelper.getTeamDetails(teamID: teamID!).then((value) {
         numberOfRequests++;
-        print("NUMBER OF REQUESTS $numberOfRequests");
+        debugPrint("NUMBER OF REQUESTS $numberOfRequests");
         teamModel = TeamModel.fromJson(value.data);
-        print(teamModel!.name!);
+        debugPrint(teamModel!.name!);
         //getTeamAllMatches(teamID: teamID,fromFav: fromFav,league: league);
         emit(KickGetTeamDetailsSuccessState());
       }).catchError((error) {
@@ -562,10 +562,10 @@ class KickCubit extends Cubit<KickStates> {
         startDate: league['startDate'],
       ).then((value) {
         numberOfRequests++;
-        print("NUMBER OF REQUESTS $numberOfRequests");
+        debugPrint("NUMBER OF REQUESTS $numberOfRequests");
         playerAllDetailsModel =
             PLAYER_ALL_DETAILS.PlayerAllDetailsModel.fromJson(value.data);
-        print(playerAllDetailsModel!.player!.name);
+        debugPrint(playerAllDetailsModel!.player!.name);
         emit(KickGetPlayerAllDetailsSuccessState());
       }).catchError((error) {
         dio.DioError e = error;
@@ -595,11 +595,11 @@ class KickCubit extends Cubit<KickStates> {
       emit(KickGetLeagueStandingsLoadingState());
       DioHelper.getLeagueStanding(leagueID: leagueID).then((value) {
         numberOfRequests++;
-        print("NUMBER OF REQUESTS $numberOfRequests");
+        debugPrint("NUMBER OF REQUESTS $numberOfRequests");
         LeagueStandingModel leagueStandingModel =
         LeagueStandingModel.fromJson(value.data);
         leaguesStandings[leagueID!] = leagueStandingModel.standings!;
-        print(leaguesStandings[leagueID]![0].table![4].team!.name!);
+        debugPrint(leaguesStandings[leagueID]![0].table![4].team!.name!);
         emit(KickGetLeagueStandingsSuccessState());
       }).catchError((error) {
         dio.DioError e = error;
@@ -629,13 +629,13 @@ class KickCubit extends Cubit<KickStates> {
         endDate: league['endDate'])
         .then((value) {
       numberOfRequests++;
-      print("NUMBER OF REQUESTS $numberOfRequests");
+      debugPrint("NUMBER OF REQUESTS $numberOfRequests");
       team_matches.TeamAllMatchesModel? teamAllMatchesModel =
       team_matches.TeamAllMatchesModel.fromJson(value.data);
       teamMatches = teamAllMatchesModel.matches!
           .where((element) => element.competition!.id == league['id'])
           .toList();
-      print(teamMatches[0].homeTeam!.name!);
+      debugPrint(teamMatches[0].homeTeam!.name!);
       if (fromFav == true) {
         getTopScorers(leagueID: league['id']);
       } else {

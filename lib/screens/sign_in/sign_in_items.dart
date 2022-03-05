@@ -132,7 +132,10 @@ class SignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: DefaultElevatedButton(
-          child:state is! SignInUserLoginLoadingState?
+          child:state is! SignInUserLoginLoadingState&&
+              state is! FacebookSignInLoadingState&&
+              state is! GoogleSignInLoadingState&&
+              state is! SignInCreateUserLoadingState?
           Text("signIn".tr,
             style: TextStyle(
               color: white,

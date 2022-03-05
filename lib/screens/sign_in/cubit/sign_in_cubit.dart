@@ -108,13 +108,13 @@ class SignInCubit extends Cubit<SignInStates>{
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
       KickCubit.get(context).getFavourites();
-      //print(uID);
+      //debugPrint(uID);
       FirebaseFirestore.instance.collection('users')
           .doc(user.uid)
           .get()
           .then((v){
-        print(v.data()!['uId']);
-        print("trueeeeeeeeeeeeeeee");
+        debugPrint(v.data()!['uId']);
+        debugPrint("trueeeeeeeeeeeeeeee");
         KickCubit.get(context).getUserData();
         GetStorage().write('uId',value.user!.uid)
             .then((value){
@@ -122,7 +122,7 @@ class SignInCubit extends Cubit<SignInStates>{
         });
         emit(GoogleSignInSuccessState());
       }).catchError((error){
-        print("falseeeeeeeeeeee");
+        debugPrint("falseeeeeeeeeeee");
         GetStorage().write('facebook', true);
         createUser(context,
           uid: user.uid,
@@ -151,8 +151,8 @@ class SignInCubit extends Cubit<SignInStates>{
           .doc(user.uid)
           .get()
           .then((v){
-        print(v.data()!['uId']);
-        print("trueeeeeeeeeeeeeeee");
+        debugPrint(v.data()!['uId']);
+        debugPrint("trueeeeeeeeeeeeeeee");
         KickCubit.get(context).getUserData();
         GetStorage().write('uId',value.user!.uid)
             .then((value){
@@ -160,7 +160,7 @@ class SignInCubit extends Cubit<SignInStates>{
         });
         emit(FacebookSignInSuccessState());
       }).catchError((error){
-        print("falseeeeeeeeeeee");
+        debugPrint("falseeeeeeeeeeee");
         GetStorage().write('facebook', true);
         createUser(context,
           uid: user.uid,
@@ -191,7 +191,7 @@ class SignInCubit extends Cubit<SignInStates>{
         uId: uid,
         profileImage:profileImage??"https://i.pinimg.com/564x/d9/c3/cf/d9c3cf6c263d181be4b5cbd15038b3a6.jpg",
     );
-    emit(SignInCreateUserErrorState());
+    emit(SignInCreateUserLoadingState());
     FirebaseFirestore.instance.collection('users')
         .doc(uid)
         .set(userModel.toJson()).then((value){

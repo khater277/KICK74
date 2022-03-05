@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -39,8 +38,8 @@ void main() async {
   facebook = GetStorage().read('facebook');
   google = GetStorage().read('google');
   isDarkMode = GetStorage().read('isDarkMode');
-  print(onBoarding);
-  print(uID);
+  debugPrint(onBoarding.toString());
+  debugPrint(uID);
 
   if (uID == null || uID!.isEmpty) {
     homeWidget = const OpeningScreen();
