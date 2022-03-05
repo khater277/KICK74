@@ -111,7 +111,7 @@ class SignUpGoogleFacebook extends StatelessWidget {
             SignUpCubit.get(context).googleSignIn(context);
           },
           child: CircleAvatar(
-            radius: 20,
+            radius: 25,
             backgroundImage: const AssetImage('assets/images/google.png'),
             backgroundColor: offWhite,
           ),
@@ -122,7 +122,7 @@ class SignUpGoogleFacebook extends StatelessWidget {
             SignUpCubit.get(context).facebookSignIn(context);
           },
           child: CircleAvatar(
-            radius: 20,
+            radius: 25,
             backgroundImage: const AssetImage('assets/images/facebook.png'),
             backgroundColor: offWhite,
           ),
