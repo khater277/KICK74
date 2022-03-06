@@ -23,6 +23,7 @@ class HomeScreen extends StatelessWidget {
                 state is! KickGetAllMatchesLoadingState &&
                 state is! KickGetFavouritesLoadingState &&
                 state is! KickGetLeagueTeamsSuccessState &&
+
                 cubit.leagues[0]['teams'].length == cubit.leaguesIDs.length) {
           return Scaffold(
                 body: OfflineWidget(onlineWidget: Builder(

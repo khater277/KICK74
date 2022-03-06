@@ -20,7 +20,7 @@ class MyTeamsButton extends StatelessWidget {
         InkWell(
           onTap: (){
             cubit.changeLeagueIndex(10);
-            cubit.getFavouritesMatches();
+            //cubit.getFavouritesMatches();
           },
           child: Container(
             decoration: BoxDecoration(

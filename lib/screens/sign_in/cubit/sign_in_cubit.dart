@@ -60,7 +60,11 @@ class SignInCubit extends Cubit<SignInStates>{
       .then((value){
         KickCubit.get(context).getUserData();
         KickCubit.get(context).getFavourites();
-        Get.offAll(()=>const HomeScreen());
+        KickCubit.get(context).getFavouritesMatches();
+        GetStorage().write('onBoarding', true).then((value){
+          onBoarding = true;
+          Get.offAll(()=>const HomeScreen());
+        });
       });
       emit(SignInUserLoginSuccessState());
     }).catchError((error){
@@ -107,7 +111,7 @@ class SignInCubit extends Cubit<SignInStates>{
       uID=value.user!.uid;
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
-      KickCubit.get(context).getFavourites();
+      //KickCubit.get(context).getFavouritesMatches();
       //debugPrint(uID);
       FirebaseFirestore.instance.collection('users')
           .doc(user.uid)
@@ -116,9 +120,14 @@ class SignInCubit extends Cubit<SignInStates>{
         debugPrint(v.data()!['uId']);
         debugPrint("trueeeeeeeeeeeeeeee");
         KickCubit.get(context).getUserData();
+        KickCubit.get(context).getFavourites();
+        // KickCubit.get(context).getFavouritesMatches();
         GetStorage().write('uId',value.user!.uid)
             .then((value){
-          Get.offAll(()=>const HomeScreen());
+          GetStorage().write('onBoarding', true).then((value){
+            onBoarding = true;
+            Get.offAll(()=>const HomeScreen());
+          });
         });
         emit(GoogleSignInSuccessState());
       }).catchError((error){
@@ -146,7 +155,6 @@ class SignInCubit extends Cubit<SignInStates>{
       uID=value.user!.uid;
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
-      KickCubit.get(context).getFavourites();
       FirebaseFirestore.instance.collection('users')
           .doc(user.uid)
           .get()
@@ -154,9 +162,14 @@ class SignInCubit extends Cubit<SignInStates>{
         debugPrint(v.data()!['uId']);
         debugPrint("trueeeeeeeeeeeeeeee");
         KickCubit.get(context).getUserData();
+        KickCubit.get(context).getFavourites();
+        KickCubit.get(context).getFavouritesMatches();
         GetStorage().write('uId',value.user!.uid)
             .then((value){
-          Get.offAll(()=>const HomeScreen());
+          GetStorage().write('onBoarding', true).then((value){
+            onBoarding = true;
+            Get.offAll(()=>const HomeScreen());
+          });
         });
         emit(FacebookSignInSuccessState());
       }).catchError((error){
@@ -196,6 +209,7 @@ class SignInCubit extends Cubit<SignInStates>{
         .doc(uid)
         .set(userModel.toJson()).then((value){
       GetStorage().write('uId', uid);
+      //GetStorage().write('onBoarding', true);
       KickCubit.get(context).getUserData();
       Get.offAll(()=>const OnBoardingScreen());
       emit(SignInCreateUserSuccessState());

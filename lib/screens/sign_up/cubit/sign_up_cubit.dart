@@ -125,7 +125,6 @@ class SignUpCubit extends Cubit<SignUpStates>{
       uID=value.user!.uid;
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
-      KickCubit.get(context).getFavourites();
       //print(uID);
       FirebaseFirestore.instance.collection('users')
           .doc(user.uid)
@@ -134,9 +133,13 @@ class SignUpCubit extends Cubit<SignUpStates>{
         print(v.data()!['uId']);
         print("trueeeeeeeeeeeeeeee");
         KickCubit.get(context).getUserData();
+        KickCubit.get(context).getFavourites();
         GetStorage().write('uId',value.user!.uid)
             .then((value){
-          Get.offAll(()=>const HomeScreen());
+          GetStorage().write('onBoarding', true).then((value){
+            onBoarding = true;
+            Get.offAll(()=>const HomeScreen());
+          });
         });
         emit(GoogleSignUpSuccessState());
       }).catchError((error){
@@ -164,7 +167,6 @@ class SignUpCubit extends Cubit<SignUpStates>{
       uID=value.user!.uid;
       String name = formatName(user.displayName!);
       String? userToken = await FirebaseMessaging.instance.getToken();
-      KickCubit.get(context).getFavourites();
       //print(uID);
       FirebaseFirestore.instance.collection('users')
           .doc(user.uid)
@@ -173,9 +175,13 @@ class SignUpCubit extends Cubit<SignUpStates>{
         print(v.data()!['uId']);
         print("trueeeeeeeeeeeeeeee");
         KickCubit.get(context).getUserData();
+        KickCubit.get(context).getFavourites();
         GetStorage().write('uId',value.user!.uid)
             .then((value){
-          Get.offAll(()=>const HomeScreen());
+          GetStorage().write('onBoarding', true).then((value){
+            onBoarding = true;
+            Get.offAll(()=>const HomeScreen());
+          });
         });
         emit(FacebookSignUpSuccessState());
       }).catchError((error){

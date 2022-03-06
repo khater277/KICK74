@@ -37,7 +37,6 @@ void main() async {
   lang = GetStorage().read('lang');
   facebook = GetStorage().read('facebook');
   google = GetStorage().read('google');
-  isDarkMode = GetStorage().read('isDarkMode');
   debugPrint(onBoarding.toString());
   debugPrint(uID);
 
@@ -72,9 +71,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (BuildContext context) => KickCubit()
               ..getUserData()
-              ..getFavourites()
               ..getLeagueTeams()
-              ..getAllMatches()),
+              ..getAllMatches()
+              ..getFavourites()),
         BlocProvider(
           create: (BuildContext context) => SignUpCubit(),
         ),

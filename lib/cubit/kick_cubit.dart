@@ -249,7 +249,7 @@ class KickCubit extends Cubit<KickStates> {
       }
       getFavouritesMatches();
       debugPrint(shownMatches[0]!.length.toString());
-      emit(KickGetAllMatchesSuccessState());
+      //emit(KickGetAllMatchesSuccessState());
     }).catchError((error) {
       printError("getAllMatches", error.toString());
       emit(KickGetAllMatchesErrorState());
@@ -267,12 +267,14 @@ class KickCubit extends Cubit<KickStates> {
     favMatches = [];
     for (var element in shownMatches[0]!) {
       for (int i = 0; i < favouriteTeams.length; i++) {
-        if ((favouriteTeams[i].team!.id! == element.homeTeam!.id) ||
-            (favouriteTeams[i].team!.id! == element.awayTeam!.id)) {
+        if (((favouriteTeams[i].team!.id! == element.homeTeam!.id) ||
+            (favouriteTeams[i].team!.id! == element.awayTeam!.id))&&
+            (favMatches.contains(element)==false)) {
           favMatches.add(element);
         }
       }
-      debugPrint(favMatches.toString());
+      //debugPrint(favMatches.toString());
+      debugPrint("GET FAVOURITES MATCHES");
       emit(KickGetFavouritesMatchesSuccessState());
     }
   }
@@ -373,6 +375,8 @@ class KickCubit extends Cubit<KickStates> {
           favouriteTeams.add(FavouriteTeamModel.fromJson(
               {'leagueID': element.data()['leagueID'], 'team': team}));
         }
+        getFavouritesMatches();
+        print("GET FAVOURITES");
         emit(KickGetFavouritesSuccessState());
       }).catchError((error) {
         printError("getFavourites", error.toString());
